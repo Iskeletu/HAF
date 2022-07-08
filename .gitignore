@@ -18,3 +18,4 @@
 #Exceptions.
 **__pycache__/
 Source/Driver/ChromeProfile/
+Source/test.py

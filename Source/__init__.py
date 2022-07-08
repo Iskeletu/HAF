@@ -14,6 +14,3 @@ from Source.FileHandler.Logger import *
 
 from Source.Ticket.AttachentHandler import *
 from Source.Ticket.TicketHandler import *
-
-#test file
-from Source.teste import *
