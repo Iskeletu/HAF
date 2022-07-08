@@ -1,0 +1,15 @@
+{
+    "Lastest_Log": {
+        "type": 0,
+        "id": "",
+        "attachment": [],
+        "time": ""
+    },
+    "data": {
+        "matricula": "",
+        "hostname": "",
+        "contato": "",
+        "tipo": "",
+        "solucao": 0
+    }
+}

@@ -1,0 +1,20 @@
+##Exclude everything!
+/*
+
+##Except what I want to keep:
+#Source files.
+!Source/
+
+#Github files.
+!.gitignore
+!LICENSE
+!README.md
+
+#Other important files.
+!Autofill Dictionary/
+!Call/
+!Log/
+
+#Exceptions.
+**__pycache__/
+Source/Driver/ChromeProfile/
