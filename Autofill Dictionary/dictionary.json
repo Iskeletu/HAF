@@ -1,6 +1,6 @@
 {
     "test": {
-        "process-type": "open",
+        "process-type": "close",
         "type": "ticket",
         "title": "TEST TICKET - Ignore",
         "body": "This is a test ticket, please ignore.\n\nContato: {contact}\nHostname/IP: {hostname}",

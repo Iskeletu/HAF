@@ -6,6 +6,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.common.exceptions import WebDriverException
 
 #Files.
 from FileHandler.JsonHandler import LoadJson
@@ -23,8 +24,14 @@ def __MenuNavigator(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -
     - ticket_data: Dict with ticket data.
     """
 
+    #Changes focust to driver (menu navigation won't work minimized).
+    try:
+        driver.maximize_window()
+    except WebDriverException:
+        pass #Webdriver gives unknown eception if driver is minimezed for some reason...
+
+    time.sleep(Menu.MENU_LOAD_DELAY)
     action = ActionChains(driver)
-    delay = 0.3 #Menu animation delay.
 
     #Ticket description.
     ticket_body = str(ticket_data['body']).format(hostname = call_data['hostname'], contact = call_data['contato'])
@@ -36,33 +43,33 @@ def __MenuNavigator(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -
             #Fills "How is this affecting you?" field.
             action.send_keys(Keys.TAB + Keys.SPACE)
             action.perform()
-            time.sleep(delay)
+            time.sleep(Menu.ANIMATION_DELAY)
             action.send_keys(Keys.TAB + Keys.TAB + Keys.TAB + Keys.TAB + Keys.SPACE)
             action.perform()
-            time.sleep(delay)
+            time.sleep(Menu.ANIMATION_DELAY)
 
             #Fills "Degree of affectation" field.
             action.send_keys(Keys.TAB + Keys.SPACE)
             action.perform()
-            time.sleep(delay)
+            time.sleep(Menu.ANIMATION_DELAY)
             action.send_keys(Keys.TAB + Keys.SPACE)
             action.perform()
-            time.sleep(delay)
+            time.sleep(Menu.ANIMATION_DELAY)
 
             #Fills "Application" field.
             action.send_keys(Keys.TAB + ticket_data['application'])
             action.perform()
-            time.sleep(delay)
+            time.sleep(Menu.ANIMATION_DELAY)
 
             #Fills "Phone contact" field.
             action.send_keys(Keys.TAB + Keys.TAB + Keys.TAB + call_data['contato'])
             action.perform()
-            time.sleep(delay)
+            time.sleep(Menu.ANIMATION_DELAY)
 
             #opens ticket
             action.send_keys(Keys.TAB + Keys.TAB)
             action.perform()
-            time.sleep(delay)
+            time.sleep(Menu.ANIMATION_DELAY)
             action.send_keys(Keys.TAB + Keys.TAB) #ADD SPACE
             action.perform()
             time.sleep(1)
@@ -71,17 +78,18 @@ def __MenuNavigator(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -
             #Opens ticket.
             action.send_keys(Keys.TAB + Keys.TAB)
             action.perform()
-            time.sleep(delay)
+            time.sleep(Menu.ANIMATION_DELAY)
             action.send_keys(Keys.TAB + Keys.TAB + Keys.SPACE)
             action.perform()
-            time.sleep(1)
+            time.sleep(Menu.TICKET_LOAD_DELAY)
 
     return driver.current_url.removeprefix('https://prosegur-smartit.onbmc.com/smartit/app/#/sberequest/')
 
 
 def __OpenTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> LogClass:
     """
-    Open a ticket and returns a LogClass object with it's details.
+    Private function: Opens a ticket and based on call data and ticket template.
+    Returns LogClass object with the ticket detail.
     
     Dependencies:
     - :mod:`__MenuNavigator()`: To navigate the javascript menu (Selenium 
@@ -93,28 +101,64 @@ def __OpenTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> L
     - ticket_data: Dict with ticket data.
     """
 
-    driver.get('https://prosegur-smartit.onbmc.com/smartit/app/#/create/smart-recorder')
+    driver.get(URL.SMART_RECORDER_URL)
 
     main_bar = driver.find_element(By.XPATH, '//*[@id="main"]/div/div[2]/div[1]/div[1]/smart-recorder-input/div/div[2]')
     main_bar.send_keys('@' + call_data['matricula'])
-    time.sleep(2)
+    time.sleep(Menu.USER_LOAD_DELAY)
     main_bar.send_keys(Keys.ENTER + ticket_data['type'])
 
     driver.find_element(By.XPATH, '//*[@id="main"]/div/div[2]/div[3]/div/div/div[2]/rs/div/div[2]/rs-dwp-catalog/div/div/div/div[1]/i[1]').click()
     driver.find_element(By.XPATH, '//*[@id="main"]/div/div[3]/button[1]').click()
-    time.sleep(7)
 
     ticket_ID = __MenuNavigator(driver, call_data, ticket_data)
-    return LogClass(1, ticket_ID)
+    return LogClass(Types.TICKET_CREATION, ticket_ID)
 
 
-def __CloseTicket(ticket_ID, driver:webdriver.Chrome) -> LogClass: #TODO
-    """"""
+def __CloseTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> LogClass: #TODO
+    """
+    Private function: Opens a ticket and based on call data and ticket template.
+    Returns LogClass object with the ticket detail.
+    
+    Dependencies:
+    - :mod:`__OpenTicket()`: To open and generate ticket ID.
 
-    TODO = True
+    Arguments:
+    - driver: A loaded Chrome webdriver object.
+    - call_data: Dict with call data, mainly to be passed to :mod:`__OpenTicket()`:.
+    - ticket_data: Dict with ticket data, mainly to be passed to :mod:`__OpenTicket()`:.
+    """
+
+    #Open_Ticket_Log = __OpenTicket(driver, call_data, ticket_data)
+    Open_Ticket_Log = LogClass(1, '107493')
+    driver.get(URL.TICKED_ID_PREFIX + Open_Ticket_Log.GetID)
+
+    #Opend ticket editor.
+    driver.find_element(By.XPATH, '/html/body/div[2]/div/div[2]/div/div[1]/div/div/div[2]/div[2]/div[4]/div/div/div/fulfillment-map/div/div[2]/div[2]/div/div[2]').click()
+    driver.find_element(By.XPATH, '/html/body/div[2]/div/div[2]/div/div[2]/div/div/div/div[3]/div[2]/div').click()
+
+    #Edits ticket title.
+    driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/title-bar/div[2]/div/div[1]/label/input').send_keys(Keys.CONTROL + 'a')
+    driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/title-bar/div[2]/div/div[1]/label/input').send_keys(ticket_data['title'])
+
+    #Changes status to "ongoing".
+    driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[1]/div/div/div[1]/label/div/button').click()
+    driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[1]/div/div/div[1]/label/div/ul/li[2]/a').click()
+
+    #Sets standard ticket definition.
+    driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[2]/div/div[2]/div[1]/div[1]/div[1]/div/div[3]/div/div/label/div/div/div/button').click()
+    driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[2]/div/div[2]/div[1]/div[1]/div[1]/div/div[3]/div/div/label/div/div/div/ul/li[4]/a').click()
+    driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[2]/div/div[2]/div[1]/div[1]/div[1]/div/div[4]/div/div/label/div/div/div/button').click()
+    driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[2]/div/div[2]/div[1]/div[1]/div[1]/div/div[4]/div/div/label/div/div/div/ul/li[1]/a').click()
+    driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[2]/div/div[2]/div[1]/div[1]/div[1]/div/div[5]/div/div/label/div/div/div/button').click()
+    driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[2]/div/div[2]/div[1]/div[1]/div[1]/div/div[5]/div/div/label/div/div/div/ul/li[2]/a').click()
+
+    #Changes ticket disgnation.
+    driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[2]/div/div[3]/div[1]/div/div[1]/div/div/div[2]/div/a').click()
 
 
-def __EscalateTicket() -> LogClass: #TODO
+
+def __EscalateTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> LogClass: #TODO
     """"""
 
     TODO = True
@@ -122,7 +166,7 @@ def __EscalateTicket() -> LogClass: #TODO
 
 def TicketProcessor(driver:webdriver.Chrome, *args) -> LogClass:
     """
-    Processes call data into a ticket and returns a log object with it's deatils.
+    Processes call data into a ticket and returns a log object with it's details.
 
     Dependencies:
     - :mod:`__OpenTicket()`: For ticket creation.
@@ -142,10 +186,10 @@ def TicketProcessor(driver:webdriver.Chrome, *args) -> LogClass:
             log = __OpenTicket(driver, call_data, ticket_data)
 
         case 'close':
-            log = __CloseTicket()
+            log = __CloseTicket(driver, call_data, ticket_data)
 
         case 'escalate':
-            log = __EscalateTicket()
+            log = __EscalateTicket(driver, call_data, ticket_data)
 
     return log
 
