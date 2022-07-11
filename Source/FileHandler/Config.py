@@ -1,8 +1,9 @@
 """Defines and handles ConfigClass objects."""
 
+#Native Modules:
 import configparser
 
-#Files:
+#Internal Modules:
 from Constants import Paths
 
 

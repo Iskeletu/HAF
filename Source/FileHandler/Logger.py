@@ -1,8 +1,9 @@
 """Defines and handles LogClass objects."""
 
+#Native Modules:
 from datetime import datetime
 
-#Files.
+#Internal Modules:
 from FileHandler.JsonHandler import *
 from FileHandler.Config import ConfigClass
 from Constants import Paths
@@ -10,8 +11,8 @@ from Constants import Paths
 
 class LogClass:
     """
-    Handles ticket data for logging.
-    *Uses double undescore to specify private methods instead of the convenional single underscore.
+    Handles ticket data for logging.\n
+    *Uses double undescore to specify private methods/attributes instead of the convenional single underscore.
 
     Private Attributes:
     - _register_type: Specifies what kind of log the object is (1 = Creation, 2 = Closing, 3 = Escalation) 

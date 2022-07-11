@@ -1,14 +1,16 @@
 """Navigates Fenix ITSM portal and manages ticket creation, escalation and closing."""
 
+#Native Modules.
 import time
 
+#External Modules.
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import WebDriverException
 
-#Files.
+#Native Modules.
 from FileHandler.JsonHandler import LoadJson
 from FileHandler.Logger import LogClass
 from Constants import *
