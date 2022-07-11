@@ -5,9 +5,10 @@
         "title": "TEST TICKET - Ignore",
         "body": "This is a test ticket, please ignore.\n\nContato: {contact}\nHostname/IP: {hostname}",
         "application": "MISCELLANEOUS",
+        "attachment": ["test-attachment.jpeg"],
         "answer": [
-            "Test Solution[1]",
-            "Test Solution[2]"
+            "Test Solution[0]",
+            "Test Solution[1]"
         ]
     },
 
@@ -17,14 +18,15 @@
         "title": "EDGE - Configuração do modo IE",
         "body": "Solicito configuração do Microsoft Edge para acesso aos sites do Internet Explorer.\n\nHostname/IP: {hostname}",
         "application": "MISCELLANEOUS",
-        "answer": "Configurado Microsoft Edge."
+        "answer": [
+            "Configurado Microsoft Edge."
+        ]
     },
 
     "mfa": {
         "process-type": "open",
         "type": "mfa",
-        "body": "Solicito redefinição de MFA.\n\nContato: {contact}",
-        "application": ""
+        "body": "Solicito redefinição de MFA.\n\nContato: {contact}"
     },
 
     "printer_install": {
