@@ -105,6 +105,7 @@ def LoadDriver() -> webdriver.Chrome:
     time.sleep(1)
     __MicrosoftLogin(driver)
 
+    print('- Use "help" for command information.')
     return driver
 
 
