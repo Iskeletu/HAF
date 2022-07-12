@@ -52,13 +52,31 @@ class Types:
 class CLI:
     """Group of global standard strings for console feedback and other CLI related variables."""
 
-    AVAILABLE_COMMANDS = ['details', 'help', 'exit']
+    AVAILABLE_COMMANDS = ['call', 'ticket', 'details', 'help', 'exit']
 
     INVALID_COMMAND = '"{Command}" is not a valid command!\nUse "help" for more information.\n'
-    INVALID_SUBCOMMAND = 'Subcommand "{Subcommand}" is not valid.'
-    TOO_MANY_ARGUMENTS = 'Too many arguments were given to "{Command}" command!\nUse "help" for more information.\n'
-    
+    INVALID_SUBCOMMAND = 'Subcommand "{Subcommand}" is not valid for "{Command}" command.\n'
+    TOO_MANY_ARGUMENTS = 'Too many arguments were given to "{Command}" command!\nUse "help {Command}" for more information.\n'
+    TOO_FEW_ARGUMENTS = 'Missing arguments to "{Command}" command!\nUse "help {Command}" for more information.\n'
 
+    HELP_COMMAND_NOARGS = (
+        'For specific command information use: "help [command_name]"\n\n'
+        'Commands:\n'
+        '\t- call: {call_Description}\n'
+        '\t- ticket: {ticket_Description}\n'
+        '\t- details: {details_Description}\n'
+        '\t- help: {help_Description}\n'
+        '\t- exit: {exit_Description}\n'
+    )
+    HELP_COMMAND_VALIDARG = (
+        '"{Command_Name}" command:\n'
+        '\t{Command_Description}\n\n'
+        'Subcommands:\n'
+        '{Available_Subcommands}\n\n'
+        'Usage:\n'
+        '{Command_Usage}\n'
+    )
+    
 
 #This is not a script file.
 if __name__ == '__main__':

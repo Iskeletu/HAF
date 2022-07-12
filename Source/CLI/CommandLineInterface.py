@@ -16,7 +16,7 @@ def CommandLineInterface(driver:webdriver.Chrome) -> bool:
     """
     Command Line Interface (CLI) main function.
 
-    Handles user input and command execution.
+    Handles and formats user input for command execution.
 
     Arguments:
     - driver: A loaded Chrome webdriver object, mainly to 
@@ -34,6 +34,9 @@ def CommandLineInterface(driver:webdriver.Chrome) -> bool:
 
     if command_list:
         match command_list[0]:
+            case 'call':
+                CallCommand(driver).execute(command_list)
+
             case 'help':
                 HelpCommand().execute(command_list)
 
@@ -41,7 +44,7 @@ def CommandLineInterface(driver:webdriver.Chrome) -> bool:
                 exit_flag = ExitCommand(driver).execute(command_list)
 
             case _:
-                print(CLI.INVALID_COMMAND)
+                print(CLI.INVALID_COMMAND.format(Command = command_list[0]))
 
     return exit_flag
 
