@@ -3,7 +3,11 @@
         "matricula": "BRX0001747",
         "hostname": "BRBH1PC000173",
         "contato": "31 3044",
-        "tipo": "test",
-        "solucao": 0
+        "tipo": "test"
+    },
+
+    "opicional": {
+        "solução": 0,
+        "Variável": "None"
     }
 }

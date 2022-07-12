@@ -159,14 +159,13 @@ def __CloseTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> 
     driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[2]/div/div[3]/div[1]/div/div[1]/div/div/div[2]/div/a').click()
 
 
-
 def __EscalateTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> LogClass: #TODO
     """"""
 
     TODO = True
 
 
-def TicketProcessor(driver:webdriver.Chrome, *args) -> LogClass:
+def TicketProcessor(driver:webdriver.Chrome) -> LogClass:
     """
     Processes call data into a ticket and returns a log object with it's details.
 
@@ -177,7 +176,6 @@ def TicketProcessor(driver:webdriver.Chrome, *args) -> LogClass:
 
     Arguments:
     - driver: A loaded Chrome webdriver object.
-    - *args: 
     """
 
     call_data = LoadJson(Paths.CALL_JSON_PATH)['data']
