@@ -41,7 +41,7 @@ class Paths:
     CONFIG_INI_PATH = f'{__PROJECT_DIRECTORY}\\Source\\config.ini'
 
 
-class Types:
+class TicketTypes:
     """Group of ticket types global variables."""
 
     TICKET_CREATION = 1

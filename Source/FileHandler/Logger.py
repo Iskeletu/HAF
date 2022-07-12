@@ -151,12 +151,6 @@ class LogClass:
         SaveJson(Log_dict, Paths.PERSISTENT_JSON_PATH)
 
 
-def CreateEmptyLog() -> LogClass:
-    """Creates blank LogClass object."""
-
-    return LogClass(0, None)
-
-
 #This is NOT a script file.
 if __name__ == '__main__':
     exit('ERROR: Not a script file!')

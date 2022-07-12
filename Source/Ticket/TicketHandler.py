@@ -13,7 +13,7 @@ from selenium.common.exceptions import WebDriverException
 #Native Modules.
 from FileHandler.JsonHandler import LoadJson
 from FileHandler.Logger import LogClass
-from Constants import *
+from Constants import Menu, Paths, URL, TicketTypes
 
 
 def __MenuNavigator(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> str: #TODO ATTACHMENTS
@@ -114,10 +114,10 @@ def __OpenTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> L
     driver.find_element(By.XPATH, '//*[@id="main"]/div/div[3]/button[1]').click()
 
     ticket_ID = __MenuNavigator(driver, call_data, ticket_data)
-    return LogClass(Types.TICKET_CREATION, ticket_ID)
+    return LogClass(TicketTypes.TICKET_CREATION, ticket_ID)
 
 
-def __CloseTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> LogClass: #TODO
+def __CloseTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> LogClass: #ONGOING
     """
     Private function: Opens a ticket and based on call data and ticket template.
     Returns LogClass object with the ticket detail.
@@ -165,7 +165,7 @@ def __EscalateTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) 
     TODO = True
 
 
-def TicketProcessor(driver:webdriver.Chrome) -> LogClass:
+def TicketProcessor(driver:webdriver.Chrome) -> None:
     """
     Processes call data into a ticket and returns a log object with it's details.
 
@@ -179,7 +179,19 @@ def TicketProcessor(driver:webdriver.Chrome) -> LogClass:
     """
 
     call_data = LoadJson(Paths.CALL_JSON_PATH)['data']
-    ticket_data = LoadJson(Paths.DICTIONARY_JSON_PATH)[call_data['tipo']]
+    opitional_parameters = LoadJson(Paths.CALL_JSON_PATH)['opicional']
+
+    try:
+        ticket_data = LoadJson(Paths.DICTIONARY_JSON_PATH)[call_data['tipo']]
+    except KeyError:
+        print("ERROR 01: 'Invalid Ticket Type', check your call information.")
+        return
+
+    if opitional_parameters['solução']+1 > len(ticket_data['answer']):
+        print("ERROR 02: 'Invalid Solution ID', check your optinal call paramaters.")
+        return
+
+    #TODO catch if variable is 'none' and there is a {variable} block on the template
 
     match ticket_data['process-type']:
         case 'open':
@@ -191,7 +203,8 @@ def TicketProcessor(driver:webdriver.Chrome) -> LogClass:
         case 'escalate':
             log = __EscalateTicket(driver, call_data, ticket_data)
 
-    return log
+    log.LogRegister()
+    print('Done. Use "details" for more details.\n')
 
 
 #Not a script file.
