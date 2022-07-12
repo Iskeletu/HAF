@@ -165,7 +165,7 @@ def __EscalateTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) 
     TODO = True
 
 
-def TicketProcessor(driver:webdriver.Chrome) -> None:
+def TicketProcessor(driver:webdriver.Chrome) -> None: #TODO
     """
     Processes call data into a ticket and returns a log object with it's details.
 
@@ -187,7 +187,7 @@ def TicketProcessor(driver:webdriver.Chrome) -> None:
         print("ERROR 01: 'Invalid Ticket Type', check your call information.")
         return
 
-    if opitional_parameters['solução']+1 > len(ticket_data['answer']):
+    if opitional_parameters['solução']+1 > len(ticket_data['answer']) or opitional_parameters['solução'] < 0:
         print("ERROR 02: 'Invalid Solution ID', check your optinal call paramaters.")
         return
 
