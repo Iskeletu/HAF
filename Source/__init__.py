@@ -1,6 +1,6 @@
 __version__ = '0.0.1'
 
-from Source.AutoFiller import *
+from Source.HAF import *
 from Source.Constants import *
 from Source.TemplateCreator import *
 

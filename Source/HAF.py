@@ -23,20 +23,22 @@ from Driver.DriverHandler import LoadDriver
 from CLI.CommandLineInterface import CommandLineInterface
 
 
-def Start(driver:webdriver.Chrome) -> NoReturn:
+def Start(driver:webdriver.Chrome, exit_flag:bool) -> NoReturn:
     """
-    Main AutoFiller Function.
+    Main HAF (Helix AutoFiller) Function.
     
     Arguments:
     - driver: A loaded Chrome webdriver object, mainly to be 
     passed to CLI for command execution.
+    - exit_flag: A bool indicating whether or not the main loop 
+    should finish.
 
     Dependencies:
-    - :mod:`CLI()`: To handle user input and execute commands.
+    - :mod:`CommandLineInterface()`: To handle user input and 
+    execute commands.
     """
 
     #Main loop.
-    exit_flag = False
     while not exit_flag:
         exit_flag = CommandLineInterface(driver)
 
@@ -45,4 +47,4 @@ def Start(driver:webdriver.Chrome) -> NoReturn:
 
 #Script file.
 if __name__ == "__main__":
-    Start(LoadDriver())
+    Start(LoadDriver(), False)
