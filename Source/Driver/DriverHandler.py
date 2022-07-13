@@ -9,13 +9,12 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
-from selenium.common.exceptions import NoSuchElementException
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.common.exceptions import NoSuchElementException
 
 #Internal Modules:
 from FileHandler.Config import ConfigClass
-from Constants import URL
-from Constants import Paths
+from Constants import URL, MicrosoftLogin, Paths
 
 
 def __MicrosoftLogin(driver:webdriver.Chrome) -> None:
@@ -23,30 +22,28 @@ def __MicrosoftLogin(driver:webdriver.Chrome) -> None:
     Private function: Tries to log into Microsoft account, will stop 
     for manual insertion of confirmation code if MFA is requested.
 
-    Function :mod:`LoadDriver()` is dependant on this function.
-
     Arguments:
-    - driver: A loaded Chrome webdriver object.
+        - driver: A loaded Chrome webdriver object.
     """
 
     config = ConfigClass()
+    time.sleep(MicrosoftLogin.ANIMATION_DELAY)
 
-    #Does nothing if current URL is not microsoft login page.
-    if driver.current_url.startswith('https://login.microsoftonline.com/') == True:
-        driver.implicitly_wait(1)
+    #Checks if current URL is not Microsoft login page.
+    if driver.current_url.startswith('https://login.microsoftonline.com/'):
+        driver.implicitly_wait(MicrosoftLogin.ANIMATION_DELAY)
 
-        #Checks if microsoft is asking for profile selection.
+        #Checks if Microsoft is asking for profile selection.
         try:
             driver.find_element(By.XPATH, '//*[@id="tilesHolder"]/div[1]/div/div[1]/div/div[2]/div').click()
 
-            if driver.current_url.endswith('/login') == False: #Confirm if this is always true.
+            if driver.current_url.endswith('/login') == False: #TODO: confirm if this is always true.
                 driver.find_element(By.XPATH, '//*[@id="i0118"]').send_keys(config.GetPassword + Keys.ENTER)
         except NoSuchElementException:
             driver.find_element(By.XPATH, '//*[@id="i0116"]').send_keys(config.GetEmail + Keys.ENTER)
-            time.sleep(1)
+            time.sleep(MicrosoftLogin.ANIMATION_DELAY)
             driver.find_element(By.XPATH, '//*[@id="i0118"]').send_keys(config.GetPassword + Keys.ENTER)
-
-        time.sleep(1)
+        time.sleep(MicrosoftLogin.ANIMATION_DELAY)
 
         #Checks if MFA is being requested.
         if driver.current_url.endswith('/login'):
@@ -66,7 +63,7 @@ def __MicrosoftLogin(driver:webdriver.Chrome) -> None:
 
                     MFA_flag = False
 
-                time.sleep(1)
+                time.sleep(MicrosoftLogin.ANIMATION_DELAY)
 
         driver.implicitly_wait(10)
 
@@ -75,10 +72,11 @@ def __MicrosoftLogin(driver:webdriver.Chrome) -> None:
 
 def LoadDriver() -> webdriver.Chrome:
     """
-    Loads a chromedriver instace and sets it's configuration arguments\n
-    Returns the Chrome webdriver object when Helix page is loaded.
+    Configures and loads a Chrome webdriver instance.\n
+    Returns the Chrome webdriver instace when the Fenix page is loaded.
 
-    Depends on :mod:`MicrosoftLogin()` function to long into Microsoft account if needed.
+    Dependencies:
+        - :mod:`MicrosoftLogin()`: For microsoft log-in if needed.
     """
 
     #Loads browser profile and sets driver preferences.
@@ -90,19 +88,18 @@ def LoadDriver() -> webdriver.Chrome:
     driver = webdriver.Chrome(service = Service(ChromeDriverManager().install()), options = options)
     driver.implicitly_wait(10)
 
-    #Opens new tab and closes default tabs.
+    #Closes default tabs and opens a blank one.
     driver.switch_to.new_window()
     handle = driver.window_handles
-    driver.switch_to.window(handle[0])
-    driver.close()
-    driver.switch_to.window(handle[1])
-    driver.close()
+    driver.switch_to.window(handle[0]); driver.close()
+    driver.switch_to.window(handle[1]); driver.close()
     driver.switch_to.window(handle[2])
 
+    #Loads Fenix ISTM portal.
     driver.get(URL.PORTAL_URL)
     print('- Driver Loaded.')
 
-    time.sleep(1)
+    #Checks if Microsoft log-in is begin requested.
     __MicrosoftLogin(driver)
 
     print('- Use "help" for command information.')

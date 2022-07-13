@@ -1,10 +1,12 @@
-"""Constant values definition file."""
+"""
+Constant values definition file.
+* None of these values should change during runtime.
+"""
 
 #Native Modules:
 import pathlib
 
 
-#URL Declaration:
 class URL:
     """Group of URL related global variables."""
 
@@ -13,10 +15,17 @@ class URL:
     TICKED_ID_PREFIX = 'https://prosegur-smartit.onbmc.com/smartit/app/#/sberequest/'
 
 
-#Menu related delays (seconds):
+class MicrosoftLogin:
+    """Group of Microsoft login page global variables"""
+
+    #All of the values are in seconds.
+    ANIMATION_DELAY = 1
+
+
 class Menu:
     """Group of Fenix ITSM javascript menu related global variables."""
 
+    #All of the values are in seconds.
     ANIMATION_DELAY = 0.4
     TICKET_LOAD_DELAY = 1
     USER_LOAD_DELAY = 2
@@ -25,10 +34,9 @@ class Menu:
 
 class Paths:
     """
-    Group of path related global variables.\n
-    *Uses double undescore to specify private methods instead of the convenional single underscore.
+    Group of path related global variables.
+    * Uses double undescore to specify private methods instead of the convenional single underscore.
     """
-    
 
     __PROJECT_DIRECTORY = pathlib.Path(__file__).parent.resolve().parent.resolve()
 
@@ -41,16 +49,18 @@ class Paths:
     CONFIG_INI_PATH = f'{__PROJECT_DIRECTORY}\\Source\\config.ini'
 
 
-class TicketTypes:
-    """Group of ticket types global variables."""
+class LogConstants:
+    """Group of LogClass related global variables."""
+
+    DATE_FORMAT = '%d/%m/%Y %H:%M:%S'
 
     TICKET_CREATION = 1
     TICKET_CLOSING = 2
     TICKET_ESCALATION = 3
 
 
-class CLI:
-    """Group of global standard strings for console feedback and other CLI related variables."""
+class CLIConstants:
+    """Group of CLI ralated global varialbes, mostly console logging templates."""
 
     AVAILABLE_COMMANDS = ['call', 'ticket', 'details', 'help', 'exit']
 
@@ -78,6 +88,6 @@ class CLI:
     )
     
 
-#This is not a script file.
+#This is NOT a script file.
 if __name__ == '__main__':
     exit('ERROR: Not a script file!')

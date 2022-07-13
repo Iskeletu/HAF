@@ -34,6 +34,8 @@ def Start(driver:webdriver.Chrome, exit_flag:bool) -> NoReturn:
     should finish.
 
     Dependencies:
+    - :mod:`LoadDriver()`: To startup the webdriver and make the 
+    initial URL load and Microsoft login steps.
     - :mod:`CommandLineInterface()`: To handle user input and 
     execute commands.
     """
