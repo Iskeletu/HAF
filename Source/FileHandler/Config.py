@@ -10,7 +10,7 @@ from Constants import Paths
 class ConfigClass:
     """
     General user configuration class.
-    * Uses double undescore to specify private methods instead of the convenional single underscore.
+    * Uses double undescore to specify private methods/attributes instead of the convenional single underscore.
 
     Private Attributes:
         - __email: Microsoft e-mail.
@@ -88,7 +88,7 @@ class ConfigClass:
         #Updates data with this instance information.
         configfile['Microsoft']['email'] = self.__email
         configfile['Microsoft']['password'] = self.__password
-        configfile['Log']['counter'] = self.__counter
+        configfile['Log']['counter'] = str(self.__counter)
 
         #Saves information to file.
         with open(Paths.CONFIG_INI_PATH, 'w') as f:

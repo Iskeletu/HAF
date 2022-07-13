@@ -50,13 +50,32 @@ class Paths:
 
 
 class LogConstants:
-    """Group of LogClass related global variables."""
+    """
+    Group of LogClass related global variables.
+    * Uses double undescore to specify private methods/attributes instead of the convenional single underscore.
+    """
 
     DATE_FORMAT = '%d/%m/%Y %H:%M:%S'
 
     TICKET_CREATION = 1
     TICKET_CLOSING = 2
     TICKET_ESCALATION = 3
+    PROCESS_TYPES = ['Created', 'Closed', 'Escalated']
+
+    LOG_DIVIDER = '----------------------------------------------------------------------'
+    LOG_TEMPLATE = (
+        '{Current_Time}\n'
+        '{Process_Type} ticket number {Ticket_ID}, details:\n'
+        '\t- Ticket Type: "{Ticket_Type}"\n'
+        '\t- Attachments: {Ticket_Attachments}\n'
+        '\t- Desginated Team: {Designated_Team}\n'
+        '\t- Solution Type: {Ticket_Solution}\n\n'
+        ''
+        'User details:\n'
+        '\t- User ID: {User_ID}\n'
+        '\t- Contact Info: {User_Contact}\n'
+        '\t- Hostname/IP: {User_Hostname}\n'
+    )
 
 
 class CLIConstants:
