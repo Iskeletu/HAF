@@ -4,96 +4,209 @@
 from datetime import datetime
 
 #Internal Modules:
-from Constants import Paths, LogConstants
 from FileHandler.JsonHandler import *
+from Constants import Paths, LogConstants
 from FileHandler.Config import ConfigClass
 
 
-class LogClass(object):
+class LogClass():
     """
     Handles ticket data for logging.
     * Uses double undescore to specify private methods/attributes instead of the convenional single underscore.
+    
+    Private Attributes:
+        - __log_type: Integer indicating log type (1- Creation | 2- Closing | 3- Escalation | 4- Persistent).
+        - __ticket_ID: String of the ticket ID returned from its creation process.
+        - __call_data: Loaded call data dictionary.
+        - __time: String indication date and hour of object creation or log time.
+        - __ticket_data: A loaded dictionary selected from the ticket dictionary
+        - __config: A loaded ConfigClass object.
     """
 
-    def __init__(self, log_type:int, ticketID:str):
-        self.__log_type = int(log_type)
-        self.__ticket_ID = str(ticketID)
+    def __init__(self, log_type:int, ticketID:str) -> None:
+        """
+        Creates a new instance of LogClass.
 
-        self.__call_data = LoadJson(Paths.CALL_JSON_PATH)
-        self.__ticket_data = LoadJson(Paths.DICTIONARY_JSON_PATH)[self.__call_data['obrigatório']['tipo']]
+        Arguments:
+            - log_type: A integer value indicating what type of log this is, assigned to __log_type. 
+            Check LogConstants class in Constants module for valid values.
+            - ticketID: String witht he ticket ID to be assigned to __ticket_ID.
+
+        Dependencies:
+            - :mod:`__LoadPersistent()`: For persistent file loading.
+        """
+
+        #Checks whether data should be load from persistent or standard files.
+        if log_type == 4:
+            self.__LoadPersistent()
+        else:
+            self.__log_type = int(log_type)
+            self.__ticket_ID = str(ticketID)
+
+            self.__call_data = LoadJson(Paths.CALL_JSON_PATH)
+
+            self.__time = datetime.now().strftime(LogConstants.DATE_FORMAT)
+
+        self.__ticket_data:dict = LoadJson(Paths.DICTIONARY_JSON_PATH)[self.__call_data['Required']['Call_Type']]
 
         self.__config = ConfigClass()
-
-        self.__time = datetime.now().strftime(LogConstants.DATE_FORMAT)
 
 
     @property
     def GetTicketID(self) -> str:
+        """
+        Property: Gets __ticke_ID string from this instace.
+
+        Usage:
+            >>> value:ticket_ID = LogClass.GetTicketID
+        """
+
         return self.__ticket_ID
 
 
     def UpdateType(self, log_type:int) -> None:
+        """
+        Changes log type.
+        * Cannot be used for persistent loading.
+        """
+
         self.__log_type = int(log_type)
 
     
-    def ConvertToString(self):
+    def ConvertToString(self) -> str:
+        """Converts this instance to a string for logging and/or printing."""
+
         return LogConstants.LOG_TEMPLATE.format(
-                Current_Time = self.__time,
-                Process_Type = LogConstants.PROCESS_TYPES[self.__log_type - 1],
-                Ticket_ID = self.__ticket_ID,
-                Ticket_Type = self.__call_data['obrigatório']['tipo'],
-                Ticket_Attachments = self.__AttachmentsFormatter(),
-                Designated_Team = self.__GetDesignation(),
-                Ticket_Solution = self.__GetSolution(),
-                User_ID = self.__call_data['obrigatório']['matrícula'],
-                User_Contact = self.__call_data['obrigatório']['contato'],
-                User_Hostname = self.__call_data['obrigatório']['hostname'],
+            Current_Time = self.__time,
+            Process_Type = LogConstants.PROCESS_TYPES[self.__log_type - 1],
+            Ticket_ID = self.__ticket_ID,
+            Ticket_Type = self.__call_data['Required']['Call_Type'],
+            Ticket_Attachments = self.__AttachmentsFormatter(),
+            Designated_Team = self.__GetDesignation(),
+            Ticket_Solution = self.__GetSolution(),
+            User_ID = self.__call_data['Required']['User_ID'],
+            User_Contact = self.__call_data['Required']['Contact'],
+            User_Hostname = self.__call_data['Required']['Hostname'],
         )
 
 
-    def Register(self):
+    def Register(self) -> None:
+        """
+        Logs this intance to file and calls for persistent file update.
+
+        Dependencies:
+            - :mod:`__ConvertToString()`: For instance to string convertion.
+            - :mod:`__SavePersistent()`: For persistent file update.
+        """
+
         with open(Paths.LOG_TXT_PATH, 'a') as logfile:
             logfile.write(
                 LogConstants.LOG_DIVIDER + '\n' +
                 self.ConvertToString() + 
                 LogConstants.LOG_DIVIDER + '\n\n\n'
-                )
+            )
 
         self.__config.UpdateCounter()
         self.__SavePersistent()
 
 
-    def __SavePersistent(self):
-        TODO = True
+    def __SavePersistent(self) -> None:
+        """Updates persistent file with this instance data."""
+
+        data = {
+            'Lastest_Log': {
+                'Ticket_Data': {
+                    'Time': self.__time,
+                    'Process_Type': self.__log_type,
+                    'ID': self.__ticket_ID,
+                    'Ticket_Type': self.__call_data['Required']['Call_Type'],
+                    'Solution': self.__call_data['Optional']['Solution']
+                },
+                'User_Data': {
+                    'User_ID': self.__call_data['Required']['User_ID'],
+                    'Contact': self.__call_data['Required']['Contact'],
+                    'Hostname': self.__call_data['Required']['Hostname']
+                }
+            }
+        }
+
+        SaveJson(data, Paths.PERSISTENT_JSON_PATH)
+
+
+    def __LoadPersistent(self) -> None:
+        """Updates current instace infomation with persistent file data."""
+
+        persistent_json = LoadJson(Paths.PERSISTENT_JSON_PATH)
+
+        self.__log_type = int(persistent_json['Lastest_Log']['Ticket_Data']['Process_Type'])
+        self.__ticket_ID = str(persistent_json['Lastest_Log']['Ticket_Data']['ID'])
+
+        self.__call_data = {
+            'Required': {
+                'User_ID': persistent_json['Lastest_Log']['User_Data']['User_ID'],
+                'Contact': persistent_json['Lastest_Log']['User_Data']['Contact'],
+                'Hostname': persistent_json['Lastest_Log']['User_Data']['Hostname'],
+                'Call_Type': persistent_json['Lastest_Log']['Ticket_Data']['Ticket_Type']
+            },
+            'Optional': {
+                'Solution': int(persistent_json['Lastest_Log']['Ticket_Data']['Solution']),
+                'Variable': 'None' #TODO
+            }
+        }
+        
+        self.__time = persistent_json['Lastest_Log']['Ticket_Data']['Time']
 
     
     def __AttachmentsFormatter(self) -> str:
-        unformatted_attachments = self.__ticket_data['attachment']
+        """
+        Attachment list to string conversor.
 
-        if not unformatted_attachments:
-            return 'None'
-        else:
+        Return:
+            - 'None' if the list is empty.
+            - A string of attachments divided by commas otherwise.
+        """
+
+        unformatted_attachments = self.__ticket_data['Attachment']
+
+        if unformatted_attachments:
             formatted_attachments = ''
 
             for i in unformatted_attachments:
                 formatted_attachments = formatted_attachments + str(i) + ', '
 
             return formatted_attachments.removesuffix(', ')
+        else:
+            return 'None'
+            
 
-    
     def __GetDesignation(self) -> str:
+        """
+        Gets the designated team string.
+
+        Return:
+            - Ticket template designation if ticket log is 3 (escalation).
+            - 'VE.INFRA.BR.SERVICE DESK' (default designation) otherwise.
+        """
+
         if self.__log_type == 3:
-            return str(self.__ticket_data['team'])
+            return str(self.__ticket_data['Team'])
         else:
             return 'VE.INFRA.BR.SERVICE DESK'
 
     
     def __GetSolution(self) -> str:
+        """
+        Gets the solution selection and coverts it to string.
+
+        Return:
+            - User solution selection if ticket log is 2 (closing).
+            - 'Does not apply' otherwise.
+        """
+
         if self.__log_type == 2:
-            return str(self.__call_data['opicional']['solução'])
+            return str(self.__call_data['Optional']['Solution'])
         else:
             return 'Does not apply'
-
 
 
 #This is NOT a script file.

@@ -60,7 +60,8 @@ class LogConstants:
     TICKET_CREATION = 1
     TICKET_CLOSING = 2
     TICKET_ESCALATION = 3
-    PROCESS_TYPES = ['Created', 'Closed', 'Escalated']
+    TICKET_LOADPERSISTENT = 4
+    PROCESS_TYPES = ['Created', 'Closed', 'Escalated', 'Invalid']
 
     LOG_DIVIDER = '----------------------------------------------------------------------'
     LOG_TEMPLATE = (

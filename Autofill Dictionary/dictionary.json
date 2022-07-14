@@ -1,193 +1,193 @@
 {
     "test": {
-        "process-type": "escalate",
-        "type": "ticket",
-        "title": "TEST TICKET - Ignore",
-        "body": "This is a test ticket, please ignore.\n\nContato: {contact}\nHostname/IP: {hostname}",
-        "application": "MISCELLANEOUS",
-        "attachment": [
+        "Process-Type": "escalate",
+        "Type": "ticket",
+        "Title": "TEST TICKET - Ignore",
+        "Body": "This is a test ticket, please ignore.\n\nContato: {contact}\nHostname/IP: {hostname}",
+        "Application": "MISCELLANEOUS",
+        "Attachment": [
             "test-attachment.jpeg"
         ],
-        "answer": [
+        "Answer": [
             "Test Solution[0]",
             "Test Solution[1]"
         ],
-        "team": "IT.CASH.BR.APP CASH"
+        "Team": "IT.CASH.BR.APP CASH"
     },
 
     "edge": {
-        "process-type": "close",
-        "type": "ticket",
-        "title": "EDGE - Configuração do modo IE",
-        "body": "Solicito configuração do Microsoft Edge para acesso aos sites do Internet Explorer.\n\nHostname/IP: {hostname}",
-        "application": "MISCELLANEOUS",
-        "attachment": [],
-        "answer": [
+        "Process-Type": "close",
+        "Type": "ticket",
+        "Title": "EDGE - Configuração do modo IE",
+        "Body": "Solicito configuração do Microsoft Edge para acesso aos sites do Internet Explorer.\n\nHostname/IP: {hostname}",
+        "Application": "MISCELLANEOUS",
+        "Attachment": [],
+        "Answer": [
             "Configurado Microsoft Edge."
         ]
     },
 
     "mfa": {
-        "process-type": "open",
-        "type": "mfa",
-        "body": "Solicito redefinição de MFA.\n\nContato: {contact}",
-        "attachment": []
+        "Process-Type": "open",
+        "Type": "mfa",
+        "Body": "Solicito redefinição de MFA.\n\nContato: {contact}",
+        "Attachment": []
     },
 
     "printer_install": {
-        "process-type": "close",
-        "type": "ticket",
-        "title": "PRITNERS - Instalação",
-        "body": "Solicito instalação de impressora na minha máquina.\n\nHostname/IP: {hostname}",
-        "application": "MISCELLANEOUS",
-        "attachment": [],
-        "answer": [
+        "Process-Type": "close",
+        "Type": "ticket",
+        "Title": "PRITNERS - Instalação",
+        "Body": "Solicito instalação de impressora na minha máquina.\n\nHostname/IP: {hostname}",
+        "Application": "MISCELLANEOUS",
+        "Attachment": [],
+        "Answer": [
             "Mapeada impressora.",
             "Instalado drivers e mapeada impressora."
         ]
     },
 
     "sco_folders": {
-        "process-type": "close",
-        "type": "ticket",
-        "title": "SCO - Configuração",
-        "body": "Solicito configuração do SCO para salvar arquivos nas pastas de rede e drivers locais da máquina.\n\nHostname/IP: {hostname}",
-        "application": "SCO-AP0193",
-        "attachment": [],
-        "answer": [
+        "Process-Type": "close",
+        "Type": "ticket",
+        "Title": "SCO - Configuração",
+        "Body": "Solicito configuração do SCO para salvar arquivos nas pastas de rede e drivers locais da máquina.\n\nHostname/IP: {hostname}",
+        "Application": "SCO-AP0193",
+        "Attachment": [],
+        "Answer": [
             "Configurado atalho RDP para incluir unidade locais."
         ]
     },
 
     "windows_mapping": {
-        "process-type": "close",
-        "type": "ticket",
-        "title": "WINDOWS - Mapeamento de rede",
-        "body": "Solicito mapeamento de unidades de redes na minha máquina.\n\nHostname/IP: {hostname}",
-        "application": "MISCELLANEOUS",
-        "attachment": [],
-        "answer": [
+        "Process-Type": "close",
+        "Type": "ticket",
+        "Title": "WINDOWS - Mapeamento de rede",
+        "Body": "Solicito mapeamento de unidades de redes na minha máquina.\n\nHostname/IP: {hostname}",
+        "Application": "MISCELLANEOUS",
+        "Attachment": [],
+        "Answer": [
             "Configurado mapeamento de rede."
         ]
     },
 
     "vpon_config": {
-        "process-type": "close",
-        "type": "ticket",
-        "title": "VPON - Configuração de acesso",
-        "body": "Solicito configuração de acesso ao VPON na minha máquina.\n\nHostname/IP: {hostname}",
-        "application": "MISCELLANEOUS",
-        "attachment": [],
-        "answer": [
+        "Process-Type": "close",
+        "Type": "ticket",
+        "Title": "VPON - Configuração de acesso",
+        "Body": "Solicito configuração de acesso ao VPON na minha máquina.\n\nHostname/IP: {hostname}",
+        "Application": "MISCELLANEOUS",
+        "Attachment": [],
+        "Answer": [
             "Instalado plug-in DCS 2.19.60.\nValidado acesso ao VPON."
         ]
     },
 
     "vpon_white": {
-        "process-type": "close",
-        "type": "ticket",
-        "title": "VPON - Falha de acesso",
-        "body": "Não consigo acessar o VPON na minha máquina, erro de tela branca, solicito suporte.\n\nHostname/IP: {hostname}",
-        "application": "MISCELLANEOUS",
-        "attachment": [],
-        "answer": [
+        "Process-Type": "close",
+        "Type": "ticket",
+        "Title": "VPON - Falha de acesso",
+        "Body": "Não consigo acessar o VPON na minha máquina, erro de tela branca, solicito suporte.\n\nHostname/IP: {hostname}",
+        "Application": "MISCELLANEOUS",
+        "Attachment": [],
+        "Answer": [
             "Normalizado ao adicionar IP's dos VPON's a lista de sites da intranet local nas configurações do Internet Explorer."
         ]
     },
 
     "internet": {
-        "process-type": "close",
-        "type": "ticket",
-        "title": "INTERNET - Sem acesso",
-        "body": "Máquina sem acesso a internet, solicito suporte.\n\nHostname/IP: {hostname}",
-        "application": "MISCELLANEOUS",
-        "attachment": [],
-        "answer": [
+        "Process-Type": "close",
+        "Type": "ticket",
+        "Title": "INTERNET - Sem acesso",
+        "Body": "Máquina sem acesso a internet, solicito suporte.\n\nHostname/IP: {hostname}",
+        "Application": "MISCELLANEOUS",
+        "Attachment": [],
+        "Answer": [
             "Normalizado ao reiniciar máquina.",
             "Normalizado ao instalar Cisco AnyConnect + Umbrella."
         ]
     },
 
     "vpn_config": {
-        "process-type": "close",
-        "type": "ticket",
-        "title": "CISCO ANYCONNECT - Configuração",
-        "body": "Solicito configuração de acesso a VPN na minha máquina.\n\nHostname/IP: {hostname}",
-        "application": "MISCELLANEOUS",
-        "attachment": [],
-        "answer": [
+        "Process-Type": "close",
+        "Type": "ticket",
+        "Title": "CISCO ANYCONNECT - Configuração",
+        "Body": "Solicito configuração de acesso a VPN na minha máquina.\n\nHostname/IP: {hostname}",
+        "Application": "MISCELLANEOUS",
+        "Attachment": [],
+        "Answer": [
             "Configurado Cisco AnyConnect."
         ]
     },
 
     "bitlocker": {
-        "process-type": "close",
-        "type": "ticket",
-        "title": "BITLOCKER - Solicitação de chave de recuperação",
-        "body": "Solicito senha de recuperação BitLocker para a máquina:\n\nHostname/IP: {hostname}",
-        "application": "MISCELLANEOUS",
-        "attachment": [],
-        "answer": [
+        "Process-Type": "close",
+        "Type": "ticket",
+        "Title": "BITLOCKER - Solicitação de chave de recuperação",
+        "Body": "Solicito senha de recuperação BitLocker para a máquina:\n\nHostname/IP: {hostname}",
+        "Application": "MISCELLANEOUS",
+        "Attachment": [],
+        "Answer": [
             "Informada senha de recuperação BitLocker"
         ]
     },
 
     "prouser_activate": {
-        "process-type": "close",
-        "type": "ticket",
-        "title": "PROUSER - Ativação de usuário de rede",
-        "body": "Solicito ativação do meu usuário de rede.\n\nHostname/IP: {hostname}",
-        "application": "PROUSER-AP0606",
-        "attachment": [],
-        "answer": [
+        "Process-Type": "close",
+        "Type": "ticket",
+        "Title": "PROUSER - Ativação de usuário de rede",
+        "Body": "Solicito ativação do meu usuário de rede.\n\nHostname/IP: {hostname}",
+        "Application": "PROUSER-AP0606",
+        "Attachment": [],
+        "Answer": [
             "Ativado usuário de rede via Prouser."
         ]
     },
 
     "prouser_unlock": {
-        "process-type": "close",
-        "type": "ticket",
-        "title": "PROUSER - Desbloqueio de usuário de rede",
-        "body": "Solicito desbloqueio do meu usuário de rede.\n\nHostname/IP: {hostname}",
-        "application": "PROUSER-AP0606",
-        "attachment": [],
-        "answer": [
+        "Process-Type": "close",
+        "Type": "ticket",
+        "Title": "PROUSER - Desbloqueio de usuário de rede",
+        "Body": "Solicito desbloqueio do meu usuário de rede.\n\nHostname/IP: {hostname}",
+        "Application": "PROUSER-AP0606",
+        "Attachment": [],
+        "Answer": [
             "Desbloqueado usuário de rede no AD."
         ]
     },
 
     "prouser_changepass": {
-        "process-type": "close",
-        "type": "ticket",
-        "title": "PROUSER - Alteração de senha de rede",
-        "body": "Solicito alteração da senha do meu usuário de rede\n\nHostname/IP: {hostname}",
-        "application": "PROUSER-AP0606",
-        "attachment": [],
-        "answer": [
+        "Process-Type": "close",
+        "Type": "ticket",
+        "Title": "PROUSER - Alteração de senha de rede",
+        "Body": "Solicito alteração da senha do meu usuário de rede\n\nHostname/IP: {hostname}",
+        "Application": "PROUSER-AP0606",
+        "Attachment": [],
+        "Answer": [
             "Alterada senha de rede via Prouser."
         ]
     },
 
     "outlook_load": {
-        "process-type": "close",
-        "type": "ticket",
-        "title": "OUTLOOK - Não abre",
-        "body": "Microsoft Outlook (Office 365) não abre, solicito suporte.\n\nHostname/IP: {hostname}",
-        "application": "MISCELLANEOUS",
-        "attachment": [],
-        "answer": [
+        "Process-Type": "close",
+        "Type": "ticket",
+        "Title": "OUTLOOK - Não abre",
+        "Body": "Microsoft Outlook (Office 365) não abre, solicito suporte.\n\nHostname/IP: {hostname}",
+        "Application": "MISCELLANEOUS",
+        "Attachment": [],
+        "Answer": [
             "Normalizado ao reinstalar Microsoft Office 365."
         ]
     },
 
     "c_envios_403": {
-        "process-type": "close",
-        "type": "ticket",
-        "title": "CONTROLE DE ENVIOS - Falha de acesso",
-        "body": "Não consigo acessar portal controle de envios, erro 403 é exibido, solicito suporte.\n\nHostname/IP: {hostname}",
-        "application": "MISCELLANEOUS",
-        "attachment": [],
-        "answer": [
+        "Process-Type": "close",
+        "Type": "ticket",
+        "Title": "CONTROLE DE ENVIOS - Falha de acesso",
+        "Body": "Não consigo acessar portal controle de envios, erro 403 é exibido, solicito suporte.\n\nHostname/IP: {hostname}",
+        "Application": "MISCELLANEOUS",
+        "Attachment": [],
+        "Answer": [
             "Normalizado ao limpar histórico do navegador"
         ]
     }
