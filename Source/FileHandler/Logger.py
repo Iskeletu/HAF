@@ -23,14 +23,17 @@ class LogClass():
         - __config: A loaded ConfigClass object.
     """
 
-    def __init__(self, log_type:int, ticketID:str) -> None:
+    def __init__(self, log_type:int, ticket_ID:str = '') -> None:
         """
         Creates a new instance of LogClass.
 
         Arguments:
             - log_type: A integer value indicating what type of log this is, assigned to __log_type. 
             Check LogConstants class in Constants module for valid values.
-            - ticketID: String witht he ticket ID to be assigned to __ticket_ID.
+
+        Optional Arguments:
+            - ticket_ID: String witht he ticket ID to be assigned to __ticket_ID (should be passed if 
+            log_type is not 4).
 
         Dependencies:
             - :mod:`__LoadPersistent()`: For persistent file loading.
@@ -41,7 +44,7 @@ class LogClass():
             self.__LoadPersistent()
         else:
             self.__log_type = int(log_type)
-            self.__ticket_ID = str(ticketID)
+            self.__ticket_ID = str(ticket_ID)
 
             self.__call_data = LoadJson(Paths.CALL_JSON_PATH)
 
@@ -163,7 +166,7 @@ class LogClass():
 
         Return:
             - 'None' if the list is empty.
-            - A string of attachments divided by commas otherwise.
+            - A formatted string of attachments divided by commas otherwise.
         """
 
         unformatted_attachments = self.__ticket_data['Attachment']
@@ -199,7 +202,7 @@ class LogClass():
         Gets the solution selection and coverts it to string.
 
         Return:
-            - User solution selection if ticket log is 2 (closing).
+            - User solution (as a string) selection if ticket log is 2 (closing).
             - 'Does not apply' otherwise.
         """
 

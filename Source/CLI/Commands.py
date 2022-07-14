@@ -1,53 +1,87 @@
-"""TODO"""
+"""Defines command behavior."""
 
 #External Modules:
 from selenium import webdriver
 
 #Internal Modules:
-from Constants import CLI
+from FileHandler.Logger import LogClass
+from FileHandler.Config import ConfigClass
+from Constants import CLIConstants, LogConstants
 from Ticket.TicketHandler import TicketProcessor
 
 
 class CallCommand():
+    """
+    'call' command class.\n
+    * Uses double undescore to specify private methods/attributes instead of the convenional single underscore.
+
+    Attributes:
+        - Description: Command description.
+        - Subcommands: A dictionary of available subcommands and their description, blank 
+        if no subcommand is available.
+        - Usage: list off command usages.
+
+    Private Attributes:
+        - __driver: A loaded Chrome webdriver object.
+    """
+
     Description = 'Registers call data as ticket.'
     Subcommands = {
-        'register': 'register a ticket based on its dictonary type'
+        'register': 'register a ticket based on its dictonary type.'
     }
     Usage = ['call [subcommand]']
 
 
     def __init__(self, driver:webdriver.Chrome) -> None:
+        """
+        Initializes an instance of CallCommand class.
+
+        Arguments:
+            - __driver: A loaded Chrome webdriver object.
+        """
+
         self.__driver = driver
 
     
     def execute(self, command_list:list[str]) -> None:
+        """
+        Executes the 'call' command.\n
+
+        Dependencies:
+            - :mod:`__validation()`: For command validation, see its documentation for return values.
+        
+        Arguments:
+            - command_list: A formatted list conatining the full command run by the user.
+        """
+
         match self.__validate(command_list):
-            case 1:
+            case 1: #Command has a valid subcommand, executes, the subcommand.
                 match command_list[1]:
                     case 'register':
                         TicketProcessor(self.__driver)
 
-            case 2:
-                print(CLI.INVALID_SUBCOMMAND.format(Command = command_list[0], Subcommand = command_list[1]))
+            case 2: #Invalid was sent by the user, prints standard invalid subcommand message.
+                print(CLIConstants.INVALID_SUBCOMMAND.format(Command = command_list[0], Subcommand = command_list[1]))
 
-            case 3:
-                print(CLI.TOO_MANY_ARGUMENTS.format(Command = command_list[0]))
+            case 3: #Too many arguments were sent by the user, prints standard too many arguments message.
+                print(CLIConstants.TOO_MANY_ARGUMENTS.format(Command = command_list[0]))
 
-            case 4:
-                print(CLI.TOO_FEW_ARGUMENTS.format(Command = command_list[0]))
+            case 4: #No subcommand was sent by the user, prints standard too few arguments message.
+                print(CLIConstants.TOO_FEW_ARGUMENTS.format(Command = command_list[0]))
 
 
     def __validate(self, command_list:list[str]) -> int:
         """
-        Private method: Validates the command and it's arguments (if existant).\n
+        Private method: Validates the command and its arguments (if existant).
+
         Return:
-        - 1 if the command has a valid argument.
-        - 2 if the argument is invalid.
-        - 3 if too many arguments were given to the command.
-        - 4 if the command has no argument.
+            - 1 if the command has a valid argument.
+            - 2 if the subcommand is invalid.
+            - 3 if too many arguments were given to the command.
+            - 4 if the command has no argument.
         
         Arguments:
-        - command_list: Formatted command list to be validated.
+            - command_list: Formatted command list to be validated.
         """
 
         command_size = len(command_list)
@@ -64,15 +98,82 @@ class CallCommand():
             return 4
 
 
-class HelpCommand():
+class DetailsCommand():
     """
-    'help' command class.\n
-    *Uses double undescore to specify private methods/attributes instead of the convenional single underscore.
+    'details' command class.\n
+    * Uses double undescore to specify private methods/attributes instead of the convenional single underscore.
 
     Attributes:
-    - Description: Command description.
-    - Subcommands: A dict of available subcommands and their description, blank if no subcommand is available.
-    - Usage: list off command usages.
+        - Description: Command description.
+        - Subcommands: A dictionary of available subcommands and their description, blank 
+        if no subcommand is available.
+        - Usage: list off command usages.
+    """
+
+    Description = 'Gets details form the last log registered to file.'
+    Subcommands = {}
+    Usage = ['details']
+
+
+    def __init__(self) -> None:
+        """Initializes an instance of DetailsCommand class."""
+
+        self.__config = ConfigClass()
+
+
+    def execute(self, command_list:list[str]) -> None:
+        """
+        Executes the 'exit' command.\n
+
+        Dependencies:
+            - :mod:`__validation()`: For command validation.
+        
+        Arguments:
+            - command_list: A formatted list containing the full command run by the user.
+        """
+
+        if self.__validate(command_list): #Command is valid, executes the command
+            #Checks if there is a log registered to get details from.
+            if self.__config.GetCounter > 0:
+                print('Ticket Details:')
+                print(LogClass(LogConstants.TICKET_LOADPERSISTENT).ConvertToString())
+            else:
+                print("- ERROR 03: 'No Previous logs registered', there is no log to import data from.\n")
+        else: #Command is invalid (has arguments), prints the standard invalid subcommand message.
+            print(CLIConstants.INVALID_SUBCOMMAND.format(
+                Command = command_list[0],
+                Subcommand = command_list[1]
+            ))
+
+
+    def __validate(self, command_list:list[str]) -> bool:
+        """
+        Private method: Validates the command and its arguments (if existant).
+        
+        Return:
+            - True if the command is valid.
+            - False otherwise.
+        
+        Arguments:
+            - command_list: Formatted command list to be validated.
+        """
+
+        if len(command_list) == 1:
+            return True
+        else:
+            return False
+
+
+class HelpCommand():
+    """
+    'exit' command class.\n
+    * Uses double undescore to specify private methods/attributes instead of the convenional single underscore.
+
+    Attributes:
+        - Description: Command description.
+        - Subcommands: A dictionary of available subcommands and their description, blank 
+        if no subcommand is available.
+        - Usage: list off command usages.
     """
 
     Description = 'Provides information about available commands.'
@@ -93,15 +194,17 @@ class HelpCommand():
         Executes the 'help' command.\n
 
         Dependencies:
-        - :mod:`__validation()`: For command validation, see it's documentation for return values.
+            - :mod:`__validation()`: For command validation, see its documentation for return values.
+            - :mod:`__Subcommands_Formatter()`: For subcommand dictionary to string conversion.
+            - :mod:`__Usage_Formatter()`: For usage list to string conversion.
         
         Arguments:
-        - command_list: A formatted list conatining the full command run by the user, 
-        mainly to be passed to :mod:`__validation()` for command validation.
+            - command_list: A formatted list conatining the full command run by the user.
         """
 
         match self.__validate(command_list):
-            case 1:
+            case 1: #Prints help command for subcommand sent by the user.
+                #Gets class information based on subcommand sent by the user.
                 match command_list[1]:
                     case 'call':
                         Command_Description = CallCommand.Description
@@ -114,9 +217,9 @@ class HelpCommand():
                         Command_Usage = 'TODO'
 
                     case 'details':
-                        Command_Description = 'TODO'
-                        Available_Subcommands = {}
-                        Command_Usage = 'TODO'
+                        Command_Description = DetailsCommand.Description
+                        Available_Subcommands = DetailsCommand.Subcommands
+                        Command_Usage = DetailsCommand.Usage
 
                     case 'help':
                         Command_Description = self.Description
@@ -127,29 +230,32 @@ class HelpCommand():
                         Command_Description = ExitCommand.Description
                         Available_Subcommands = ExitCommand.Subcommands
                         Command_Usage = ExitCommand.Usage
-                        
-                Formatted_Usage = self.__Usage_Formatter(Command_Usage)
+                
                 Formatted_Subcommands = self.__Subcommands_Formatter(Available_Subcommands)
+                Formatted_Usage = self.__Usage_Formatter(Command_Usage)
 
-                print(CLI.HELP_COMMAND_VALIDARG.format(
+                print(CLIConstants.HELP_COMMAND_VALIDARG.format(
                     Command_Name = command_list[1],
                     Command_Description = Command_Description,
                     Available_Subcommands = Formatted_Subcommands,
                     Command_Usage = Formatted_Usage
                 ))
 
-            case 2:
-                print(CLI.INVALID_SUBCOMMAND.format(Subcommand = command_list[1]).removesuffix('\n'))
+            case 2: #Invalid subcommand was sent by the user, prints standard invalid subcommand message followed by the help command without arguments.
+                print(CLIConstants.INVALID_SUBCOMMAND.format(
+                    Command = command_list[0],
+                    Subcommand = command_list[1]
+                ).removesuffix('\n'))
                 self.execute(['help'])
 
-            case 3:
-                print(CLI.TOO_MANY_ARGUMENTS.format(Command = command_list[0]))
+            case 3: #Too many arguments were sent by the user, prints standard too many arguments message.
+                print(CLIConstants.TOO_MANY_ARGUMENTS.format(Command = command_list[0]))
 
-            case 4:
-                print(CLI.HELP_COMMAND_NOARGS.format(
+            case 4: #Prints help command without arguments.
+                print(CLIConstants.HELP_COMMAND_NOARGS.format(
                     call_Description = CallCommand.Description,
                     ticket_Description = 'TODO',
-                    details_Description = 'TODO',
+                    details_Description = DetailsCommand.Description,
                     help_Description = self.Description,
                     exit_Description = ExitCommand.Description
                 ))
@@ -157,22 +263,23 @@ class HelpCommand():
 
     def __validate(self, command_list:list[str]) -> int:
         """
-        Private method: Validates the command and it's arguments (if existant).\n
+        Private method: Validates the command and its arguments (if existant).
+
         Return:
-        - 1 if the command has a valid argument.
-        - 2 if the subcommand is invalid.
-        - 3 if too many arguments were given to the command.
-        - 4 if the command has no argument.
+            - 1 if the command has a valid argument.
+            - 2 if the subcommand is invalid.
+            - 3 if too many arguments were given to the command.
+            - 4 if the command has no argument.
         
         Arguments:
-        - command_list: Formatted command list to be validated.
+            - command_list: Formatted command list to be validated.
         """
 
         command_size = len(command_list)
 
         if command_size > 1:
             if command_size < 3:
-                if command_list[1] in CLI.AVAILABLE_COMMANDS:
+                if command_list[1] in CLIConstants.AVAILABLE_COMMANDS:
                     return 1
                 else:
                     return 2
@@ -183,18 +290,38 @@ class HelpCommand():
 
 
     def __Subcommands_Formatter(self, Subcommads_Dict:dict) -> str:
-        if Subcommads_Dict:
-            Formatted_Subcommands = ''
+        """
+        Subcommands dictionary formatter.
 
+        Return:
+            - 'This command does not accept any subcommands.' if the dictionary im empty.
+            - A formatted string of subcommands and their description otherwise.
+
+        Arguments:
+            - Subcommads_Dict: A dictionary of subcommands of the selected command class.
+        """
+
+        Formatted_Subcommands = ''
+
+        if Subcommads_Dict:
             for i in Subcommads_Dict:
                 Formatted_Subcommands = Formatted_Subcommands + '\t- ' + str(i) + ': ' + Subcommads_Dict[i] + '\n'
-
-            return Formatted_Subcommands.removesuffix('\n')
+            Formatted_Subcommands.removesuffix('\n')
         else:
-            return '\tThis command does not accept any subcommands.'
+            Formatted_Subcommands = '\tThis command does not accept any subcommands.'
+        
+        return Formatted_Subcommands
 
     
     def __Usage_Formatter(self, Usage_List:list) -> str:
+        """
+        Usage list formatter.\n
+        Returns a formatted string with the selected command class usage.
+
+        Arguments:
+            - Usage_List: A list of usage of the selected command class.
+        """
+
         Formatted_Usage = ''
 
         for i in Usage_List:
@@ -206,27 +333,29 @@ class HelpCommand():
 class ExitCommand():
     """
     'exit' command class.\n
-    *Uses double undescore to specify private methods/attributes instead of the convenional single underscore.
+    * Uses double undescore to specify private methods/attributes instead of the convenional single underscore.
 
     Attributes:
-    - Description: Command description.
-    - Subcommands: A dict of available subcommands and their description, blank if no subcommand is available.
-    - Usage: list off command usages.
+        - Description: Command description.
+        - Subcommands: A dictionary of available subcommands and their description, blank 
+        if no subcommand is available.
+        - Usage: list off command usages.
     
     Private Attributes:
-    - __driver: A loaded Chrome webdriver object.
+        - __driver: A loaded Chrome webdriver object.
     """
 
     Description = 'Closes webdriver and finishes the program.'
     Subcommands = {}
     Usage = ['exit']
 
+
     def __init__(self, driver:webdriver.Chrome) -> None:
         """
         Initializes an instance of ExitCommand class.
 
         Arguments:
-        - __driver: A loaded Chrome webdriver object.
+            - __driver: A loaded Chrome webdriver object.
         """
 
         self.__driver = driver
@@ -235,31 +364,39 @@ class ExitCommand():
     def execute(self, command_list:list[str]) -> bool:
         """
         Executes the 'exit' command.\n
-        Returns a bool, true if sucessful, false otherwise.
+
+        Return:
+            - True if sucessful.
+            - False otherwise.
 
         Dependencies:
-        - :mod:`__validation()`: For command validation.
+            - :mod:`__validation()`: For command validation.
         
         Arguments:
-        - command_list: A formatted list conatining the full command run by the user, 
-        mainly to be passed to :mod:`__validation()` for command validation.
+            - command_list: A formatted list containing the full command run by the user.
         """
 
-        if self.__validate(command_list):
+        if self.__validate(command_list): #Command is valid, executes the command.
             self.__driver.quit()
             return True
-        else:
-            print(CLI.INVALID_SUBCOMMAND.format(Subcommand = command_list[1]))
+        else: #Command is invalid (has arguments), prints the standard invalid subcommand message.
+            print(CLIConstants.INVALID_SUBCOMMAND.format(
+                Command = command_list[0],
+                Subcommand = command_list[1]
+            ))
             return False
 
 
     def __validate(self, command_list:list[str]) -> bool:
         """
-        Private method: Validates the command and it's arguments (if existant).\n
-        Returns true if the command is valid, false otherwise.
+        Private method: Validates the command and its arguments (if existant).
+        
+        Return:
+            - True if the command is valid.
+            - False otherwise.
         
         Arguments:
-        - command_list: Formatted command list to be validated.
+            - command_list: Formatted command list to be validated.
         """
 
         if len(command_list) == 1:

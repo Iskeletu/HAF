@@ -13,7 +13,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 #Native Modules.
 from FileHandler.JsonHandler import LoadJson
 from FileHandler.Logger import LogClass
-from Constants import Menu, Paths, URL, TicketTypes
+from Constants import Menu, Paths, URL, LogConstants
 
 
 def __MenuNavigator(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> str: #TODO ATTACHMENTS
@@ -114,7 +114,7 @@ def __OpenTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> L
     driver.find_element(By.XPATH, '//*[@id="main"]/div/div[3]/button[1]').click()
 
     ticket_ID = __MenuNavigator(driver, call_data, ticket_data)
-    return LogClass(TicketTypes.TICKET_CREATION, ticket_ID)
+    return LogClass(LogConstants.TICKET_CREATION, ticket_ID)
 
 
 def __CloseTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> LogClass: #ONGOING
@@ -132,8 +132,8 @@ def __CloseTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> 
     """
 
     #Open_Ticket_Log = __OpenTicket(driver, call_data, ticket_data)
-    Open_Ticket_Log = LogClass(1, '107493')
-    driver.get(URL.TICKED_ID_PREFIX + Open_Ticket_Log.GetID)
+    Open_Ticket_Log = LogClass(LogConstants.TICKET_CREATION, '107493')
+    driver.get(URL.TICKED_ID_PREFIX + Open_Ticket_Log.GetTicketID)
 
     #Opend ticket editor.
     driver.find_element(By.XPATH, '/html/body/div[2]/div/div[2]/div/div[1]/div/div/div[2]/div[2]/div[4]/div/div/div/fulfillment-map/div/div[2]/div[2]/div/div[2]').click()
@@ -184,11 +184,11 @@ def TicketProcessor(driver:webdriver.Chrome) -> None: #TODO
     try:
         ticket_data = LoadJson(Paths.DICTIONARY_JSON_PATH)[call_data['tipo']]
     except KeyError:
-        print("ERROR 01: 'Invalid Ticket Type', check your call information.")
+        print("- ERROR 01: 'Invalid Ticket Type', check your call information.\n")
         return
 
     if opitional_parameters['solução']+1 > len(ticket_data['answer']) or opitional_parameters['solução'] < 0:
-        print("ERROR 02: 'Invalid Solution ID', check your optinal call paramaters.")
+        print("- ERROR 02: 'Invalid Solution ID', check your optinal call paramaters.\n")
         return
 
     #TODO catch if variable is 'none' and there is a {variable} block on the template

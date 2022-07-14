@@ -4,7 +4,7 @@
 from selenium import webdriver
 
 #Internal Modules:
-from Constants import CLI
+from Constants import CLIConstants
 from CLI.Commands import *
 
 
@@ -39,8 +39,7 @@ def CommandLineInterface(driver:webdriver.Chrome) -> bool:
                 TODO = True
 
             case 'details':
-                #DetailsCommand().execute(command_list)
-                TODO = True
+                DetailsCommand().execute(command_list)
 
             case 'help':
                 HelpCommand().execute(command_list)
@@ -49,7 +48,7 @@ def CommandLineInterface(driver:webdriver.Chrome) -> bool:
                 return ExitCommand(driver).execute(command_list)
 
             case _:
-                print(CLI.INVALID_COMMAND.format(Command = command_list[0]))
+                print(CLIConstants.INVALID_COMMAND.format(Command = command_list[0]))
 
     return False
 
