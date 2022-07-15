@@ -1,6 +1,6 @@
 {
     "test": {
-        "Process-Type": "close",
+        "Process-Type": "escalate",
         "Type": "ticket",
         "Title": "TEST TICKET - Ignore",
         "Body": "This is a test ticket, please ignore.\n\nContato: {Contact}\nHostname/IP: {Hostname}",
@@ -14,14 +14,12 @@
         ],
         "Team": "IT.CASH.BR.APP CASH"
     },
-
     "mfa": {
         "Process-Type": "open",
         "Type": "mfa",
         "Body": "Solicito redefinição de MFA.\n\nContato: {Contact}",
         "Team": "IT.INFRA.WW.EMAIL"
     },
-
     "edge": {
         "Process-Type": "close",
         "Type": "ticket",
@@ -32,7 +30,6 @@
             "Configurado Microsoft Edge."
         ]
     },
-
     "printer_install": {
         "Process-Type": "close",
         "Type": "ticket",
@@ -44,7 +41,6 @@
             "Instalado drivers e mapeada impressora."
         ]
     },
-
     "sco_folders": {
         "Process-Type": "close",
         "Type": "ticket",
@@ -55,7 +51,6 @@
             "Configurado atalho RDP para incluir unidade locais."
         ]
     },
-
     "windows_mapping": {
         "Process-Type": "close",
         "Type": "ticket",
@@ -66,7 +61,6 @@
             "Configurado mapeamento de rede."
         ]
     },
-
     "vpon_config": {
         "Process-Type": "close",
         "Type": "ticket",
@@ -77,7 +71,6 @@
             "Instalado plug-in DCS 2.19.60.\nValidado acesso ao VPON."
         ]
     },
-
     "vpon_white": {
         "Process-Type": "close",
         "Type": "ticket",
@@ -88,7 +81,6 @@
             "Normalizado ao adicionar IP's dos VPON's a lista de sites da intranet local nas configurações do Internet Explorer."
         ]
     },
-
     "internet": {
         "Process-Type": "close",
         "Type": "ticket",
@@ -100,7 +92,6 @@
             "Normalizado ao instalar Cisco AnyConnect + Umbrella."
         ]
     },
-
     "vpn_config": {
         "Process-Type": "close",
         "Type": "ticket",
@@ -111,7 +102,6 @@
             "Configurado Cisco AnyConnect."
         ]
     },
-
     "bitlocker": {
         "Process-Type": "close",
         "Type": "ticket",
@@ -122,7 +112,6 @@
             "Informada senha de recuperação BitLocker"
         ]
     },
-
     "prouser_activate": {
         "Process-Type": "close",
         "Type": "ticket",
@@ -133,7 +122,6 @@
             "Ativado usuário de rede via Prouser."
         ]
     },
-
     "prouser_unlock": {
         "Process-Type": "close",
         "Type": "ticket",
@@ -144,7 +132,6 @@
             "Desbloqueado usuário de rede no AD."
         ]
     },
-
     "prouser_changepw": {
         "Process-Type": "close",
         "Type": "ticket",
@@ -155,7 +142,6 @@
             "Alterada senha de rede via Prouser."
         ]
     },
-
     "outlook_load": {
         "Process-Type": "close",
         "Type": "ticket",
@@ -166,7 +152,6 @@
             "Normalizado ao reinstalar Microsoft Office 365."
         ]
     },
-
     "c_envios_403": {
         "Process-Type": "close",
         "Type": "ticket",
@@ -177,7 +162,6 @@
             "Normalizado ao limpar histórico do navegador."
         ]
     },
-
     "teams_install": {
         "Process-Type": "close",
         "Type": "ticket",
