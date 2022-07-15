@@ -1,9 +1,9 @@
 {
     "Required": {
-        "User_ID": "",
-        "Contact": "",
-        "Hostname": "",
-        "Call_Type": ""
+        "User_ID": "BRX0001747",
+        "Contact": "31 3044",
+        "Hostname": "BRBH1PC000173",
+        "Call_Type": "test"
     },
     "Optional": {
         "Solution": 0,

@@ -9,7 +9,7 @@ data from incoming calls using a ticket dictionary (can be safely edited).
 - For usage see 'Readme.md'.
 - See 'LICENSE' for more infomation.
 
-Fábio Gandini - 28/06/2022
+Fábio Gandini - 2022
 """
 
 #Native Modules:

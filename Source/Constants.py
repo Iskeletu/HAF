@@ -29,7 +29,8 @@ class Menu:
     ANIMATION_DELAY = 0.4
     TICKET_LOAD_DELAY = 1
     USER_LOAD_DELAY = 2
-    MENU_LOAD_DELAY = 7
+    MENU_LOAD_DELAY = 8
+    DESIGNATION_LOAD_DELAY = 0.7
 
 
 class Paths:
