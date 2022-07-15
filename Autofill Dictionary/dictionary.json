@@ -1,9 +1,9 @@
 {
     "test": {
-        "Process-Type": "escalate",
+        "Process-Type": "close",
         "Type": "ticket",
         "Title": "TEST TICKET - Ignore",
-        "Body": "This is a test ticket, please ignore.\n\nContato: {contact}\nHostname/IP: {hostname}",
+        "Body": "This is a test ticket, please ignore.\n\nContato: {Contact}\nHostname/IP: {Hostname}",
         "Application": "MISCELLANEOUS",
         "Attachment": [
             "test-attachment.jpeg"

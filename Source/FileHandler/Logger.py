@@ -15,7 +15,7 @@ class LogClass():
     * Uses double undescore to specify private methods/attributes instead of the convenional single underscore.
     
     Private Attributes:
-        - __log_type: Integer indicating log type (1- Creation | 2- Closing | 3- Escalation | 4- Persistent).
+        - __log_type: Integer indicating log type (1- Created | 2- Closed | 3- Escalated | 4- Persistent).
         - __ticket_ID: String of the ticket ID returned from its creation process.
         - __call_data: Loaded call data dictionary.
         - __time: String indication date and hour of object creation or log time.
@@ -187,7 +187,7 @@ class LogClass():
         Gets the designated team string.
 
         Return:
-            - Ticket template designation if ticket log is 3 (escalation).
+            - Ticket template designation if ticket log is 3 (escalated).
             - 'VE.INFRA.BR.SERVICE DESK' (default designation) otherwise.
         """
 
@@ -202,7 +202,7 @@ class LogClass():
         Gets the solution selection and coverts it to string.
 
         Return:
-            - User solution (as a string) selection if ticket log is 2 (closing).
+            - User solution (as a string) selection if ticket log is 2 (closed).
             - 'Does not apply' otherwise.
         """
 

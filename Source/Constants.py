@@ -57,9 +57,9 @@ class LogConstants:
 
     DATE_FORMAT = '%d/%m/%Y %H:%M:%S'
 
-    TICKET_CREATION = 1
-    TICKET_CLOSING = 2
-    TICKET_ESCALATION = 3
+    TICKET_CREATED = 1
+    TICKET_CLOSED = 2
+    TICKET_ESCALATED = 3
     TICKET_LOADPERSISTENT = 4
     PROCESS_TYPES = ['Created', 'Closed', 'Escalated', 'Invalid']
 
