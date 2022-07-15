@@ -4,7 +4,8 @@ Main script File.
 
 Uses Python Selenium to navigate through Helix ITSM and manage tickets,
 it is currently capable of opening, closing and escalating ticket with
-data from incoming calls using a ticket dictionary (can be safely edited).
+data from incoming calls using a ticket dictionary (can be safely edited 
+if you know what you're doing).
 
 - For usage see 'Readme.md'.
 - See 'LICENSE' for more infomation.
