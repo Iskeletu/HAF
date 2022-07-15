@@ -98,6 +98,40 @@ class CallCommand():
             return 4
 
 
+class TicketCommand(): #TODO
+    """
+    'ticket' command class.\n
+    * Uses double undescore to specify private methods/attributes instead of the convenional single underscore.
+
+    Attributes:
+        - Description: Command description.
+        - Subcommands: A dictionary of available subcommands and their description, blank 
+        if no subcommand is available.
+        - Usage: list off command usages.
+
+    Private Attributes:
+        - __driver: A loaded Chrome webdriver object.
+    """
+
+    Description = 'This command is on development.'
+    Subcommands = {}
+    Usage = ['ticket [subcommand] [args]']
+
+    def __init__(self, driver:webdriver.Chrome) -> None:
+        """
+        Initializes an instance of TicketCommand class.
+
+        Arguments:
+            - __driver: A loaded Chrome webdriver object.
+        """
+
+        self.__driver = driver
+
+
+    def execute(self, command_list:list[str]) -> None: #TODO
+        TODO = True
+
+
 class DetailsCommand():
     """
     'details' command class.\n
@@ -212,9 +246,9 @@ class HelpCommand():
                         Command_Usage = CallCommand.Usage
 
                     case 'ticket':
-                        Command_Description = 'TODO'
-                        Available_Subcommands = {}
-                        Command_Usage = ['TODO']
+                        Command_Description = TicketCommand.Description
+                        Available_Subcommands = TicketCommand.Subcommands
+                        Command_Usage = TicketCommand.Usage
 
                     case 'details':
                         Command_Description = DetailsCommand.Description
@@ -254,7 +288,7 @@ class HelpCommand():
             case 4: #Prints help command without arguments.
                 print(CLIConstants.HELP_COMMAND_NOARGS.format(
                     call_Description = CallCommand.Description,
-                    ticket_Description = 'TODO',
+                    ticket_Description = TicketCommand.Description,
                     details_Description = DetailsCommand.Description,
                     help_Description = self.Description,
                     exit_Description = ExitCommand.Description

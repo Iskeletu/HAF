@@ -35,8 +35,7 @@ def CommandLineInterface(driver:webdriver.Chrome) -> bool:
                 CallCommand(driver).execute(command_list)
 
             case 'ticket':
-                #TicketCommand(driver).execute(command_list)
-                TODO = True
+                TicketCommand(driver).execute(command_list)
 
             case 'details':
                 DetailsCommand().execute(command_list)
