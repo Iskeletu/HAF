@@ -174,7 +174,18 @@
         "Body": "Não consigo acessar portal controle de envios, erro 403 é exibido, solicito suporte.\n\nHostname/IP: {Hostname}",
         "Application": "MISCELLANEOUS",
         "Answer": [
-            "Normalizado ao limpar histórico do navegador"
+            "Normalizado ao limpar histórico do navegador."
+        ]
+    },
+
+    "teams_install": {
+        "Process-Type": "close",
+        "Type": "ticket",
+        "Title": "TEAMS - Instalação",
+        "Body": "Solicito instalação do Microsoft Teams na minha máquina.\n\nHostname/IP: {Hostname}",
+        "Application": "MISCELLANEOUS",
+        "Answer": [
+            "Instalado Microsoft Teams."
         ]
     }
 }
