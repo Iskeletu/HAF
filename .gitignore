@@ -5,6 +5,9 @@
 #Source files.
 !Source/
 
+#Python files.
+!requirements.txt
+
 #Github files.
 !.gitignore
 !LICENSE
