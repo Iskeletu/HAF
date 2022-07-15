@@ -214,7 +214,7 @@ class HelpCommand():
                     case 'ticket':
                         Command_Description = 'TODO'
                         Available_Subcommands = {}
-                        Command_Usage = 'TODO'
+                        Command_Usage = ['TODO']
 
                     case 'details':
                         Command_Description = DetailsCommand.Description
@@ -306,7 +306,7 @@ class HelpCommand():
         if Subcommads_Dict:
             for i in Subcommads_Dict:
                 Formatted_Subcommands = Formatted_Subcommands + '\t- ' + str(i) + ': ' + Subcommads_Dict[i] + '\n'
-            Formatted_Subcommands.removesuffix('\n')
+            Formatted_Subcommands = Formatted_Subcommands.removesuffix('\n')
         else:
             Formatted_Subcommands = '\tThis command does not accept any subcommands.'
         
