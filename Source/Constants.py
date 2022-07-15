@@ -26,11 +26,17 @@ class Menu:
     """Group of Fenix ITSM javascript menu related global variables."""
 
     #All of the values are in seconds.
-    ANIMATION_DELAY = 0.4
-    TICKET_LOAD_DELAY = 1
+    GENERAL_ANIMATION_DELAY = 0.4
+
     USER_LOAD_DELAY = 2
-    MENU_LOAD_DELAY = 8
+
+    TICKETMENU_LOAD_DELAY = 8
+    TICKETPAGE_LOAD_DELAY = 1
+    TICKETEDITOR_LOAD_DELAY = 1
+
     DESIGNATION_LOAD_DELAY = 0.7
+    DESIGNATIONMENU_LOAD_DELAY = 2
+    DESIGNATIONMENU_TEAMLOAD_DELAY = 1
 
 
 class Paths:
