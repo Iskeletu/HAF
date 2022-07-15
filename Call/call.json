@@ -2,8 +2,8 @@
     "Required": {
         "User_ID": "BRX0001747",
         "Contact": "31 3044",
-        "Hostname": "BRBH1PC000173",
-        "Call_Type": "test"
+        "Hostname": "",
+        "Call_Type": "mfa"
     },
     "Optional": {
         "Solution": 0,

@@ -1,16 +1,16 @@
 """Navigates Fenix ITSM portal and manages ticket creation, escalation and closing."""
 
-#Native Modules.
+#Native Modules:
 import time
 
-#External Modules.
+#External Modules:
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.action_chains import ActionChains
 
-#Native Modules.
+#Internal Modules:
 from FileHandler.Logger import LogClass
 from FileHandler.JsonHandler import LoadJson
 from Constants import Menu, Paths, URL, LogConstants
@@ -207,9 +207,10 @@ def TicketProcessor(driver:webdriver.Chrome) -> None: #INCONPLETE
         print("- ERROR 01: 'Invalid Ticket Type', check your call information.\n")
         return
 
-    if call_data['Optional']['Solution'] + 1 > len(ticket_data['Answer']) or call_data['Optional']['Solution'] < 0:
-        print("- ERROR 02: 'Invalid Solution ID', check your optinal call paramaters.\n")
-        return
+    if ticket_data['Process-Type'] == 'close':
+        if call_data['Optional']['Solution'] + 1 > len(ticket_data['Answer']) or call_data['Optional']['Solution'] < 0:
+            print("- ERROR 02: 'Invalid Solution ID', check your optinal call paramaters.\n")
+            return
 
     #TODO catch if variable is 'none' and there is a {variable} block on the template
 

@@ -77,7 +77,15 @@ class LogClass():
 
     
     def ConvertToString(self) -> str:
-        """Converts this instance to a string for logging and/or printing."""
+        """
+        Converts this instance to a string for logging and/or printing.
+        
+        Dependencies:
+            - :mod:`__AttachmentsFormatter()`: For attachment list conversion to string.
+            - :mod:`__GetDesignation()`: For team designation string if existent.
+            - :mod:`__GetSolution()`: For solution value as a string if it applies to this log type.
+            - :mod:`__GetHostname()`: For hostname string if it applies to this log type.
+        """
 
         return LogConstants.LOG_TEMPLATE.format(
             Current_Time = self.__time,
@@ -89,7 +97,7 @@ class LogClass():
             Ticket_Solution = self.__GetSolution(),
             User_ID = self.__call_data['Required']['User_ID'],
             User_Contact = self.__call_data['Required']['Contact'],
-            User_Hostname = self.__call_data['Required']['Hostname'],
+            User_Hostname = self.__GetHostname()
         )
 
 
@@ -169,17 +177,17 @@ class LogClass():
             - A formatted string of attachments divided by commas otherwise.
         """
 
-        unformatted_attachments = self.__ticket_data['Attachment']
+        try:
+            unformatted_attachments = self.__ticket_data['Attachment']
 
-        if unformatted_attachments:
             formatted_attachments = ''
-
             for i in unformatted_attachments:
                 formatted_attachments = formatted_attachments + str(i) + ', '
+            formatted_attachments = formatted_attachments.removesuffix(', ')
+        except KeyError:
+            formatted_attachments = 'None'
 
-            return formatted_attachments.removesuffix(', ')
-        else:
-            return 'None'
+        return formatted_attachments
             
 
     def __GetDesignation(self) -> str:
@@ -187,14 +195,15 @@ class LogClass():
         Gets the designated team string.
 
         Return:
-            - Ticket template designation if ticket log is 3 (escalated).
+            - Ticket template designation if specified.
             - 'VE.INFRA.BR.SERVICE DESK' (default designation) otherwise.
         """
 
-        if self.__log_type == 3:
-            return str(self.__ticket_data['Team'])
-        else:
-            return 'VE.INFRA.BR.SERVICE DESK'
+        try:
+            designated_team = str(self.__ticket_data['Team'])
+        except KeyError:
+            designated_team = 'VE.INFRA.BR.SERVICE DESK'
+        return designated_team
 
     
     def __GetSolution(self) -> str:
@@ -207,9 +216,26 @@ class LogClass():
         """
 
         if self.__log_type == 2:
-            return str(self.__call_data['Optional']['Solution'])
+            solution = str(self.__call_data['Optional']['Solution'])
         else:
-            return 'Does not apply'
+            solution = 'Does not apply'
+        return solution
+
+
+    def __GetHostname(self) -> str:
+        """
+        Gets hostname string from __call_data.
+
+        Return:
+            - 'Does not apply' if the call type is in the hostname exception list.
+            - __call_data['Required']['Hostname'] value otherwise.
+        """
+
+        if self.__call_data['Required']['Call_Type'] in LogConstants.HOSTNAME_EXCEPTION_LIST:
+            hostname = 'Does not apply'
+        else:
+            hostname = str(self.__call_data['Required']['Hostname'])
+        return hostname
 
 
 #This is NOT a script file.

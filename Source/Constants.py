@@ -79,6 +79,13 @@ class LogConstants:
         '\t- Hostname/IP: {User_Hostname}\n'
     )
 
+    HOSTNAME_EXCEPTION_LIST = [
+        'mfa',
+        'prouser_activate',
+        'prouser_unlock',
+        'prouser_changepw'
+    ]
+
 
 class CLIConstants:
     """Group of CLI ralated global varialbes, mostly console logging templates."""
