@@ -6,7 +6,6 @@
 !HAF/
 
 #Python files.
-!requirements.txt
 !setup.cfg
 !setup.py
 
