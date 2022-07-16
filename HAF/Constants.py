@@ -3,6 +3,10 @@ Constant values definition file.
 * None of these values should change during runtime.
 """
 
+#Native Modules:
+import pathlib
+
+
 class URL:
     """Group of URL related global variables."""
 
@@ -40,14 +44,15 @@ class Paths:
     Group of path related global variables.
     * Uses double undescore to specify private methods instead of the convenional single underscore.
     """
+    __PROJECT_DIRECTORY = pathlib.Path('.\\*.py').parent.resolve()
     
-    ATTACHMENTS_FOLDER_PATH = '{Project_Directory}\\Autofill Dictionary\\Attachments\\'
-    DICTIONARY_JSON_PATH = '{Project_Directory}\\Autofill Dictionary\\dictionary.json'
-    CALL_JSON_PATH = '{Project_Directory}\\Call\\call.json'
-    LOG_TXT_PATH = '{Project_Directory}\\Log\\log.txt'
-    PERSISTENT_JSON_PATH = '{Project_Directory}\\Log\\persistent.json'
-    CHROME_PROFILE_PATH = '{Project_Directory}\\ChromeProfile'
-    CONFIG_INI_PATH = '{Project_Directory}\\config.ini'
+    ATTACHMENTS_FOLDER_PATH = f'{__PROJECT_DIRECTORY}\\Autofill Dictionary\\Attachments\\'
+    DICTIONARY_JSON_PATH = f'{__PROJECT_DIRECTORY}\\Autofill Dictionary\\dictionary.json'
+    CALL_JSON_PATH = f'{__PROJECT_DIRECTORY}\\Call\\call.json'
+    LOG_TXT_PATH = f'{__PROJECT_DIRECTORY}\\Log\\log.txt'
+    PERSISTENT_JSON_PATH = f'{__PROJECT_DIRECTORY}\\Log\\persistent.json'
+    CHROME_PROFILE_PATH = f'{__PROJECT_DIRECTORY}\\ChromeProfile\\'
+    CONFIG_INI_PATH = f'{__PROJECT_DIRECTORY}\\config.ini'
 
 
 class LogConstants:
