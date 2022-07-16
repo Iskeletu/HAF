@@ -52,8 +52,8 @@ class Paths:
     CALL_JSON_PATH = f'{__PROJECT_DIRECTORY}\\Call\\call.json'
     LOG_TXT_PATH = f'{__PROJECT_DIRECTORY}\\Log\\log.txt'
     PERSISTENT_JSON_PATH = f'{__PROJECT_DIRECTORY}\\Log\\persistent.json'
-    CHROME_PROFILE_PATH = f'{__PROJECT_DIRECTORY}\\Source\\Driver\\ChromeProfile'
-    CONFIG_INI_PATH = f'{__PROJECT_DIRECTORY}\\Source\\config.ini'
+    CHROME_PROFILE_PATH = f'{__PROJECT_DIRECTORY}\\HAF\\Driver\\ChromeProfile'
+    CONFIG_INI_PATH = f'{__PROJECT_DIRECTORY}\\HAF\\config.ini'
 
 
 class LogConstants:

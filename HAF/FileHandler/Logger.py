@@ -4,9 +4,9 @@
 from datetime import datetime
 
 #Internal Modules:
-from FileHandler.JsonHandler import *
-from Constants import Paths, LogConstants
-from FileHandler.Config import ConfigClass
+from HAF.FileHandler.JsonHandler import *
+from HAF.Constants import Paths, LogConstants
+from HAF.FileHandler.Config import ConfigClass
 
 
 class LogClass():

@@ -13,8 +13,8 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.common.exceptions import NoSuchElementException
 
 #Internal Modules:
-from FileHandler.Config import ConfigClass
-from Constants import URL, MicrosoftLogin, Paths
+from HAF.FileHandler.Config import ConfigClass
+from HAF.Constants import URL, MicrosoftLogin, Paths
 
 
 def __MicrosoftLogin(driver:webdriver.Chrome) -> None:

@@ -11,9 +11,9 @@ from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.action_chains import ActionChains
 
 #Internal Modules:
-from FileHandler.Logger import LogClass
-from FileHandler.JsonHandler import LoadJson
-from Constants import Menu, Paths, URL, LogConstants
+from HAF.FileHandler.Logger import LogClass
+from HAF.FileHandler.JsonHandler import LoadJson
+from HAF.Constants import Menu, Paths, URL, LogConstants
 
 
 def __TicketMenuNavigator(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> str: #TODO ATTACHMENTS

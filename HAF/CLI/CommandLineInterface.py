@@ -4,8 +4,8 @@
 from selenium import webdriver
 
 #Internal Modules:
-from Constants import CLIConstants
-from CLI.Commands import *
+from HAF.Constants import CLIConstants
+from HAF.CLI.Commands import *
 
 
 def CommandLineInterface(driver:webdriver.Chrome) -> bool:

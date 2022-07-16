@@ -1,9 +1,9 @@
 """Manages template creation for Ticket Dictionary file update."""
 
 #Internal Modules:
-from Constants import Paths
-from TemplateCreator.TCGUI import *
-from FileHandler.JsonHandler import *
+from HAF.Constants import Paths
+from HAF.TemplateCreator.TCGUI import *
+from HAF.FileHandler.JsonHandler import *
 
 
 def TemplateCreator() -> None:

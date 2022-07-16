@@ -4,10 +4,10 @@
 from selenium import webdriver
 
 #Internal Modules:
-from FileHandler.Logger import LogClass
-from FileHandler.Config import ConfigClass
-from Constants import CLIConstants, LogConstants
-from Ticket.TicketHandler import TicketProcessor
+from HAF.FileHandler.Logger import LogClass
+from HAF.FileHandler.Config import ConfigClass
+from HAF.Constants import CLIConstants, LogConstants
+from HAF.Ticket.TicketHandler import TicketProcessor
 
 
 class CallCommand():

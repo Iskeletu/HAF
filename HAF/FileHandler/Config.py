@@ -4,7 +4,7 @@
 import configparser
 
 #Internal Modules:
-from Constants import Paths
+from HAF.Constants import Paths
 
 
 class ConfigClass:
