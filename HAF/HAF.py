@@ -20,8 +20,8 @@ from typing import NoReturn
 from selenium import webdriver
 
 #Internal Modules:
-from Driver.DriverHandler import LoadDriver
-from CLI.CommandLineInterface import CommandLineInterface
+from HAF.Driver.DriverHandler import LoadDriver
+from HAF.CLI.CommandLineInterface import CommandLineInterface
 
 
 def Start(driver:webdriver.Chrome, exit_flag:bool) -> NoReturn:

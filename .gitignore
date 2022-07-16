@@ -3,10 +3,12 @@
 
 ##Except what I want to keep:
 #Source files.
-!Source/
+!HAF/
 
 #Python files.
 !requirements.txt
+!setup.cfg
+!setup.py
 
 #Github files.
 !.gitignore
@@ -20,5 +22,5 @@
 
 #Exceptions.
 **__pycache__/
-Source/Driver/ChromeProfile/
-Source/test.py
+HAF/Driver/ChromeProfile/
+HAF/test.py
