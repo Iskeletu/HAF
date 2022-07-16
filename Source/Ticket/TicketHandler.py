@@ -31,7 +31,7 @@ def __TicketMenuNavigator(driver:webdriver.Chrome, call_data:dict, ticket_data:d
     try:
         driver.maximize_window()
     except WebDriverException:
-        pass #Webdriver gives unknown eception if driver is minimezed for some reason...
+        pass #Webdriver gives unknown exception if driver is minimezed for some reason...
 
     time.sleep(Menu.TICKETMENU_LOAD_DELAY)
     action = ActionChains(driver)
@@ -90,49 +90,6 @@ def __TicketMenuNavigator(driver:webdriver.Chrome, call_data:dict, ticket_data:d
     return driver.current_url.removeprefix('https://prosegur-smartit.onbmc.com/smartit/app/#/sberequest/')
 
 
-def __TeamMenuNavigator(driver:webdriver.Chrome, ticket_data:dict) -> None:
-    """
-    Navigates javascrpit menu during ticket creation and returns the ticket ID as a string.
-
-    Arguments:
-    - driver: A loaded Chrome webdriver object.
-    - ticket_data: Dictionary with ticket data.
-    """
-
-    #Changes focust to driver (menu navigation won't work minimized).
-    try:
-        driver.maximize_window()
-    except WebDriverException:
-        pass #Webdriver gives unknown eception if driver is minimezed for some reason...
-
-    time.sleep(Menu.DESIGNATIONMENU_LOAD_DELAY)
-    action = ActionChains(driver)
-
-    #Changes search group to all.
-    action.send_keys(Keys.TAB + Keys.TAB + Keys.TAB + Keys.SPACE)
-    action.perform()
-    time.sleep(Menu.GENERAL_ANIMATION_DELAY)
-    action.send_keys(Keys.TAB + Keys.ENTER)
-    action.perform()
-    time.sleep(Menu.DESIGNATIONMENU_TEAMLOAD_DELAY)
-
-    #Selects team from ticket template.
-    action.send_keys(Keys.TAB + Keys.SPACE)
-    action.perform()
-    time.sleep(Menu.GENERAL_ANIMATION_DELAY)
-    action.send_keys(ticket_data['Team'])
-    action.perform()
-    time.sleep(Menu.DESIGNATIONMENU_TEAMLOAD_DELAY)
-    action.send_keys(Keys.ENTER)
-    action.perform()
-    time.sleep(Menu.GENERAL_ANIMATION_DELAY)
-
-    #Designates to selected team.
-    action.send_keys(Keys.TAB + Keys.TAB + Keys.ENTER)
-    action.perform()
-    #TODO: Designate
-
-
 def __OpenTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> LogClass:
     """
     Private function: Opens a ticket and based on the call data and its ticket template.\n
@@ -176,6 +133,7 @@ def __CloseTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> 
     - ticket_data: Dictionary with ticket data, mainly to be passed to :mod:`__OpenTicket()`:.
     """
 
+    #Calls for ticket creation.
     Ticket_Log = __OpenTicket(driver, call_data, ticket_data)
     driver.get(URL.TICKED_ID_PREFIX + Ticket_Log.GetTicketID)
 
@@ -230,8 +188,6 @@ def __EscalateTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) 
     
     Dependencies:
     - :mod:`__OpenTicket()`: To open and generate ticket ID.
-    - :mod:`__MenuNavigator()`: To navigate the javascript menu (Selenium 
-    API has a hard time locating elements there).
 
     Arguments:
     - driver: A loaded Chrome webdriver object.
@@ -239,8 +195,8 @@ def __EscalateTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) 
     - ticket_data: Dictionary with ticket data, mainly to be passed to :mod:`__OpenTicket()`:.
     """
 
-    Ticket_Log = LogClass(LogConstants.TICKET_CREATED, '114901')
-    #Ticket_Log = __OpenTicket(driver, call_data, ticket_data)
+    #Calls for ticket creation.
+    Ticket_Log = __OpenTicket(driver, call_data, ticket_data)
     driver.get(URL.TICKED_ID_PREFIX + Ticket_Log.GetTicketID)
 
     #Opens ticket editor.
@@ -260,16 +216,40 @@ def __EscalateTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) 
     driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[2]/div/div[2]/div[1]/div[1]/div[1]/div/div[5]/div/div/label/div/div/div/button').click()
     driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[2]/div/div[2]/div[1]/div[1]/div[1]/div/div[5]/div/div/label/div/div/div/ul/li[2]/a').click()
 
-    #Changes Team designation and saves changes.
-    driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[2]/div/div[3]/div[2]/div/div[1]/div/div/label/span').click()
-    __TeamMenuNavigator(driver, ticket_data)
-    #driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[2]/div/button[1]').click()
+    ## The following block works inside the ticket designation menu.
+    driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[2]/div/div[3]/div[2]/div/div[1]/div/div/label/span').click() #Opens ticket designation menu.
+
+    #Changes focust to driver (menu navigation won't work minimized).
+    try:
+        driver.maximize_window()
+    except WebDriverException:
+        pass #Webdriver gives unknown exception if driver is minimezed for some reason...
+
+    time.sleep(Menu.DESIGNATIONMENU_LOAD_DELAY)
+
+    #Changes search group to all.
+    driver.find_element(By.XPATH, '/html/body/div[5]/div/div/div/form/div[2]/div[2]/div/div/assignee-chooser/div[2]/div[3]/label/div/button').click()
+    driver.find_element(By.XPATH, '/html/body/div[5]/div/div/div/form/div[2]/div[2]/div/div/assignee-chooser/div[2]/div[3]/label/div/ul/li[3]/a').click()
+
+    #Selects team from ticket template.
+    driver.find_element(By.XPATH, '/html/body/div[5]/div/div/div/form/div[2]/div[2]/div/div/assignee-chooser/div[2]/div[4]/label/div/button').click()
+    driver.find_element(By.XPATH, '/html/body/div[5]/div/div/div/form/div[2]/div[2]/div/div/assignee-chooser/div[2]/div[4]/label/div/ul/li[1]/input').send_keys(ticket_data['Team'])
+    time.sleep(Menu.DESIGNATIONMENU_TEAMLOAD_DELAY)
+    driver.find_element(By.XPATH, '/html/body/div[5]/div/div/div/form/div[2]/div[2]/div/div/assignee-chooser/div[2]/div[4]/label/div/ul/li[1]/input').send_keys(Keys.ENTER)
+    time.sleep(Menu.GENERAL_ANIMATION_DELAY)
+
+    #Designates to selected team.
+    driver.find_element(By.XPATH, '/html/body/div[5]/div/div/div/form/div[2]/div[2]/div/div/assignee-chooser/div[3]/div[1]').click()
+    driver.find_element(By.XPATH, '/html/body/div[5]/div/div/div/div/div/button[1]').click()
+
+    #Saves Changes.
+    driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[2]/div/button[1]').click()
 
     Ticket_Log.UpdateType(LogConstants.TICKET_ESCALATED) #Updates ticket status to escalated.
     return Ticket_Log
 
 
-def TicketProcessor(driver:webdriver.Chrome) -> None: #INCONPLETE
+def TicketProcessor(driver:webdriver.Chrome) -> None: #!INCONPLETE
     """
     Processes call data into a ticket and returns a log object with it's details.
 
