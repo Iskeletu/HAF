@@ -53,7 +53,12 @@ def __MicrosoftLogin(driver:webdriver.Chrome) -> None:
                 MFA_flag = False
             except NoSuchElementException:
                 print('- MFA Confirmation Requested.')
-                driver.find_element(By.XPATH, '//*[@id="idChkBx_SAOTCAS_TD"]').click()
+
+                try: #Checks 14 day MFA timeout if available.
+                    driver.find_element(By.XPATH, '//*[@id="idChkBx_SAOTCAS_TD"]').click()
+                except NoSuchElementException:
+                    pass
+
                 MFA_flag = True
 
             while MFA_flag:
