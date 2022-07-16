@@ -14,12 +14,6 @@
 !LICENSE
 !README.md
 
-#Other important files.
-!Autofill Dictionary/
-!Call/
-!Log/
-
 #Exceptions.
 **__pycache__/
-HAF/Driver/ChromeProfile/
 HAF/test.py
