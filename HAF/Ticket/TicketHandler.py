@@ -22,9 +22,9 @@ def __TicketMenuNavigator(driver:webdriver.Chrome, call_data:dict, ticket_data:d
     Returns the ticket ID as a string.
 
     Arguments:
-    - driver: A loaded Chrome webdriver object.
-    - call_data: Dictionary with call data.
-    - ticket_data: Dictionary with ticket data.
+        - driver: A loaded Chrome webdriver object.
+        - call_data: Dictionary with call data.
+        - ticket_data: Dictionary with ticket data.
     """
 
     #Changes focust to driver (menu navigation won't work minimized).
@@ -96,13 +96,13 @@ def __OpenTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> L
     Returns a LogClass object with the ticket details.
     
     Dependencies:
-    - :mod:`__MenuNavigator()`: To navigate the javascript menu (Selenium 
-    API has a hard time locating elements there).
+        - :mod:`__MenuNavigator()`: To navigate the javascript menu (Selenium 
+        API has a hard time locating elements there).
 
     Arguments:
-    - driver: A loaded Chrome webdriver object.
-    - call_data: Dictionary with call data.
-    - ticket_data: Dictionary with ticket data.
+        - driver: A loaded Chrome webdriver object.
+        - call_data: Dictionary with call data.
+        - ticket_data: Dictionary with ticket data.
     """
 
     driver.get(URL.SMART_RECORDER_URL)
@@ -125,12 +125,12 @@ def __CloseTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> 
     Returns a LogClass object with the ticket details.
     
     Dependencies:
-    - :mod:`__OpenTicket()`: To open and generate ticket ID.
+        - :mod:`__OpenTicket()`: To open and generate ticket ID.
 
     Arguments:
-    - driver: A loaded Chrome webdriver object.
-    - call_data: Dictionary with call data, mainly to be passed to :mod:`__OpenTicket()`:.
-    - ticket_data: Dictionary with ticket data, mainly to be passed to :mod:`__OpenTicket()`:.
+        - driver: A loaded Chrome webdriver object.
+        - call_data: Dictionary with call data, mainly to be passed to :mod:`__OpenTicket()`:.
+        - ticket_data: Dictionary with ticket data, mainly to be passed to :mod:`__OpenTicket()`:.
     """
 
     #Calls for ticket creation.
@@ -187,12 +187,12 @@ def __EscalateTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) 
     Returns a LogClass object with the ticket details.
     
     Dependencies:
-    - :mod:`__OpenTicket()`: To open and generate ticket ID.
+        - :mod:`__OpenTicket()`: To open and generate ticket ID.
 
     Arguments:
-    - driver: A loaded Chrome webdriver object.
-    - call_data: Dictionary with call data, mainly to be passed to :mod:`__OpenTicket()`:.
-    - ticket_data: Dictionary with ticket data, mainly to be passed to :mod:`__OpenTicket()`:.
+        - driver: A loaded Chrome webdriver object.
+        - call_data: Dictionary with call data, mainly to be passed to :mod:`__OpenTicket()`:.
+        - ticket_data: Dictionary with ticket data, mainly to be passed to :mod:`__OpenTicket()`:.
     """
 
     #Calls for ticket creation.
@@ -254,12 +254,12 @@ def TicketProcessor(driver:webdriver.Chrome) -> None: #!INCONPLETE
     Processes call data into a ticket and returns a log object with it's details.
 
     Dependencies:
-    - :mod:`__OpenTicket()`: For ticket creation.
-    - :mod:`__CloseTicket()`: For ticket closing.
-    - :mod:`__EscalateTicket()`: For ticket escalation.
+        - :mod:`__OpenTicket()`: For ticket creation.
+        - :mod:`__CloseTicket()`: For ticket closing.
+        - :mod:`__EscalateTicket()`: For ticket escalation.
 
     Arguments:
-    - driver: A loaded Chrome webdriver object.
+        - driver: A loaded Chrome webdriver object.
     """
 
     call_data = LoadJson(Paths.CALL_JSON_PATH)
