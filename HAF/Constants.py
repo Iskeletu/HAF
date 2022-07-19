@@ -94,7 +94,7 @@ class LogConstants:
 
 
 class CLIConstants:
-    """Group of CLI ralated global varialbes, mostly console logging templates."""
+    """Group of CLI ralated global varialebs, mostly console logging templates."""
 
     AVAILABLE_COMMANDS = ['call', 'ticket', 'details', 'help', 'exit']
 
@@ -120,6 +120,15 @@ class CLIConstants:
         'Usage:\n'
         '{Command_Usage}\n'
     )
+
+
+class GUIConstansts:
+    """Group of GUI ralated global varialbes."""
+
+    VALID_LANGS = [
+        'pt-BR',
+        'en-US'
+    ]
     
 
 #This is NOT a script file.
