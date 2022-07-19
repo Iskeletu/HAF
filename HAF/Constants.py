@@ -44,15 +44,15 @@ class Paths:
     Group of path related global variables.
     * Uses double undescore to specify private methods instead of the convenional single underscore.
     """
-    __PROJECT_DIRECTORY = pathlib.Path().parent.resolve()
+    __PROJECT_DIRECTORY = pathlib.Path().parent.resolve().parent.resolve()
     
     ATTACHMENTS_FOLDER_PATH = f'{__PROJECT_DIRECTORY}\\Autofill Dictionary\\Attachments\\'
     DICTIONARY_JSON_PATH = f'{__PROJECT_DIRECTORY}\\Autofill Dictionary\\dictionary.json'
-    CALL_JSON_PATH = f'{__PROJECT_DIRECTORY}\\Call\\call.json'
-    LOG_TXT_PATH = f'{__PROJECT_DIRECTORY}\\Log\\log.txt'
     PERSISTENT_JSON_PATH = f'{__PROJECT_DIRECTORY}\\Log\\persistent.json'
     CHROME_PROFILE_PATH = f'{__PROJECT_DIRECTORY}\\ChromeProfile\\'
+    CALL_JSON_PATH = f'{__PROJECT_DIRECTORY}\\Call\\call.json'
     CONFIG_INI_PATH = f'{__PROJECT_DIRECTORY}\\config.ini'
+    LOG_TXT_PATH = f'{__PROJECT_DIRECTORY}\\Log\\log.txt'
 
 
 class LogConstants:
