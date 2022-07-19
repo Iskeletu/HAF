@@ -51,8 +51,8 @@ class Paths:
     RESOURCES_FOLDER_PATH = f'{__PROJECT_DIRECTORY}\\Lib\\GUI\\Resources\\'
     PERSISTENT_JSON_PATH = f'{__PROJECT_DIRECTORY}\\Log\\persistent.json'
     CHROME_PROFILE_PATH = f'{__PROJECT_DIRECTORY}\\Lib\\ChromeProfile\\'
+    CONFIG_INI_PATH = f'{__PROJECT_DIRECTORY}\\Lib\\config.ini'
     CALL_JSON_PATH = f'{__PROJECT_DIRECTORY}\\Call\\call.json'
-    CONFIG_INI_PATH = f'{__PROJECT_DIRECTORY}\\config.ini'
     LOG_TXT_PATH = f'{__PROJECT_DIRECTORY}\\Log\\log.txt'
 
 
