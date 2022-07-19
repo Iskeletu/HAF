@@ -44,7 +44,8 @@ class Paths:
     Group of path related global variables.
     * Uses double undescore to specify private methods instead of the convenional single underscore.
     """
-    __PROJECT_DIRECTORY = pathlib.Path().parent.resolve().parent.resolve()
+
+    __PROJECT_DIRECTORY = pathlib.Path().parent.parent.resolve()
     
     ATTACHMENTS_FOLDER_PATH = f'{__PROJECT_DIRECTORY}\\Autofill Dictionary\\Attachments\\'
     DICTIONARY_JSON_PATH = f'{__PROJECT_DIRECTORY}\\Autofill Dictionary\\dictionary.json'
