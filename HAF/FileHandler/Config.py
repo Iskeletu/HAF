@@ -97,15 +97,13 @@ class ConfigClass:
         return int(self.__auto_open_flag)
 
 
-    def UpdateCredentials(self, new_password:str, new_email:str = '') -> None:
+    def UpdateCredentials(self, new_email:str, new_password:str) -> None:
         """
         Updates Microsoft credentials information in 'config.ini' file.
 
         Arguments:
-            - new_password: A string for password section update in 'config.ini' file.
-
-        Opitional Arguments:
             - new_email: A string for email section update in 'config.ini' file.
+            - new_password: A string for password section update in 'config.ini' file.
 
         Dependencies:
             - :mod:`__Reload()`: For current data update.
@@ -113,12 +111,8 @@ class ConfigClass:
         """
 
         self.__Reload()
+        self.__email = new_email
         self.__password = new_password
-
-        #Checks if a new e-mail was passed.
-        if new_email:
-            self.__email = new_email
-        
         self.__SaveConfig()
 
 
@@ -148,13 +142,11 @@ class ConfigClass:
             - :mod:`__SaveConfig()`: For 'config.ini' file update.
         """
 
-        self.__Reload()
-
         #Checks if passed string is valid.
         if selected_lang in GUIConstansts.VALID_LANGS:
+            self.__Reload()
             self.__language = selected_lang
-
-        self.__SaveConfig()
+            self.__SaveConfig()
 
 
     def UpdateAutoOpenFlag(self, auto_open_status:bool) -> None:
