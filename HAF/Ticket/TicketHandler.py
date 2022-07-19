@@ -105,6 +105,7 @@ def __OpenTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> L
         - ticket_data: Dictionary with ticket data.
     """
 
+    driver.refresh()
     driver.get(URL.SMART_RECORDER_URL)
 
     main_bar = driver.find_element(By.XPATH, '//*[@id="main"]/div/div[2]/div[1]/div[1]/smart-recorder-input/div/div[2]')
