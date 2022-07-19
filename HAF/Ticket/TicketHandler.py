@@ -291,6 +291,6 @@ def TicketProcessor(driver:webdriver.Chrome) -> None: #!INCONPLETE
     print('Done. Use "details" for more details.\n')
 
 
-#Not a script file.
+#This is NOT a script file.
 if __name__ == '__main__':
     exit('ERROR: Not a script file!')
