@@ -69,7 +69,12 @@ class LogConstants:
     TICKET_CLOSED = 2
     TICKET_ESCALATED = 3
     TICKET_LOADPERSISTENT = 4
-    PROCESS_TYPES = ['Created', 'Closed', 'Escalated', 'Invalid']
+    PROCESS_TYPES = [
+        'Created',
+        'Closed',
+        'Escalated',
+        'Invalid'
+    ]
 
     LOG_DIVIDER = '----------------------------------------------------------------------'
     LOG_TEMPLATE = (
@@ -97,7 +102,13 @@ class LogConstants:
 class CLIConstants:
     """Group of CLI ralated global varialebs, mostly console logging templates."""
 
-    AVAILABLE_COMMANDS = ['call', 'ticket', 'details', 'help', 'exit']
+    AVAILABLE_COMMANDS = [
+        'call',
+        'ticket',
+        'details',
+        'help',
+        'exit'
+    ]
 
     INVALID_COMMAND = '"{Command}" is not a valid command!\nUse "help" for more information.\n'
     INVALID_SUBCOMMAND = 'Subcommand "{Subcommand}" is not valid for "{Command}" command.\n'
@@ -131,6 +142,8 @@ class GUIConstansts:
         'en-US'
     ]
     
+    EMAIL_REGEX = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+
 
 #This is NOT a script file.
 if __name__ == '__main__':
