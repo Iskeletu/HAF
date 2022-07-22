@@ -16,6 +16,21 @@ from HAF.FileHandler.JsonHandler import LoadJson
 from HAF.Constants import Menu, Paths, URL, LogConstants
 
 
+def __TabPresser(action:ActionChains, iterations:int) -> None:
+    """
+    Repeats tab pressing for Menu Navigation.
+
+    Arguments:
+        - action: A loaded ActionChains object vinculated to the driver.
+        - iterations: The number (integer) of times the tab pressing should be repeated.
+    """
+
+    for i in range(iterations):
+        action.send_keys(Keys.TAB)
+        action.perform()
+        time.sleep(Menu.GENERAL_TAB_DELAY)
+
+
 def __TicketMenuNavigator(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> str: #TODO ATTACHMENTS
     """
     Navigates javascrpit menu during ticket creation and returns the ticket ID as a string.\n
@@ -25,6 +40,9 @@ def __TicketMenuNavigator(driver:webdriver.Chrome, call_data:dict, ticket_data:d
         - driver: A loaded Chrome webdriver object.
         - call_data: Dictionary with call data.
         - ticket_data: Dictionary with ticket data.
+
+    Dependencies:
+        - :mod:`__TabPresser()`: for repeated tab pressing.
     """
 
     #Changes focust to driver (menu navigation won't work minimized).
@@ -37,7 +55,8 @@ def __TicketMenuNavigator(driver:webdriver.Chrome, call_data:dict, ticket_data:d
     action = ActionChains(driver)
 
     #Ticket description.
-    action.send_keys(Keys.TAB + str(ticket_data['Body']).format(
+    __TabPresser(action, 1)
+    action.send_keys(str(ticket_data['Body']).format(
         Contact = call_data['Required']['Contact'],
         Hostname = call_data['Required']['Hostname']
     ))
@@ -46,44 +65,48 @@ def __TicketMenuNavigator(driver:webdriver.Chrome, call_data:dict, ticket_data:d
     match ticket_data['Type']:
         case 'ticket':
             #Fills "How is this affecting you?" field.
-            action.send_keys(Keys.TAB + Keys.SPACE)
+            __TabPresser(action, 1)
+            action.send_keys(Keys.SPACE)
             action.perform()
             time.sleep(Menu.GENERAL_ANIMATION_DELAY)
-            action.send_keys(Keys.TAB + Keys.TAB + Keys.TAB + Keys.TAB + Keys.SPACE)
+            __TabPresser(action, 4)
+            action.send_keys(Keys.SPACE)
             action.perform()
             time.sleep(Menu.GENERAL_ANIMATION_DELAY)
 
             #Fills "Degree of affectation" field.
-            action.send_keys(Keys.TAB + Keys.SPACE)
+            __TabPresser(action, 1)
+            action.send_keys(Keys.SPACE)
             action.perform()
             time.sleep(Menu.GENERAL_ANIMATION_DELAY)
-            action.send_keys(Keys.TAB + Keys.SPACE)
+            __TabPresser(action, 1)
+            action.send_keys(Keys.SPACE)
             action.perform()
             time.sleep(Menu.GENERAL_ANIMATION_DELAY)
 
             #Fills "Application" field.
-            action.send_keys(Keys.TAB + ticket_data['Application'])
+            __TabPresser(action, 1)
+            action.send_keys(ticket_data['Application'])
             action.perform()
             time.sleep(Menu.GENERAL_ANIMATION_DELAY)
 
             #Fills "Phone contact" field.
-            action.send_keys(Keys.TAB + Keys.TAB + Keys.TAB + call_data['Required']['Contact'])
+            __TabPresser(action, 3)
+            action.send_keys(call_data['Required']['Contact'])
             action.perform()
-            time.sleep(Menu.GENERAL_ANIMATION_DELAY)
+            time.sleep(Menu.TICKETMENU_SENDBUTTON_DELAY)
 
-            #opens ticket
-            action.send_keys(Keys.TAB + Keys.TAB)
-            action.perform()
-            time.sleep(Menu.GENERAL_ANIMATION_DELAY)
-            action.send_keys(Keys.TAB + Keys.TAB + Keys.SPACE)
+            #Sends ticket.
+            __TabPresser(action, 4)
+            action.send_keys(Keys.SPACE)
             action.perform()
 
         case 'mfa':
-            #Opens ticket.
-            action.send_keys(Keys.TAB + Keys.TAB)
-            action.perform()
-            time.sleep(Menu.GENERAL_ANIMATION_DELAY)
-            action.send_keys(Keys.TAB + Keys.TAB + Keys.SPACE)
+            time.sleep(Menu.TICKETMENU_SENDBUTTON_DELAY)
+
+            #Sends ticket.
+            __TabPresser(action, 4)
+            action.send_keys(Keys.SPACE)
             action.perform()
 
     time.sleep(Menu.TICKETPAGE_LOAD_DELAY)
