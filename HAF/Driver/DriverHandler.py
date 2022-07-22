@@ -11,6 +11,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import WebDriverException
 
 #Internal Modules:
 from HAF.FileHandler.Config import ConfigClass
@@ -94,11 +95,14 @@ def LoadDriver() -> webdriver.Chrome:
     driver.implicitly_wait(10)
 
     #Closes default tabs and opens a blank one.
-    driver.switch_to.new_window()
-    handle = driver.window_handles
-    driver.switch_to.window(handle[0]); driver.close()
-    driver.switch_to.window(handle[1]); driver.close()
-    driver.switch_to.window(handle[2])
+    try: #Catches error in case the driver wasn't properly closed in the previous session.
+        driver.switch_to.new_window()
+        handle = driver.window_handles
+        driver.switch_to.window(handle[0]); driver.close()
+        driver.switch_to.window(handle[1]); driver.close()
+        driver.switch_to.window(handle[2])
+    except WebDriverException:
+        pass
 
     #Loads Fenix ISTM portal.
     driver.get(URL.PORTAL_URL)
