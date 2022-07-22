@@ -136,7 +136,7 @@ class CLIConstants:
     )
 
 
-class GUIConstansts:
+class GUIConstants:
     """Group of GUI ralated global varialbes."""
 
     VALID_LANGS = [

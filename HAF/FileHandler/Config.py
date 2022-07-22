@@ -4,7 +4,7 @@
 import configparser
 
 #Internal Modules:
-from HAF.Constants import Paths, GUIConstansts
+from HAF.Constants import Paths, GUIConstants
 
 
 class ConfigClass:
@@ -143,7 +143,7 @@ class ConfigClass:
         """
 
         #Checks if passed string is valid.
-        if selected_lang in GUIConstansts.VALID_LANGS:
+        if selected_lang in GUIConstants.VALID_LANGS:
             self.__Reload()
             self.__language = selected_lang
             self.__SaveConfig()
