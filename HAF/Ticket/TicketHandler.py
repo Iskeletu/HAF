@@ -97,7 +97,9 @@ def __TicketMenuNavigator(driver:webdriver.Chrome, call_data:dict, ticket_data:d
             time.sleep(Menu.TICKETMENU_SENDBUTTON_DELAY)
 
             #Sends ticket.
-            __TabPresser(action, 4)
+            __TabPresser(action, 3)
+            time.sleep(Menu.GENERAL_ANIMATION_DELAY)
+            __TabPresser(action, 1)
             action.send_keys(Keys.SPACE)
             action.perform()
 
@@ -105,7 +107,9 @@ def __TicketMenuNavigator(driver:webdriver.Chrome, call_data:dict, ticket_data:d
             time.sleep(Menu.TICKETMENU_SENDBUTTON_DELAY)
 
             #Sends ticket.
-            __TabPresser(action, 4)
+            __TabPresser(action, 3)
+            time.sleep(Menu.GENERAL_ANIMATION_DELAY)
+            __TabPresser(action, 1)
             action.send_keys(Keys.SPACE)
             action.perform()
 
