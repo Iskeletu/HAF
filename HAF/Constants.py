@@ -13,6 +13,7 @@ class URL:
     PORTAL_URL = 'https://prosegur-smartit.onbmc.com/smartit/app/#/'
     SMART_RECORDER_URL = 'https://prosegur-smartit.onbmc.com/smartit/app/#/create/smart-recorder'
     TICKED_ID_PREFIX = 'https://prosegur-smartit.onbmc.com/smartit/app/#/sberequest/'
+    ABOUT_PROJECT_URL = 'https://github.com/Iskeletu/HAF/blob/master/README.md'
 
 
 class MicrosoftLogin:
