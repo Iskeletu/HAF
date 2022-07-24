@@ -138,7 +138,10 @@ class CLIConstants:
 
 
 class GUIConstants:
-    """Group of GUI ralated global varialbes."""
+    """
+    Group of GUI ralated global varialbes.
+    * Uses double undescore to specify private methods/attributes instead of the convenional single underscore.
+    """
 
     VALID_LANGS = [
         'pt-BR',
@@ -146,8 +149,10 @@ class GUIConstants:
     ]
     
     EMAIL_REGEX = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+    PASSWORD_REGEX = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[ \'\"!@#$%&*\)\(\-_=+,.><;:/?\]\}\[\{\\|~])[A-Za-z\d \'\"!@#$%&*\)\(\-_=+,.><;:/?\]\}\[\{\\|~]{8,32}$'
 
 
 #This is NOT a script file.
 if __name__ == '__main__':
+    print(GUIConstants.PASSWORD_REGEX)
     exit('ERROR: Not a script file!')
