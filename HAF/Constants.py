@@ -154,5 +154,4 @@ class GUIConstants:
 
 #This is NOT a script file.
 if __name__ == '__main__':
-    print(GUIConstants.PASSWORD_REGEX)
     exit('ERROR: Not a script file!')
