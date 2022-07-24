@@ -113,11 +113,6 @@ class CLIConstants:
         'exit'
     ]
 
-    INVALID_COMMAND = '"{Command}" is not a valid command!\nUse "help" for more information.\n'
-    INVALID_SUBCOMMAND = 'Subcommand "{Subcommand}" is not valid for "{Command}" command.\n'
-    TOO_MANY_ARGUMENTS = 'Too many arguments were given to "{Command}" command!\nUse "help {Command}" for more information.\n'
-    TOO_FEW_ARGUMENTS = 'Missing arguments to "{Command}" command!\nUse "help {Command}" for more information.\n'
-
     HELP_COMMAND_NOARGS = (
         'For specific command information use: "help [command_name]"\n\n'
         'Commands:\n'
@@ -135,6 +130,11 @@ class CLIConstants:
         'Usage:\n'
         '{Command_Usage}\n'
     )
+
+    INVALID_COMMAND = '"{Command}" is not a valid command!\nUse "help" for more information.\n'
+    INVALID_SUBCOMMAND = 'Subcommand "{Subcommand}" is not valid for "{Command}" command.\n'
+    TOO_MANY_ARGUMENTS = 'Too many arguments were given to "{Command}" command!\nUse "help {Command}" for more information.\n'
+    TOO_FEW_ARGUMENTS = 'Missing arguments to "{Command}" command!\nUse "help {Command}" for more information.\n'
 
 
 class GUIConstants:
