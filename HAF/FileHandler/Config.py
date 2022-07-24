@@ -32,7 +32,7 @@ class ConfigClass:
         self.__password = str(configfile['Microsoft']['password'])
         self.__counter = int(configfile['Log']['counter'])
         self.__language = str(configfile['GUI']['language'])
-        self.__auto_open_flag = bool(int(configfile['GUI']['auto_open'])); print(configfile['GUI']['auto_open'])
+        self.__auto_open_flag = bool(int(configfile['GUI']['auto_open']))
 
 
     @property
