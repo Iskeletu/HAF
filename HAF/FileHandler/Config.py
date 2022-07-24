@@ -94,7 +94,7 @@ class ConfigClass:
             >>> auto_open_flag:bool = config.AutoOpenStatus
         """
 
-        return int(self.__auto_open_flag)
+        return bool(self.__auto_open_flag)
 
 
     def UpdateCredentials(self, new_email:str, new_password:str) -> None:
