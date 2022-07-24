@@ -32,7 +32,7 @@ class ConfigClass:
         self.__password = str(configfile['Microsoft']['password'])
         self.__counter = int(configfile['Log']['counter'])
         self.__language = str(configfile['GUI']['language'])
-        self.__auto_open_flag = bool(configfile['GUI']['auto_open'])
+        self.__auto_open_flag = bool(int(configfile['GUI']['auto_open'])); print(configfile['GUI']['auto_open'])
 
 
     @property
@@ -44,7 +44,7 @@ class ConfigClass:
             >>> email:str = config.GetEmail
         """
 
-        return self.__email
+        return str(self.__email)
 
 
     @property
@@ -56,7 +56,7 @@ class ConfigClass:
             >>> password:str = config.GetPassword
         """
 
-        return self.__password
+        return str(self.__password)
 
 
     @property
@@ -94,7 +94,7 @@ class ConfigClass:
             >>> auto_open_flag:bool = config.AutoOpenStatus
         """
 
-        return bool(self.__auto_open_flag)
+        return bool(int(self.__auto_open_flag))
 
 
     def UpdateCredentials(self, new_email:str, new_password:str) -> None:
@@ -111,8 +111,8 @@ class ConfigClass:
         """
 
         self.__Reload()
-        self.__email = new_email
-        self.__password = new_password
+        self.__email = str(new_email)
+        self.__password = str(new_password)
         self.__SaveConfig()
 
 
@@ -143,9 +143,9 @@ class ConfigClass:
         """
 
         #Checks if passed string is valid.
-        if selected_lang in GUIConstants.VALID_LANGS:
+        if str(selected_lang) in GUIConstants.VALID_LANGS:
             self.__Reload()
-            self.__language = selected_lang
+            self.__language = str(selected_lang)
             self.__SaveConfig()
 
 
@@ -162,7 +162,7 @@ class ConfigClass:
         """
 
         self.__Reload()
-        self.__auto_open_flag = auto_open_status
+        self.__auto_open_flag = bool(int(auto_open_status))
         self.__SaveConfig()
 
 
