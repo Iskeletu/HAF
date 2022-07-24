@@ -52,7 +52,7 @@ class Paths:
     
     ATTACHMENTS_FOLDER_PATH = f'{__PROJECT_DIRECTORY}\\Autofill Dictionary\\Attachments\\'
     DICTIONARY_JSON_PATH = f'{__PROJECT_DIRECTORY}\\Autofill Dictionary\\dictionary.json'
-    RESOURCES_FOLDER_PATH = f'{__PROJECT_DIRECTORY}\\Lib\\GUI\\Resources\\'
+    RESOURCES_FOLDER_PATH = f'{__PROJECT_DIRECTORY}\\Lib\\Resources\\'
     PERSISTENT_JSON_PATH = f'{__PROJECT_DIRECTORY}\\Log\\persistent.json'
     CHROME_PROFILE_PATH = f'{__PROJECT_DIRECTORY}\\Lib\\ChromeProfile\\'
     CONFIG_INI_PATH = f'{__PROJECT_DIRECTORY}\\Lib\\config.ini'
