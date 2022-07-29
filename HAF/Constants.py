@@ -151,6 +151,8 @@ class GUIConstants:
     EMAIL_REGEX = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
     PASSWORD_REGEX = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[ \'\"!@#$%&*\)\(\-_=+,.><;:/?\]\}\[\{\\|~])[A-Za-z\d \'\"!@#$%&*\)\(\-_=+,.><;:/?\]\}\[\{\\|~]{8,32}$'
 
+    COLOR_CUSTOM_GRAY = '#EEE'
+
 
 #This is NOT a script file.
 if __name__ == '__main__':
