@@ -36,7 +36,7 @@ class GUI(tk.Tk): #TODO: ALL
 
         self.__driver = driver
         self.__config = config
-        self.__exit_flag = bool(False)
+        self.__exit_value = int(0)
 
         self.__lang = LoadJson(Paths.RESOURCES_FOLDER_PATH + self.__config.GetLanguage + '.json')
         self.__auto_open_flag = tk.IntVar(); self.__auto_open_flag.set(self.__config.AutoOpenStatus)
@@ -52,15 +52,14 @@ class GUI(tk.Tk): #TODO: ALL
         """"""
 
         self.mainloop()
-        return self.__exit_flag
-
+        return self.__exit_value
+        
 
     def Restart(self) -> None: #TODO: Document
         """"""
 
+        self.__exit_value = 2
         self.destroy()
-        self.__init__(self.__config, self.__driver)
-        self.Start()
 
 
     def __CreateWidgets(self) -> None: #TODO: Document
@@ -140,8 +139,8 @@ class GUI(tk.Tk): #TODO: ALL
 
     def __ExitSequence(self) -> None: #TODO: Document
         """"""
-        
-        self.__exit_flag = True
+
+        self.__exit_value = 1
         self.destroy()
 
 

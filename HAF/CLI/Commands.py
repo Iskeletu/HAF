@@ -60,9 +60,17 @@ class GuiCommand():
 
         if self.__validate(command_list): #Command is valid, executes the command.
             print('Running GUI!\n')
-            if GUI(self.__config, self.__driver).Start():
-                return ExitCommand(self.__driver).execute(['exit'])
-            return False
+            exit_value = int(GUI(self.__config, self.__driver).Start())
+            
+            match exit_value:
+                case 0:
+                    return False
+
+                case 1:
+                    return ExitCommand(self.__driver).execute(['exit'])
+
+                case 2:
+                    return self.execute(command_list)
 
         else: #Command is invalid (has arguments), prints the standard invalid subcommand message.
             print(CLIConstants.INVALID_SUBCOMMAND.format(
