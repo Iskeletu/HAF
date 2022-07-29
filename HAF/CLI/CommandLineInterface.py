@@ -31,6 +31,9 @@ def CommandLineInterface(driver:webdriver.Chrome) -> bool:
     #Calls for command execution.
     if command_list: #Does nothing if command is blank.
         match command_list[0]:
+            case 'gui':
+                return GuiCommand(driver).execute(command_list)
+
             case 'call':
                 CallCommand(driver).execute(command_list)
 
