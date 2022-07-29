@@ -13,9 +13,9 @@ def LoadJson(path:str) -> dict:
         - path: A string indicating what file should be loaded.
     """
 
-    with open(path, encoding = 'utf-8') as f:
-        data = json.load(f)
-    f.close()
+    with open(path, encoding = 'utf-8') as file:
+        data = json.load(file)
+    file.close()
 
     return data
 
@@ -29,9 +29,9 @@ def SaveJson(data:dict, path:str) -> None:
         - path: String indicating what file should be overwrited.
     """
 
-    with open(path, 'w') as f:
-        json.dump(data, f, indent = 4)
-    f.close()
+    with open(path, 'w', encoding = 'utf-8') as file:
+        json.dump(data, file, indent = 4, ensure_ascii = False)
+    file.close()
 
 
 #This is NOT a script file.
