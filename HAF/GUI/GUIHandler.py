@@ -212,6 +212,7 @@ class CallTab(ttk.Frame): #TODO ALL
         )
         self.__user_ID_entry.bind('<FocusOut>', lambda _: self.__CTVUpdate())
         self.__user_ID_entry.bind('<KeyRelease>', lambda _: self.__CTVUpdate())
+        
         ##User Contact Entry.
         tk.Label(
             self,
@@ -236,7 +237,7 @@ class CallTab(ttk.Frame): #TODO ALL
         self.__user_contact_entry = tk.Entry(
             self,
             width = 30,
-            validate = 'focusout',
+            validate = 'key',
             validatecommand = (self.register(self.__UserContactValidator), '%P'),
             invalidcommand = lambda: [
                 self.__user_contact_entry.config(
@@ -265,6 +266,7 @@ class CallTab(ttk.Frame): #TODO ALL
         )
         self.__user_contact_entry.bind('<FocusOut>', lambda _: self.__CTVUpdate())
         self.__user_contact_entry.bind('<KeyRelease>', lambda _: self.__CTVUpdate())
+        
         ##User Hostname Entry.
         tk.Label(
             self,
@@ -289,6 +291,7 @@ class CallTab(ttk.Frame): #TODO ALL
         )
         self.__user_hostname_entry.bind('<FocusOut>', lambda _: self.__CTVUpdate())
         self.__user_hostname_entry.bind('<KeyRelease>', lambda _: self.__CTVUpdate())
+        
         ##Variable Entry.
         tk.Label(
             self,
@@ -344,6 +347,7 @@ class CallTab(ttk.Frame): #TODO ALL
             pady = 10,
             sticky = tk.NW
         )
+        
         ##Ticket Type.
         tk.Label(
             self.OptionsFrame,
@@ -370,6 +374,7 @@ class CallTab(ttk.Frame): #TODO ALL
             sticky = tk.NW
         )
         ticket_type_menu.bind('<Configure>', lambda _: self.__CTVUpdate())
+        
         ##Solution Type.
         tk.Label(
             self.OptionsFrame,
