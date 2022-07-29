@@ -64,18 +64,17 @@ class GuiCommand():
             exit_value = int(GUI(self.__config, self.__driver).Start())
             
             match exit_value:
-                case 0:
-                    print('\n')
+                case 0: #User close the window.
+                    print('\n', end = '')
                     return False
 
-                case 1:
+                case 1: #User called for exit.
                     print('\nHAF> exit')
                     return ExitCommand(self.__driver).execute(['exit'])
 
-                case 2:
+                case 2: #GUI needs reset.
                     print('Restarting GUI!')
                     return self.execute(command_list)
-
         else: #Command is invalid (has arguments), prints the standard invalid subcommand message.
             print(CLIConstants.INVALID_SUBCOMMAND.format(
                 Command = command_list[0],
@@ -510,6 +509,7 @@ class ExitCommand():
         """
 
         if self.__validate(command_list): #Command is valid, executes the command.
+            print('- Closing HAF...')
             self.__driver.quit()
             return True
         else: #Command is invalid (has arguments), prints the standard invalid subcommand message.
