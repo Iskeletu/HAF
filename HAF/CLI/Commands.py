@@ -42,6 +42,8 @@ class GuiCommand():
         self.__config = ConfigClass()
         self.__driver = driver
 
+        print('Running GUI!')
+
 
     def execute(self, command_list:list[str]) -> bool:
         """
@@ -59,17 +61,19 @@ class GuiCommand():
         """
 
         if self.__validate(command_list): #Command is valid, executes the command.
-            print('Running GUI!\n')
             exit_value = int(GUI(self.__config, self.__driver).Start())
             
             match exit_value:
                 case 0:
+                    print('\n')
                     return False
 
                 case 1:
+                    print('\nHAF> exit')
                     return ExitCommand(self.__driver).execute(['exit'])
 
                 case 2:
+                    print('Restarting GUI!')
                     return self.execute(command_list)
 
         else: #Command is invalid (has arguments), prints the standard invalid subcommand message.
