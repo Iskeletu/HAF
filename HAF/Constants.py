@@ -106,6 +106,7 @@ class CLIConstants:
     """Group of CLI ralated global varialebs, mostly console logging templates."""
 
     AVAILABLE_COMMANDS = [
+        'gui',
         'call',
         'ticket',
         'details',
@@ -116,6 +117,7 @@ class CLIConstants:
     HELP_COMMAND_NOARGS = (
         'For specific command information use: "help [command_name]"\n\n'
         'Commands:\n'
+        '\t- gui: {gui_Description}\n'
         '\t- call: {call_Description}\n'
         '\t- ticket: {ticket_Description}\n'
         '\t- details: {details_Description}\n'

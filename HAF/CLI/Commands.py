@@ -4,10 +4,89 @@
 from selenium import webdriver
 
 #Internal Modules:
+from HAF.GUI.GUIHandler import GUI
 from HAF.FileHandler.Logger import LogClass
 from HAF.FileHandler.Config import ConfigClass
 from HAF.Constants import CLIConstants, LogConstants
 from HAF.Ticket.TicketHandler import TicketProcessor
+
+
+class GuiCommand():
+    """
+    'gui' command class.\n
+    * Uses double undescore to specify private methods/attributes instead of the convenional single underscore.
+
+    Attributes:
+        - Description: Command description.
+        - Subcommands: A dictionary of available subcommands and their description, blank 
+        if no subcommand is available.
+        - Usage: list off command usages.
+
+    Private Attributes:
+        - __driver: A loaded Chrome webdriver object.
+    """
+
+    Description = 'Opens GUI (Graphical User Interface).'
+    Subcommands = {}
+    Usage = ['gui']
+
+
+    def __init__(self, driver:webdriver.Chrome) -> None:
+        """
+        Initializes an instance of GuiCommand class.
+
+        Arguments:
+            - __driver: A loaded Chrome webdriver object.
+        """
+        
+        self.__config = ConfigClass()
+        self.__driver = driver
+
+
+    def execute(self, command_list:list[str]) -> bool:
+        """
+        Executes the 'gui' command.\n
+
+        Return:
+            - True if exit command should be run.
+            - False otherwise.
+
+        Dependencies:
+            - :mod:`__validation()`: For command validation.
+        
+        Arguments:
+            - command_list: A formatted list containing the full command run by the user.
+        """
+
+        if self.__validate(command_list): #Command is valid, executes the command.
+            if GUI(self.__config, self.__driver).Start():
+                return ExitCommand(self.__driver).execute(['exit'])
+            return False
+
+        else: #Command is invalid (has arguments), prints the standard invalid subcommand message.
+            print(CLIConstants.INVALID_SUBCOMMAND.format(
+                Command = command_list[0],
+                Subcommand = command_list[1]
+            ))
+            return False
+
+
+    def __validate(self, command_list:list[str]) -> bool:
+        """
+        Private method: Validates the command and its arguments (if existant).
+        
+        Return:
+            - True if the command is valid.
+            - False otherwise.
+        
+        Arguments:
+            - command_list: Formatted command list to be validated.
+        """
+
+        if len(command_list) == 1:
+            return True
+        else:
+            return False
 
 
 class CallCommand():
@@ -212,6 +291,7 @@ class HelpCommand():
 
     Description = 'Provides information about available commands.'
     Subcommands = {
+        'gui': 'Shows "gui" command information.',
         'call': 'Shows "call" command information.',
         'ticket': 'Shows "ticket" command information.',
         'details': 'Shows "details" command information.',
@@ -240,6 +320,11 @@ class HelpCommand():
             case 1: #Prints help command for subcommand sent by the user.
                 #Gets class information based on subcommand sent by the user.
                 match command_list[1]:
+                    case 'gui':
+                        Command_Description = GuiCommand.Description
+                        Available_Subcommands = GuiCommand.Subcommands
+                        Command_Usage = GuiCommand.Usage
+
                     case 'call':
                         Command_Description = CallCommand.Description
                         Available_Subcommands = CallCommand.Subcommands
@@ -287,6 +372,7 @@ class HelpCommand():
 
             case 4: #Prints help command without arguments.
                 print(CLIConstants.HELP_COMMAND_NOARGS.format(
+                    gui_Description = GuiCommand.Description,
                     call_Description = CallCommand.Description,
                     ticket_Description = TicketCommand.Description,
                     details_Description = DetailsCommand.Description,
