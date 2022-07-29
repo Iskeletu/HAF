@@ -19,7 +19,7 @@ from HAF.FileHandler.JsonHandler import *
 from HAF.CLI.Commands import *
 
 
-class GUI(tk.Tk): #TODO: ALL
+class GUI(tk.Tk): #TODO: Document
     """
         - __driver:
         - __config:
@@ -53,7 +53,7 @@ class GUI(tk.Tk): #TODO: ALL
 
         self.mainloop()
         return self.__exit_value
-        
+
 
     def Restart(self) -> None: #TODO: Document
         """"""
@@ -124,17 +124,8 @@ class GUI(tk.Tk): #TODO: ALL
         self.__calltab = CallTab(self.__TabControl, self.__lang)
         self.__TabControl.add(self.__calltab, text = self.__lang['Tabs']['CallTab'])
 
-        self.__ConfigureTemplateTab()
-
-
-    def __ConfigureTemplateTab(self) -> None: #transform to class
-        TemplateTab = ttk.Frame(self.__TabControl)
-        self.__TabControl.add(TemplateTab, text = self.__lang['Tabs']['TemplateTab'])
-
-        tk.Label(
-            TemplateTab,
-            text = 'Feature in development.'
-        ).grid(column = 0, row = 0)
+        self.__templatetab = TemplateTab(self.__TabControl, self.__lang)
+        self.__TabControl.add(self.__templatetab, text = self.__lang['Tabs']['TemplateTab'])
 
 
     def __ExitSequence(self) -> None: #TODO: Document
@@ -175,14 +166,30 @@ class CallTab(ttk.Frame): #TODO ALL
             padx = 12,
             sticky = tk.NW
         )
+        self.__user_ID_error = tk.Label(
+            self,
+            text = '',
+            foreground = 'red'
+        )
+        self.__user_ID_error.grid(
+            column = 0,
+            row = 0,
+            padx = 12,
+            sticky = tk.NE
+        )
         self.__user_ID_entry = tk.Entry(
             self,
             width = 30,
             validate = 'focusout',
             validatecommand = (self.register(self.__UserIDValidator), '%P'),
-            invalidcommand = lambda: self.__user_ID_entry.config(
-                foreground = 'red'
-            )
+            invalidcommand = lambda: [
+                self.__user_ID_entry.config(
+                    foreground = 'red'
+                ),
+                self.__user_ID_error.config(
+                    text = self.__lang['Text_Labels']['Invalid_User_ID']
+                )
+            ]
         )
         self.__user_ID_entry.grid(
             column = 0,
@@ -191,9 +198,15 @@ class CallTab(ttk.Frame): #TODO ALL
             pady = [0, 10],
             sticky = tk.NW
         )
-        self.__user_ID_entry.bind('<FocusIn>', lambda _: self.__user_ID_entry.config(
-                foreground = 'black'
-        ))
+        self.__user_ID_entry.bind('<FocusIn>', lambda _: [
+                self.__user_ID_entry.config(
+                    foreground = 'black'
+                ),
+                self.__user_ID_error.config(
+                    text = ''
+                )
+            ]
+        )
         self.__user_ID_entry.bind('<FocusOut>', lambda _: self.__CTVUpdate())
         self.__user_ID_entry.bind('<KeyRelease>', lambda _: self.__CTVUpdate())
         ##User Contact Entry.
@@ -206,12 +219,30 @@ class CallTab(ttk.Frame): #TODO ALL
             padx = [0, 12],
             sticky = tk.NW
         )
+        self.__user_contact_error = tk.Label(
+            self,
+            text = '',
+            foreground = 'red'
+        )
+        self.__user_contact_error.grid(
+            column = 1,
+            row = 0,
+            padx = 12,
+            sticky = tk.NE
+        )
         self.__user_contact_entry = tk.Entry(
             self,
             width = 30,
             validate = 'focusout',
-            validatecommand = (self.register(self.__UserIDValidator), '%P'),
-            #invalidcommand = 
+            validatecommand = (self.register(self.__UserContactValidator), '%P'),
+            invalidcommand = lambda: [
+                self.__user_contact_entry.config(
+                    foreground = 'red'
+                ),
+                self.__user_contact_error.config(
+                    text = self.__lang['Text_Labels']['Invalid_User_Contact']
+                )
+            ]
         )
         self.__user_contact_entry.grid(
             column = 1,
@@ -219,6 +250,15 @@ class CallTab(ttk.Frame): #TODO ALL
             padx = [0, 12],
             pady = [0, 10],
             sticky = tk.NW
+        )
+        self.__user_contact_entry.bind('<FocusIn>', lambda _: [
+                self.__user_contact_entry.config(
+                    foreground = 'black'
+                ),
+                self.__user_contact_error.config(
+                    text = ''
+                )
+            ]
         )
         self.__user_contact_entry.bind('<FocusOut>', lambda _: self.__CTVUpdate())
         self.__user_contact_entry.bind('<KeyRelease>', lambda _: self.__CTVUpdate())
@@ -471,7 +511,7 @@ class CallTab(ttk.Frame): #TODO ALL
         )
 
 
-    def __UserIDValidator(self, string:str) -> bool: #TODO
+    def __UserIDValidator(self, string:str) -> bool: #TODO: Document
         """"""
         
         if string and len(string) == 10:
@@ -488,6 +528,15 @@ class CallTab(ttk.Frame): #TODO ALL
 
             if not error:
                 self.__usernamecash.append(str(string))
+                return True
+        return False
+
+
+    def __UserContactValidator(self, string:str) -> bool: #TODO: Document
+        """"""
+
+        if string.isnumeric():
+            if len(string) == 6 or len(string) == 11:
                 return True
         return False
 
@@ -515,10 +564,22 @@ class CallTab(ttk.Frame): #TODO ALL
                 self.VisualizerTitleText.config(foreground = 'red')
             
             #Visualizer ticket body update.
+            formatted_user_contact = self.__user_contact_entry.get()
+            if self.__UserContactValidator(formatted_user_contact): #Adds standard phone number divisiona characters.
+                if len(formatted_user_contact) == 6:
+                    formatted_user_contact = '(' + formatted_user_contact[:2] + ') ' + formatted_user_contact[2:]
+                else:
+                    formatted_user_contact = (
+                        '(' + formatted_user_contact[:2] + ') ' + 
+                        formatted_user_contact[3] + ' ' + 
+                        formatted_user_contact[3:7] + ' - ' + 
+                        formatted_user_contact[7:]
+                    )
             self.VisualizerBodyText.config(state = tk.NORMAL)
             self.VisualizerBodyText.delete('1.0', tk.END)
             self.VisualizerBodyText.insert(tk.END, str(dictionary['Body']).format(
-                Contact = self.__user_contact_entry.get(),
+                User_ID = self.__user_ID_entry.get(),
+                Contact = formatted_user_contact,
                 Hostname = self.__user_hostname_entry.get(),
                 Variable = self.__variable_entry.get()
             ))
@@ -529,9 +590,12 @@ class CallTab(ttk.Frame): #TODO ALL
                 if self.solution_type_variable.get() != 'Selection':
                     self.VisualizerSolutionText.config(state = tk.NORMAL)
                     self.VisualizerSolutionText.delete('1.0', tk.END)
-                    self.VisualizerSolutionText.insert(tk.END, str(dictionary['Answer'][int(self.solution_type_variable.get())]).format(
-                        Variable = self.__variable_entry.get()
-                    ))
+                    self.VisualizerSolutionText.insert(
+                        tk.END,
+                        str(dictionary['Answer'][int(self.solution_type_variable.get())]).format(
+                            Variable = self.__variable_entry.get()
+                        )
+                    )
                     self.VisualizerSolutionText.config(state = tk.DISABLED)
                     self.VisualizerSolutionText.config(foreground = 'black')
                 else:
@@ -589,6 +653,29 @@ class CallTab(ttk.Frame): #TODO ALL
             self.__solution_type_options = ['Selection']
             self.solution_type_variable.set(self.__solution_type_options[0])
             self.__solution_type_menu.config(state = tk.DISABLED)
+
+
+class TemplateTab(ttk.Frame): #TODO ALL
+    """"""
+
+    def __init__(self, FatherTab:ttk.Notebook, selected_language:dict) -> None:
+        """"""
+
+        super().__init__()
+
+        self.__lang = dict(selected_language)
+        self.__call_dictionary = LoadJson(Paths.DICTIONARY_JSON_PATH)
+
+        self.master = FatherTab
+
+        self.__CreateWidgets()
+
+
+    def __CreateWidgets(self):
+        tk.Label(
+                self,
+                text = 'Feature in development.'
+            ).grid(column = 0, row = 0)
 
 
 class AccountConfiguration(tk.Toplevel): #TODO: REFACTOR/DOCUMENT
@@ -740,7 +827,7 @@ class AccountConfiguration(tk.Toplevel): #TODO: REFACTOR/DOCUMENT
         messagebox.showinfo('HAF', self.__lang['Messages']['AccountUpdate'])
 
 
-class LanguageConfiguration(tk.Toplevel): #TODO: ALL
+class LanguageConfiguration(tk.Toplevel): #TODO: Document
     """"""
 
     def __init__(self, parent:GUI, selected_language:dict, config:ConfigClass) -> None:
@@ -822,7 +909,7 @@ class LanguageConfiguration(tk.Toplevel): #TODO: ALL
         )
 
 
-    def __onMenuChange(self) -> None:
+    def __onMenuChange(self) -> None: #TODO: Document
         """"""
         
         user_selection = self.__language_menu_variable.get()
@@ -835,7 +922,7 @@ class LanguageConfiguration(tk.Toplevel): #TODO: ALL
             self.__refresh_button.config(state = tk.DISABLED)
 
 
-    def __RefreshButtonPress(self) -> None:
+    def __RefreshButtonPress(self) -> None: #TODO: Document
         """"""
 
         self.__config.UpdateLanguage(self.__language_menu_variable.get())
