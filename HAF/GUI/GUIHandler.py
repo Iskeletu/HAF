@@ -237,7 +237,7 @@ class CallTab(ttk.Frame): #TODO ALL
         self.__user_contact_entry = tk.Entry(
             self,
             width = 30,
-            validate = 'key',
+            validate = 'focusout',
             validatecommand = (self.register(self.__UserContactValidator), '%P'),
             invalidcommand = lambda: [
                 self.__user_contact_entry.config(
@@ -265,7 +265,11 @@ class CallTab(ttk.Frame): #TODO ALL
             ]
         )
         self.__user_contact_entry.bind('<FocusOut>', lambda _: self.__CTVUpdate())
-        self.__user_contact_entry.bind('<KeyRelease>', lambda _: self.__CTVUpdate())
+        self.__user_contact_entry.bind('<KeyRelease>', lambda _: [
+                self.__UserContactValidator(self.__user_contact_entry.get()),
+                self.__CTVUpdate()
+            ]
+        )
         
         ##User Hostname Entry.
         tk.Label(
@@ -611,13 +615,13 @@ class CallTab(ttk.Frame): #TODO ALL
                 else:
                     self.VisualizerSolutionText.config(state = tk.NORMAL)
                     self.VisualizerSolutionText.delete('1.0', tk.END)
-                    self.VisualizerSolutionText.insert(tk.END, '{Please, select a solution type in the options}')
+                    self.VisualizerSolutionText.insert(tk.END, self.__lang['Messages']["Missing_Selection"])
                     self.VisualizerSolutionText.config(state = tk.DISABLED)
                     self.VisualizerSolutionText.config(foreground = 'red')
             else:
                 self.VisualizerSolutionText.config(state = tk.NORMAL)
                 self.VisualizerSolutionText.delete('1.0', tk.END)
-                self.VisualizerSolutionText.insert(tk.END, '{Does not apply for this ticket}')
+                self.VisualizerSolutionText.insert(tk.END, self.__lang['Messages']["Doesn't_Apply"])
                 self.VisualizerSolutionText.config(state = tk.DISABLED)
                 self.VisualizerSolutionText.config(foreground = 'red')
 
