@@ -23,6 +23,7 @@ class GUI(tk.Tk): #TODO: ALL
     """
         - __driver:
         - __config:
+        - __exit_flag:
         - __lang:
         - __auto_open_flag:
         - __Tabcontrol:
@@ -35,6 +36,7 @@ class GUI(tk.Tk): #TODO: ALL
 
         self.__driver = driver
         self.__config = config
+        self.__exit_flag = bool(False)
 
         self.__lang = LoadJson(Paths.RESOURCES_FOLDER_PATH + self.__config.GetLanguage + '.json')
         self.__auto_open_flag = tk.IntVar(); self.__auto_open_flag.set(self.__config.AutoOpenStatus)
@@ -46,11 +48,11 @@ class GUI(tk.Tk): #TODO: ALL
         self.__CreateWidgets()
 
 
-    def Start(self) -> bool: #TODO: Document/Return
+    def Start(self) -> bool: #TODO: Document
         """"""
 
         self.mainloop()
-        return False
+        return self.__exit_flag
 
 
     def Restart(self) -> None: #TODO: Document
@@ -99,7 +101,7 @@ class GUI(tk.Tk): #TODO: ALL
         file_menu.add_separator()
         file_menu.add_command( #'Exit' option.
             label = self.__lang['Labels']['File_Label']['Exit'],
-            command = self.destroy
+            command = self.__ExitSequence
         )
 
 
@@ -134,6 +136,13 @@ class GUI(tk.Tk): #TODO: ALL
             TemplateTab,
             text = 'Feature in development.'
         ).grid(column = 0, row = 0)
+
+
+    def __ExitSequence(self) -> None: #TODO: Document
+        """"""
+        
+        self.__exit_flag = True
+        self.destroy()
 
 
 class CallTab(ttk.Frame): #TODO ALL

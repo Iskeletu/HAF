@@ -59,6 +59,7 @@ class GuiCommand():
         """
 
         if self.__validate(command_list): #Command is valid, executes the command.
+            print('Running GUI!\n')
             if GUI(self.__config, self.__driver).Start():
                 return ExitCommand(self.__driver).execute(['exit'])
             return False
