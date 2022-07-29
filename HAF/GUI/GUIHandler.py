@@ -147,6 +147,9 @@ class CallTab(ttk.Frame): #TODO ALL
         self.__call_dictionary = LoadJson(Paths.DICTIONARY_JSON_PATH)
         self.__usernamecash = []
 
+        self.__valid_user_ID_flag = False
+        self.__valid_user_contact_flag = False
+
         self.master = FatherTab
 
         self.__CreateWidgets()
@@ -514,10 +517,11 @@ class CallTab(ttk.Frame): #TODO ALL
     def __UserIDValidator(self, string:str) -> bool: #TODO: Document
         """"""
         
+        self.__valid_user_ID_flag = False
         if string and len(string) == 10:
             if string in self.__usernamecash:
-                return True
-
+                self.__valid_user_ID_flag = True
+                return self.__valid_user_ID_flag
 
             p = subprocess.Popen(
                 f'net user /domain {string}',
@@ -528,17 +532,18 @@ class CallTab(ttk.Frame): #TODO ALL
 
             if not error:
                 self.__usernamecash.append(str(string))
-                return True
-        return False
+                self.__valid_user_ID_flag = True
+        return self.__valid_user_ID_flag
 
 
     def __UserContactValidator(self, string:str) -> bool: #TODO: Document
         """"""
 
+        self.__valid_user_contact_flag = False
         if string.isnumeric():
             if len(string) == 6 or len(string) == 11:
-                return True
-        return False
+                self.__valid_user_contact_flag = True
+        return self.__valid_user_contact_flag
 
 
     def __CTVUpdate(self) -> None: #TODO
@@ -565,7 +570,7 @@ class CallTab(ttk.Frame): #TODO ALL
             
             #Visualizer ticket body update.
             formatted_user_contact = self.__user_contact_entry.get()
-            if self.__UserContactValidator(formatted_user_contact): #Adds standard phone number divisiona characters.
+            if self.__valid_user_contact_flag: #Adds standard phone number division characters.
                 if len(formatted_user_contact) == 6:
                     formatted_user_contact = '(' + formatted_user_contact[:2] + ') ' + formatted_user_contact[2:]
                 else:
