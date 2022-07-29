@@ -573,7 +573,7 @@ class CallTab(ttk.Frame): #TODO ALL
             except KeyError:
                 self.VisualizerTitleText.config(state = tk.NORMAL)
                 self.VisualizerTitleText.delete('1.0', tk.END)
-                self.VisualizerTitleText.insert(tk.END, '{Does not apply for this ticket}')
+                self.VisualizerTitleText.insert(tk.END, self.__lang['Messages']["Doesn't_Apply"])
                 self.VisualizerTitleText.config(state = tk.DISABLED)
                 self.VisualizerTitleText.config(foreground = 'red')
             
