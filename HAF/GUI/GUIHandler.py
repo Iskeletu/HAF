@@ -11,12 +11,11 @@ import re
 from selenium import webdriver
 
 #Internal Modules:
+from HAF.GUI.CallHandler.CallEditor import NewCall
 from HAF.Constants import Paths, GUIConstants, URL
 from HAF.FileHandler.JsonHandler import LoadJson
 from HAF.FileHandler.Config import ConfigClass
 from HAF import __version__ as HAFVersion
-from HAF.FileHandler.JsonHandler import *
-from HAF.CLI.Commands import *
 
 
 class GUI(tk.Tk): #TODO: Document
@@ -121,7 +120,7 @@ class GUI(tk.Tk): #TODO: Document
         self.__TabControl = ttk.Notebook(self)
         self.__TabControl.pack(expand = True, fill = 'both')
 
-        self.__calltab = CallTab(self.__TabControl, self.__lang)
+        self.__calltab = CallTab(self.__driver, self.__TabControl, self.__lang)
         self.__TabControl.add(self.__calltab, text = self.__lang['Tabs']['CallTab'])
 
         self.__templatetab = TemplateTab(self.__TabControl, self.__lang)
@@ -138,17 +137,19 @@ class GUI(tk.Tk): #TODO: Document
 class CallTab(ttk.Frame): #TODO ALL
     """"""
 
-    def __init__(self, FatherTab:ttk.Notebook, selected_language:dict) -> None:
+    def __init__(self, driver, FatherTab:ttk.Notebook, selected_language:dict) -> None:
         """"""
 
         super().__init__()
 
+        self.__driver = driver
         self.__lang = dict(selected_language)
         self.__call_dictionary = LoadJson(Paths.DICTIONARY_JSON_PATH)
         self.__usernamecash = []
 
-        self.__valid_user_ID_flag = False
-        self.__valid_user_contact_flag = False
+        self.__valid_user_ID_flag = bool(False)
+        self.__valid_user_contact_flag = bool(False)
+        self.__formatted_user_contact = str('')
 
         self.master = FatherTab
 
@@ -405,13 +406,15 @@ class CallTab(ttk.Frame): #TODO ALL
         
 
         #Send button.
-        tk.Button(
+        self.__sendbutton = tk.Button(
             self,
             text = self.__lang['Buttons']['Send'],
             height = 4,
-            width = 15
-            #command = #TODO
-        ).grid(
+            width = 15,
+            command = self.__onButtonPress,
+            state = tk.DISABLED
+        )
+        self.__sendbutton.grid(
             column = 3,
             row = 19,
             rowspan = 2,
@@ -555,77 +558,6 @@ class CallTab(ttk.Frame): #TODO ALL
         return self.__valid_user_contact_flag
 
 
-    def __CTVUpdate(self) -> None: #TODO
-        """"""
-
-        if self.ticket_type_variable.get() != 'Selection':
-            dictionary = self.__call_dictionary[self.ticket_type_variable.get()]
-
-            #Visualizer ticket title update.
-            try:
-                self.VisualizerTitleText.config(state = tk.NORMAL)
-                self.VisualizerTitleText.delete('1.0', tk.END)
-                self.VisualizerTitleText.insert(tk.END, str(dictionary['Title']).format(
-                    Variable = self.__variable_entry.get()
-                ))
-                self.VisualizerTitleText.config(state = tk.DISABLED)
-                self.VisualizerTitleText.config(foreground = 'black')
-            except KeyError:
-                self.VisualizerTitleText.config(state = tk.NORMAL)
-                self.VisualizerTitleText.delete('1.0', tk.END)
-                self.VisualizerTitleText.insert(tk.END, self.__lang['Messages']["Doesn't_Apply"])
-                self.VisualizerTitleText.config(state = tk.DISABLED)
-                self.VisualizerTitleText.config(foreground = 'red')
-            
-            #Visualizer ticket body update.
-            formatted_user_contact = self.__user_contact_entry.get()
-            if self.__valid_user_contact_flag: #Adds standard phone number division characters.
-                if len(formatted_user_contact) == 6:
-                    formatted_user_contact = '(' + formatted_user_contact[:2] + ') ' + formatted_user_contact[2:]
-                else:
-                    formatted_user_contact = (
-                        '(' + formatted_user_contact[:2] + ') ' + 
-                        formatted_user_contact[3] + ' ' + 
-                        formatted_user_contact[3:7] + ' - ' + 
-                        formatted_user_contact[7:]
-                    )
-            self.VisualizerBodyText.config(state = tk.NORMAL)
-            self.VisualizerBodyText.delete('1.0', tk.END)
-            self.VisualizerBodyText.insert(tk.END, str(dictionary['Body']).format(
-                User_ID = self.__user_ID_entry.get(),
-                Contact = formatted_user_contact,
-                Hostname = self.__user_hostname_entry.get(),
-                Variable = self.__variable_entry.get()
-            ))
-            self.VisualizerBodyText.config(state = tk.DISABLED)
-
-            #Visualizer ticket solution update.
-            if dictionary['Process-Type'] == 'close':
-                if self.solution_type_variable.get() != 'Selection':
-                    self.VisualizerSolutionText.config(state = tk.NORMAL)
-                    self.VisualizerSolutionText.delete('1.0', tk.END)
-                    self.VisualizerSolutionText.insert(
-                        tk.END,
-                        str(dictionary['Answer'][int(self.solution_type_variable.get())]).format(
-                            Variable = self.__variable_entry.get()
-                        )
-                    )
-                    self.VisualizerSolutionText.config(state = tk.DISABLED)
-                    self.VisualizerSolutionText.config(foreground = 'black')
-                else:
-                    self.VisualizerSolutionText.config(state = tk.NORMAL)
-                    self.VisualizerSolutionText.delete('1.0', tk.END)
-                    self.VisualizerSolutionText.insert(tk.END, self.__lang['Messages']["Missing_Selection"])
-                    self.VisualizerSolutionText.config(state = tk.DISABLED)
-                    self.VisualizerSolutionText.config(foreground = 'red')
-            else:
-                self.VisualizerSolutionText.config(state = tk.NORMAL)
-                self.VisualizerSolutionText.delete('1.0', tk.END)
-                self.VisualizerSolutionText.insert(tk.END, self.__lang['Messages']["Doesn't_Apply"])
-                self.VisualizerSolutionText.config(state = tk.DISABLED)
-                self.VisualizerSolutionText.config(foreground = 'red')
-
-
     def __onTicketTypeSelection(self, dictionary:dict) -> None: #TODO
         """"""
 
@@ -667,6 +599,151 @@ class CallTab(ttk.Frame): #TODO ALL
             self.__solution_type_options = ['Selection']
             self.solution_type_variable.set(self.__solution_type_options[0])
             self.__solution_type_menu.config(state = tk.DISABLED)
+
+        self.__ButtonUpdate()
+
+
+    def __CTVUpdate(self) -> None: #TODO
+        """"""
+
+        if self.ticket_type_variable.get() != 'Selection':
+            dictionary = self.__call_dictionary[self.ticket_type_variable.get()]
+
+            #Visualizer ticket title update.
+            try:
+                self.VisualizerTitleText.config(state = tk.NORMAL)
+                self.VisualizerTitleText.delete('1.0', tk.END)
+                self.VisualizerTitleText.insert(tk.END, str(dictionary['Title']).format(
+                    Variable = self.__variable_entry.get()
+                ))
+                self.VisualizerTitleText.config(state = tk.DISABLED)
+                self.VisualizerTitleText.config(foreground = 'black')
+            except KeyError:
+                self.VisualizerTitleText.config(state = tk.NORMAL)
+                self.VisualizerTitleText.delete('1.0', tk.END)
+                self.VisualizerTitleText.insert(tk.END, self.__lang['Messages']["Does_Not_Apply"])
+                self.VisualizerTitleText.config(state = tk.DISABLED)
+                self.VisualizerTitleText.config(foreground = 'red')
+            
+            #Visualizer ticket body update.
+            self.__formatted_user_contact = self.__user_contact_entry.get()
+            if self.__valid_user_contact_flag: #Adds standard phone number division characters.
+                if len(self.__formatted_user_contact) == 6:
+                    self.__formatted_user_contact = '(' + self.__formatted_user_contact[:2] + ') ' + self.__formatted_user_contact[2:]
+                else:
+                    self.__formatted_user_contact = (
+                        '(' + self.__formatted_user_contact[:2] + ') ' + 
+                        self.__formatted_user_contact[3] + ' ' + 
+                        self.__formatted_user_contact[3:7] + ' - ' + 
+                        self.__formatted_user_contact[7:]
+                    )
+            self.VisualizerBodyText.config(state = tk.NORMAL)
+            self.VisualizerBodyText.delete('1.0', tk.END)
+            self.VisualizerBodyText.insert(tk.END, str(dictionary['Body']).format(
+                User_ID = self.__user_ID_entry.get(),
+                Contact = self.__formatted_user_contact,
+                Hostname = self.__user_hostname_entry.get(),
+                Variable = self.__variable_entry.get()
+            ))
+            self.VisualizerBodyText.config(state = tk.DISABLED)
+
+            #Visualizer ticket solution update.
+            if dictionary['Process-Type'] == 'close':
+                if self.solution_type_variable.get() != 'Selection':
+                    self.VisualizerSolutionText.config(state = tk.NORMAL)
+                    self.VisualizerSolutionText.delete('1.0', tk.END)
+                    self.VisualizerSolutionText.insert(
+                        tk.END,
+                        str(dictionary['Answer'][int(self.solution_type_variable.get())]).format(
+                            Variable = self.__variable_entry.get()
+                        )
+                    )
+                    self.VisualizerSolutionText.config(state = tk.DISABLED)
+                    self.VisualizerSolutionText.config(foreground = 'black')
+                else:
+                    self.VisualizerSolutionText.config(state = tk.NORMAL)
+                    self.VisualizerSolutionText.delete('1.0', tk.END)
+                    self.VisualizerSolutionText.insert(tk.END, self.__lang['Messages']["Missing_Selection"])
+                    self.VisualizerSolutionText.config(state = tk.DISABLED)
+                    self.VisualizerSolutionText.config(foreground = 'red')
+            else:
+                self.VisualizerSolutionText.config(state = tk.NORMAL)
+                self.VisualizerSolutionText.delete('1.0', tk.END)
+                self.VisualizerSolutionText.insert(tk.END, self.__lang['Messages']["Does_Not_Apply"])
+                self.VisualizerSolutionText.config(state = tk.DISABLED)
+                self.VisualizerSolutionText.config(foreground = 'red')
+        
+            self.__ButtonUpdate()
+
+
+    def __ButtonUpdate(self) -> None: #TODO: Document
+        """"""
+
+        ticket_type = self.ticket_type_variable.get()
+        solution_type = self.solution_type_variable.get()
+
+        if(
+            self.__valid_user_ID_flag and
+            self. __valid_user_contact_flag and
+            ticket_type != 'Selection'
+        ):
+            if(
+                self.__call_dictionary[ticket_type]['Process-Type'] != 'close' or
+                self.__call_dictionary[ticket_type]['Process-Type'] == 'close' and
+                solution_type != 'Selection'
+            ):
+                if(
+                    not self.__call_dictionary[ticket_type]['Needs_Hostname'] or
+                    self.__call_dictionary[ticket_type]['Needs_Hostname'] and
+                    self.__user_hostname_entry.get()
+                ):
+                    if(
+                        not self.__call_dictionary[ticket_type]['Needs_Variable'] or
+                        self.__call_dictionary[ticket_type]['Needs_Variable'] and
+                        self.__variable_entry.get()
+                    ):
+                        self.__sendbutton.config(state = tk.NORMAL)
+                        return
+        self.__sendbutton.config(state = tk.DISABLED)
+
+
+    def __onButtonPress(self) -> None: #TODO
+        """"""
+
+        if self.__UserIDValidator(self.__user_ID_entry.get()):
+            self.__sendbutton.config(state = tk.DISABLED)
+
+            call_type = self.ticket_type_variable.get()
+            
+            if self.__call_dictionary[call_type]['Needs_Hostname']:
+                hostname = self.__user_hostname_entry.get()
+            else:
+                hostname = 'Not Required'
+
+            if self.__call_dictionary[call_type]['Process-Type'] == 'close':
+                solution = int(self.solution_type_variable.get())
+            else:
+                solution = 0
+
+            if self.__call_dictionary[call_type]['Needs_Variable']:
+                variable = self.__variable_entry.get()
+            else:
+                variable = 'Not Required'
+
+            print('\nHAF> call register')
+            NewCall(
+                self.__driver,
+                self.__user_ID_entry.get(),
+                self.__formatted_user_contact,
+                hostname,
+                call_type,
+                solution,
+                variable
+            )
+
+            self.__sendbutton.config(state = tk.NORMAL)
+        else:
+            self.__ButtonUpdate()
 
 
 class TemplateTab(ttk.Frame): #TODO ALL
