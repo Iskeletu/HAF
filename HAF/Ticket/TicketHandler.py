@@ -58,7 +58,8 @@ def __TicketMenuNavigator(driver:webdriver.Chrome, call_data:dict, ticket_data:d
     __TabPresser(action, 1)
     action.send_keys(str(ticket_data['Body']).format(
         Contact = call_data['Required']['Contact'],
-        Hostname = call_data['Required']['Hostname']
+        Hostname = call_data['Required']['Hostname'],
+        Variable = call_data['Optional']['Variable']
     ))
     action.perform()
 
@@ -88,7 +89,7 @@ def __TicketMenuNavigator(driver:webdriver.Chrome, call_data:dict, ticket_data:d
             __TabPresser(action, 1)
             action.send_keys(ticket_data['Application'])
             action.perform()
-            time.sleep(Menu.GENERAL_ANIMATION_DELAY)
+            time.sleep(Menu.TICKETMENU_APPLICATION_DELAY)
 
             #Fills "Phone contact" field.
             __TabPresser(action, 3)
@@ -172,7 +173,11 @@ def __CloseTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> 
 
     #Edits ticket title.
     driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/title-bar/div[2]/div/div[1]/label/input').send_keys(Keys.CONTROL + 'a')
-    driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/title-bar/div[2]/div/div[1]/label/input').send_keys(ticket_data['Title'])
+    driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/title-bar/div[2]/div/div[1]/label/input').send_keys(str(ticket_data['Title']).format(
+        Contact = call_data['Required']['Contact'],
+        Hostname = call_data['Required']['Hostname'],
+        Variable = call_data['Optional']['Variable']
+    ))
 
     #Changes status to "ongoing".
     driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[1]/div/div/div[1]/label/div/button').click()
@@ -202,7 +207,11 @@ def __CloseTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> 
     driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[1]/div/div[1]/div[2]/div/label/div/ul/li[1]/a').click()
 
     #Edits ticket solution and saves changes.
-    driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[1]/div/div[2]/div/label/textarea').send_keys(ticket_data['Answer'][int(call_data['Optional']['Solution'])])
+    driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[1]/div/div[2]/div/label/textarea').send_keys(str(ticket_data['Answer'][int(call_data['Optional']['Solution'])]).format(
+        Contact = call_data['Required']['Contact'],
+        Hostname = call_data['Required']['Hostname'],
+        Variable = call_data['Optional']['Variable']
+    ))
     driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[2]/div/button[1]').click()
 
     Ticket_Log.UpdateType(LogConstants.TICKET_CLOSED) #Updates ticket status to closed.
@@ -234,7 +243,11 @@ def __EscalateTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) 
 
     #Edits ticket title.
     driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/title-bar/div[2]/div/div[1]/label/input').send_keys(Keys.CONTROL + 'a')
-    driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/title-bar/div[2]/div/div[1]/label/input').send_keys(ticket_data['Title'])
+    driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/title-bar/div[2]/div/div[1]/label/input').send_keys(str(ticket_data['Title']).format(
+        Contact = call_data['Required']['Contact'],
+        Hostname = call_data['Required']['Hostname'],
+        Variable = call_data['Optional']['Variable']
+    ))
     
     #Sets standard ticket definition.
     driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[2]/div/div[2]/div[1]/div[1]/div[1]/div/div[3]/div/div/label/div/div/div/button').click()
