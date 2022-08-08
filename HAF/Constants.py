@@ -53,9 +53,10 @@ class Paths:
     
     ATTACHMENTS_FOLDER_PATH = f'{__PROJECT_DIRECTORY}\\Autofill Dictionary\\Attachments\\'
     DICTIONARY_JSON_PATH = f'{__PROJECT_DIRECTORY}\\Autofill Dictionary\\dictionary.json'
-    RESOURCES_FOLDER_PATH = f'{__PROJECT_DIRECTORY}\\Lib\\Resources\\'
+    BUFFERING_GIF = f'{__PROJECT_DIRECTORY}\\Lib\\Resources\\buffering.gif'
     PERSISTENT_JSON_PATH = f'{__PROJECT_DIRECTORY}\\Log\\persistent.json'
     CHROME_PROFILE_PATH = f'{__PROJECT_DIRECTORY}\\Lib\\ChromeProfile\\'
+    RESOURCES_FOLDER_PATH = f'{__PROJECT_DIRECTORY}\\Lib\\Resources\\'
     CONFIG_INI_PATH = f'{__PROJECT_DIRECTORY}\\Lib\\config.ini'
     CALL_JSON_PATH = f'{__PROJECT_DIRECTORY}\\Call\\call.json'
     LOG_TXT_PATH = f'{__PROJECT_DIRECTORY}\\Log\\log.txt'
@@ -155,6 +156,7 @@ class GUIConstants:
     PASSWORD_REGEX = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[ \'\"!@#$%&*\)\(\-_=+,.><;:/?\]\}\[\{\\|~])[A-Za-z\d \'\"!@#$%&*\)\(\-_=+,.><;:/?\]\}\[\{\\|~]{8,32}$'
 
     COLOR_CUSTOM_GRAY = '#EEE'
+    COLOR_CUSTOM_BLUE = '#007ACC'
 
 
 #This is NOT a script file.
