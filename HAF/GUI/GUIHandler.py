@@ -1,4 +1,4 @@
-""""""
+"""GUI module."""
 
 #Native Modules:
 from tkinter import ttk, messagebox
@@ -6,7 +6,7 @@ from tkinter import ttk, messagebox
 import tkinter as tk
 import subprocess
 import webbrowser
-import threading
+#import threading
 import re
 
 #External Modules:
@@ -22,23 +22,40 @@ from HAF import __version__ as HAFVersion
 
 class GUI(tk.Tk): #TODO: Document
     """
+    Private Attributes:
         - __driver:
         - __config:
-        - __exit_flag:
+        - __exit_value:
         - __lang:
         - __auto_open_flag:
-        - __Tabcontrol:
+        - __StatusBar: Initialized StatusBar object.
+        - __CallTab: Initialized Calltab object.
+        - __TemplateTab: Initialized TemplateTab object.
+
+    Exit Codes:
+        - 0: Standard exit sequence.
+        - 1: Full exit sequence.
+        - 2: Restart sequence.
     """
 
-    def __init__(self, config:ConfigClass, driver:webdriver.Chrome) -> None: #TODO: Document
-        """"""
+    def __init__(self, config:ConfigClass, driver:webdriver.Chrome) -> None:
+        """
+        Creates a new GUI object, use :mod:`foo.Start()` to start the main loop.
+
+        Arguments:
+            - config: A loaded ConfigClass object.
+            - driver: A loaded Chrome webdriver object.
+
+        Dependencies:
+            - :mod:`__CreateWidgets()` for tkinter widget creation.
+        """
 
         super().__init__()
 
         self.__driver = driver
         self.__config = config
-        self.__exit_value = int(0)
 
+        self.__exit_value = int(0) #Refer to exit codes documented bellow class definition.
         self.__lang = LoadJson(Paths.RESOURCES_FOLDER_PATH + self.__config.GetLanguage + '.json')
         self.__auto_open_flag = tk.IntVar(); self.__auto_open_flag.set(self.__config.AutoOpenStatus)
 
@@ -49,26 +66,36 @@ class GUI(tk.Tk): #TODO: Document
         self.__CreateWidgets()
 
 
-    def Start(self) -> bool: #TODO: Document
-        """"""
+    def Start(self) -> bool:
+        """
+        Starts main screen main loop.
+
+        Returns an integer stored in 'self.__exit_value' that indicates how to program was closed.
+        """
 
         self.mainloop()
         return self.__exit_value
 
 
-    def Restart(self) -> None: #TODO: Document
-        """"""
+    def Restart(self) -> None:
+        """Finishes main loop with exit value of 2 (Restart)."""
 
         self.__exit_value = 2
         self.destroy()
 
 
-    def __CreateWidgets(self) -> None: #TODO: Document
-        """"""
+    def __Exit(self) -> None:
+        """Private Method: Finishes main loop with exit value of 1 (Close)."""
+
+        self.__exit_value = 1
+        self.destroy()
+
+
+    def __CreateWidgets(self) -> None:
+        """Private Method: Initiates widgets for the main screen."""
 
         #Menu bar configuration:
         menu_bar = tk.Menu(self)
-
 
         #'File' menu configuration:
         file_menu = tk.Menu(menu_bar, tearoff = False)
@@ -101,9 +128,8 @@ class GUI(tk.Tk): #TODO: Document
         file_menu.add_separator()
         file_menu.add_command( #'Exit' option.
             label = self.__lang['Labels']['File_Label']['Exit'],
-            command = self.__ExitSequence
+            command = self.__Exit
         )
-
 
         #'Help' menu configuration:
         help_menu = tk.Menu(menu_bar, tearoff = False)
@@ -112,45 +138,123 @@ class GUI(tk.Tk): #TODO: Document
             command = lambda: webbrowser.open(URL.ABOUT_PROJECT_URL, autoraise = True)
         )
 
-
+        #Menu bar definition:
         menu_bar.add_cascade(label = self.__lang['Labels']['File_Label']['Title'], menu = file_menu)
         menu_bar.add_cascade(label = self.__lang['Labels']['Help_Label']['Title'], menu = help_menu)
         self.config(menu = menu_bar)
 
 
-        #Tab configuration:
-        self.__TabControl = ttk.Notebook(self)
-        self.__TabControl.pack(expand = True, fill = 'both')
-
-        self.__calltab = CallTab(self, self.__driver, self.__TabControl, self.__lang)
-        self.__TabControl.add(self.__calltab, text = self.__lang['Tabs']['CallTab'])
-
-        self.__templatetab = TemplateTab(self.__TabControl, self.__lang)
-        self.__TabControl.add(self.__templatetab, text = self.__lang['Tabs']['TemplateTab'])
-
-
         #Status bar:
-        self.statusbar = StatusBar(self, self.__lang)
+        self.__StatusBar = StatusBar(self, self.__lang)
 
 
-    def __ExitSequence(self) -> None: #TODO: Document
-        """"""
+        #Tab configuration:
+        tab_control = ttk.Notebook(self)
+        tab_control.pack(expand = True, fill = 'both')
 
-        self.__exit_value = 1
-        self.destroy()
+        self.__CallTab = CallTab(self.__driver, self.__StatusBar, tab_control, self.__lang)
+        tab_control.add(self.__CallTab, text = self.__lang['Tabs']['CallTab'])
+
+        self.__TemplateTab = TemplateTab(tab_control, self.__lang)
+        tab_control.add(self.__TemplateTab, text = self.__lang['Tabs']['TemplateTab'])
 
 
-class CallTab(ttk.Frame): #TODO ALL
+class StatusBar(tk.Frame): #TODO
     """"""
 
-    def __init__(self, parent:GUI, driver:webdriver.Chrome, FatherTab:ttk.Notebook, selected_language:dict) -> None:
+    def __init__(self, parent:GUI, selected_language:dict) -> None:
+        """"""
+        
+        super().__init__()
+
+        self.__lang = selected_language
+
+        self.master = parent
+
+        self.__CreateWidgets()
+
+    
+    def __CreateWidgets(self) -> None:
+        """Creates status bar widgets."""
+
+        self.config(background = GUIConstants.COLOR_CUSTOM_BLUE)
+        self.pack(side = tk.BOTTOM, fill = tk.X)
+
+        #Text:
+        self.__text = tk.Label(
+            self,
+            text = self.__lang['Text_Labels']['Idle'],
+            background = GUIConstants.COLOR_CUSTOM_BLUE,
+            foreground = 'white'
+        )
+        self.__text.pack(
+            side = tk.LEFT,
+            padx = 10
+        )
+
+        #Buffering icon:
+        frame_count = 8
+        buffering_frames = [
+            tk.PhotoImage(
+                file = Paths.BUFFERING_GIF,
+                format = 'gif -index %i' % (i)
+            ) for i in range(frame_count)
+        ]
+        
+        icon_canvas = tk.Canvas(
+            self,
+            height = 25,
+            width = 25,
+            background = GUIConstants.COLOR_CUSTOM_BLUE,
+            highlightthickness = 0
+        )
+        icon_canvas.pack(
+            side = tk.RIGHT,
+            padx = 10,
+            pady = 2
+        )
+        #icon_canvas.create_image(, y, image = buffering_frames[0], anchor = tk.NE)
+
+
+    def ChangeText(self, string:str = 'Default Message') -> None:
+        """
+        Changes status bar text.
+
+        Optional Arguments:
+            - string: A new string to be displayed, dafaults to 'Idle' message.
+        """
+        
+        if string == 'Default Message':
+            string = self.__lang['Text_Labels']['Idle']
+        self.__text.config(text = string)
+
+
+    def ShowBuffering(self, flag:bool) -> None: #TODO: IMPLEMENT
+        """
+        Configures status bar buffering icon.
+
+        Arguments:
+            - flag: A bool indicating whether the buffering icon should be turned on or off.
+        """
+
+        if flag:
+            return
+        else:
+            return
+
+
+class CallTab(ttk.Frame): #TODO: Document / Threading
+    """"""
+
+    def __init__(self, driver:webdriver.Chrome, statusbar:StatusBar, FatherTab:ttk.Notebook, selected_language:dict) -> None:
         """"""
 
         super().__init__()
 
-        self.__parent = parent
         self.__driver = driver
+        self.__statusbar = statusbar
         self.__lang = dict(selected_language)
+
         self.__call_dictionary = LoadJson(Paths.DICTIONARY_JSON_PATH)
         self.__usernamecash = []
 
@@ -163,7 +267,7 @@ class CallTab(ttk.Frame): #TODO ALL
         self.__CreateWidgets()
 
     
-    def __CreateWidgets(self) -> None: #TODO: Commands/Document
+    def __CreateWidgets(self) -> None: #TODO: Document
         """"""
 
         #Header Entries.
@@ -370,9 +474,9 @@ class CallTab(ttk.Frame): #TODO ALL
             padx = 12,
             sticky = tk.NE
         )
-        self.__ticket_type_options = ['Selection'] + list(self.__call_dictionary.keys())
+        self.__ticket_type_options = [str(self.__lang['Text_Labels']['Selection'])] + list(self.__call_dictionary.keys())
         self.__ticket_type_variable = tk.StringVar()
-        self.__ticket_type_variable.set('Selection')
+        self.__ticket_type_variable.set(self.__lang['Text_Labels']['Selection'])
         self.__ticket_type_menu = ttk.OptionMenu(
             self.OptionsFrame,
             self.__ticket_type_variable,
@@ -397,9 +501,9 @@ class CallTab(ttk.Frame): #TODO ALL
             padx = 12,
             sticky = tk.NE
         )
-        self.__solution_type_options = ['Selection']
+        self.__solution_type_options = [str(self.__lang['Text_Labels']['Selection'])]
         self.__solution_type_variable = tk.StringVar()
-        self.__solution_type_variable.set('Selection')
+        self.__solution_type_variable.set(self.__lang['Text_Labels']['Selection'])
         self.__solution_type_menu = ttk.OptionMenu(
             self.OptionsFrame,
             self.__solution_type_variable,
@@ -448,7 +552,7 @@ class CallTab(ttk.Frame): #TODO ALL
         )
 
 
-    def __CallTabVisualizer(self) -> None: #TODO: document
+    def __CallTabVisualizer(self) -> None: #TODO: Document
         """"""
 
         #Visualizer Frame Widget
@@ -590,7 +694,7 @@ class CallTab(ttk.Frame): #TODO ALL
         return self.__valid_user_contact_flag
 
 
-    def __onTicketTypeSelection(self, dictionary:dict) -> None: #TODO: Documents
+    def __onTicketTypeSelection(self, dictionary:dict) -> None: #TODO: Document
         """"""
 
         if dictionary['Needs_Hostname']:
@@ -607,11 +711,11 @@ class CallTab(ttk.Frame): #TODO ALL
         
         if dictionary['Process-Type'] == 'close': #Updates solution menu for 'close' ticket types.
             #Makes a numeric list for every answer availate for the ticket template.
-            numberlist = ['Selection']
+            numberlist = [str(self.__lang['Text_Labels']['Selection'])]
             for i in range (0, len(list(dictionary['Answer']))):
                 numberlist.append(str(i))
             self.__solution_type_options = numberlist
-            self.__solution_type_variable.set('Selection')
+            self.__solution_type_variable.set(self.__lang['Text_Labels']['Selection'])
 
             #Recreates solution selection widget (editing it causes undefined behaviour).
             self.__solution_type_menu.destroy()
@@ -628,7 +732,7 @@ class CallTab(ttk.Frame): #TODO ALL
             sticky = tk.NW
             )
         else: #The process type is not 'close', resets solution menu to default settings.
-            self.__solution_type_options = ['Selection']
+            self.__solution_type_options = [str(self.__lang['Text_Labels']['Selection'])]
             self.__solution_type_variable.set(self.__solution_type_options[0])
             self.__solution_type_menu.config(state = tk.DISABLED)
 
@@ -637,7 +741,8 @@ class CallTab(ttk.Frame): #TODO ALL
 
     def __PhoneNumberFormatter(self, input_string:str) -> str:
         """
-        Private Method: Formats phone number (e.g. (10) 0 1234 - 5678 | (10) 5678).
+        Private Method: Formats phone number (e.g. '(12) 9 1234 - 5678' | 
+        '(12) 1234 - 5678' | '(12) 1234').
         
         Return:
             - A string with the formatted number.
@@ -677,10 +782,10 @@ class CallTab(ttk.Frame): #TODO ALL
         return result_string
 
     
-    def __CTVUpdate(self) -> None: #TODO
+    def __CTVUpdate(self) -> None: #TODO: Document
         """"""
 
-        if self.__ticket_type_variable.get() != 'Selection':
+        if self.__ticket_type_variable.get() != self.__lang['Text_Labels']['Selection']:
             dictionary = self.__call_dictionary[self.__ticket_type_variable.get()]
 
             #Visualizer ticket title update.
@@ -713,7 +818,7 @@ class CallTab(ttk.Frame): #TODO ALL
 
             #Visualizer ticket solution update.
             if dictionary['Process-Type'] == 'close':
-                if self.__solution_type_variable.get() != 'Selection':
+                if self.__solution_type_variable.get() != self.__lang['Text_Labels']['Selection']:
                     self.__VisualizerSolutionText.config(state = tk.NORMAL)
                     self.__VisualizerSolutionText.delete('1.0', tk.END)
                     self.__VisualizerSolutionText.insert(
@@ -744,7 +849,7 @@ class CallTab(ttk.Frame): #TODO ALL
         """Private Method: Resets all 'call' tab widgets to their default state."""
 
         #Resets solution type menu:
-        self.__solution_type_options = ['Selection']
+        self.__solution_type_options = [str(self.__lang['Text_Labels']['Selection'])]
         self.__solution_type_variable.set(self.__solution_type_options[0])
         self.__solution_type_menu.config(state = tk.DISABLED)
 
@@ -779,42 +884,41 @@ class CallTab(ttk.Frame): #TODO ALL
         self.__SendButtonUpdate()
 
 
-    def __SendButtonUpdate(self) -> None: #TODO: Document
-        """"""
+    def __SendButtonUpdate(self) -> None:
+        """Private Method: Changes 'send' button state."""
 
         ticket_type = self.__ticket_type_variable.get()
-        solution_type = self.__solution_type_variable.get()
 
         if(
             self.__valid_user_ID_flag and
             self. __valid_user_contact_flag and
-            ticket_type != 'Selection'
-        ):
+            ticket_type != self.__lang['Text_Labels']['Selection']
+        ): #User ID and user contact are valid and ticktet type is selected.
             if(
                 self.__call_dictionary[ticket_type]['Process-Type'] != 'close' or
                 self.__call_dictionary[ticket_type]['Process-Type'] == 'close' and
-                solution_type != 'Selection'
-            ):
+                self.__solution_type_variable.get() != self.__lang['Text_Labels']['Selection']
+            ): #Ticket type is 'close' and solution type is selected or ticket type is not 'close' (does not need solution type).
                 if(
                     not self.__call_dictionary[ticket_type]['Needs_Hostname'] or
                     self.__call_dictionary[ticket_type]['Needs_Hostname'] and
                     self.__user_hostname_entry.get()
-                ):
+                ): #Ticket template needs hostname and 'user hostname' entry has a valid hostname or ticket template does not need a hostname.
                     if(
                         not self.__call_dictionary[ticket_type]['Needs_Variable'] or
                         self.__call_dictionary[ticket_type]['Needs_Variable'] and
                         self.__variable_entry.get()
-                    ):
+                    ): #Ticket template needs variable and variable entry has text or ticket template does not need a variable.
                         self.__sendbutton.config(state = tk.NORMAL)
                         return
         self.__sendbutton.config(state = tk.DISABLED)
 
 
-    def __onSendButtonPress(self) -> None: #TODO
+    def __onSendButtonPress(self) -> None: #TODO: Document / Therading
         """"""
 
         if self.__UserIDValidator(self.__user_ID_entry.get()):
-            self.__parent.statusbar.ChangeText(self.__lang['Text_Labels']['Registering'])
+            self.__statusbar.ChangeText(self.__lang['Text_Labels']['Registering'])
             self.__sendbutton.config(state = tk.DISABLED)
 
             call_type = self.__ticket_type_variable.get()
@@ -846,7 +950,7 @@ class CallTab(ttk.Frame): #TODO ALL
             )
 
             messagebox.showinfo('HAF', self.__lang['Messages']['Call_Register'])
-            self.__parent.statusbar.ChangeText()
+            self.__statusbar.ChangeText()
 
             self.__onTicketTypeSelection(self.__call_dictionary[self.__ticket_type_variable.get()])
             self.__CTVUpdate()
@@ -877,90 +981,6 @@ class TemplateTab(ttk.Frame): #TODO ALL
             ).grid(column = 0, row = 0)
 
 
-class StatusBar(tk.Frame): #TODO
-    """"""
-
-    def __init__(self, parent:GUI, selected_language:dict) -> None:
-        """"""
-        
-        super().__init__()
-
-        self.__lang = selected_language
-
-        self.master = parent
-
-        self.__CreateWidgets()
-
-    
-    def __CreateWidgets(self) -> None:
-        """Creates status bar widgets."""
-
-        self.config(background = GUIConstants.COLOR_CUSTOM_BLUE)
-        self.pack(side = tk.BOTTOM, fill = tk.X)
-
-        #Text:
-        self.__text = tk.Label(
-            self,
-            text = self.__lang['Text_Labels']['Idle'],
-            background = GUIConstants.COLOR_CUSTOM_BLUE,
-            foreground = 'white'
-        )
-        self.__text.pack(
-            side = tk.LEFT,
-            padx = 10
-        )
-
-        #Buffering icon:
-        frame_count = 8
-        buffering_frames = [
-            tk.PhotoImage(
-                file = Paths.BUFFERING_GIF,
-                format = 'gif -index %i' % (i)
-            ) for i in range(frame_count)
-        ]
-        
-        icon_canvas = tk.Canvas(
-            self,
-            height = 25,
-            width = 25,
-            background = GUIConstants.COLOR_CUSTOM_BLUE,
-            highlightthickness = 0
-        )
-        icon_canvas.pack(
-            side = tk.RIGHT,
-            padx = 10,
-            pady = 2
-        )
-        #icon_canvas.create_image(, y, image = buffering_frames[0], anchor = tk.NE)
-
-
-    def ChangeText(self, string:str = 'Default Message') -> None:
-        """
-        Changes status bar text.
-
-        Optional Arguments:
-            - string: A new string to be displayed, dafaults to 'Idle' message.
-        """
-        
-        if string == 'Default Message':
-            string = self.__lang['Text_Labels']['Idle']
-        self.__text.config(text = string)
-
-
-    def ShowBuffering(self, flag:bool) -> None: #TODO: IMPLEMENT
-        """
-        Configures status bar buffering icon.
-
-        Arguments:
-            - flag: A bool indicating whether the buffering icon should be turned on or off.
-        """
-
-        if flag:
-            return
-        else:
-            return
-
-
 class AccountConfiguration(tk.Toplevel): #TODO: REFACTOR/DOCUMENT
     """"""
 
@@ -980,7 +1000,7 @@ class AccountConfiguration(tk.Toplevel): #TODO: REFACTOR/DOCUMENT
         self.__valid_email_flag = bool(False)
         self.__valid_password_flag = bool(False)
 
-        self.__create_widgets()
+        self.__CreateWidgets()
 
     
     def Start(self) -> None:
@@ -989,78 +1009,125 @@ class AccountConfiguration(tk.Toplevel): #TODO: REFACTOR/DOCUMENT
         self.mainloop()
 
 
-    def __create_widgets(self) -> None:
+    def __CreateWidgets(self) -> None:
         """"""
 
         #Email Field.
-        ttk.Label(
+        tk.Label(
             self,
             text = 'E-mail:'
-        ).grid(row = 0, column = 0, padx = 5)
-        self.__email_error = ttk.Label(self, foreground='red')
-        self.__email_entry = ttk.Entry(
+        ).grid(
+            column = 0,
+            row = 0,
+            padx = [10, 0],
+            pady = [6, 0],
+            sticky = tk.W
+        )
+        self.__email_error = tk.Label(
+            self,
+            foreground='red'
+        )
+        self.__email_error.grid(
+            column = 1,
+            row = 0,
+            padx = [0, 10],
+            sticky = tk.E
+        )
+        self.__email_entry = tk.Entry(
             self,
             width = 50,
             validate = 'focusout',
             validatecommand = (self.register(self.__EmailValidator), '%P'),
             invalidcommand = self.__on_InvalidEmail
         )
+        self.__email_entry.grid(
+            column = 0,
+            columnspan = 2,
+            row = 1,
+            padx = 10,
+            pady = [0, 5]
+        )
         self.__email_entry.bind('<FocusIn>', self.__on_EmailFocus)
         self.__email_entry.bind('<FocusOut>', self.__ButtonStateHandler)
         self.__email_entry.bind('<Key>', self.__ButtonStateHandler)
-
-        self.__email_entry.grid(row = 0, column = 1, columnspan = 2, padx = 5)
-        self.__email_error.grid(row = 1, column = 1, padx = 5, sticky = tk.W)
 
 
         #Password Field.
         ttk.Label(
             self,
             text = self.__lang['Text_Labels']['Password'] + ':'
-        ).grid(row = 2, column = 0, padx = 5)
+        ).grid(
+            column = 0,
+            row = 2,
+            padx = [10, 0],
+            sticky = tk.W
+        )
+        
         self.__password_error = ttk.Label(self, foreground='red')
+        self.__password_error.grid(
+            column = 1,
+            row = 2,
+            padx = [0, 10],
+            sticky = tk.E
+        )
+        
         self.__password_entry = ttk.Entry(
             self,
-            show = '*',
+            show = '•',
             width = 50,
             validate = 'focusout',
             validatecommand = (self.register(self.__PasswordValidator), '%P'),
             invalidcommand = self.__on_InvalidPassword
         )
+        self.__password_entry.grid(
+            column = 0,
+            columnspan = 2,
+            row = 3,
+            padx = 10,
+            pady = [0, 10]
+        )
         self.__password_entry.bind('<FocusIn>', self.__on_PasswordFocus)
         self.__password_entry.bind('<FocusOut>', self.__ButtonStateHandler)
         self.__password_entry.bind('<Key>', self.__ButtonStateHandler)
 
-        self.__password_entry.grid(row = 2, column = 1, columnspan = 2, padx = 5)
-        self.__password_error.grid(row = 3, column = 1, sticky = tk.W, padx = 5)
-
 
         #Save button.
-        self.__save_button = ttk.Button(
+        self.__save_button = tk.Button(
             self,
             text = self.__lang['Buttons']['Save'],
+            height = 2,
+            width = 10,
             state = 'disabled',
             command = self.__ButtonPress
         )
-        self.__save_button.grid(row = 0, column = 4, padx = 5)
+        self.__save_button.grid(
+            column = 4,
+            row = 1,
+            rowspan = 2,
+            padx = [0, 10]
+        )
 
 
     def __EmailValidator(self, input:str) -> bool:
-        """"""
+        """
+        Private Method: Validates if input string is a valid e-mail.
+
+        Returns true if the input is a valid e-mail, false otherwise.
+        """
         
         if re.fullmatch(GUIConstants.EMAIL_REGEX, input) is None:
             return False
         return True
 
 
-    def __on_InvalidEmail(self) -> None:
+    def __on_InvalidEmail(self) -> None: #TODO: Remove
         """"""
 
         self.__email_error['text'] = 'Invalid E-mail!'
         self.__email_entry['foreground'] = 'red'
 
 
-    def __on_EmailFocus(self, event:tk.Event) -> None:
+    def __on_EmailFocus(self, event:tk.Event) -> None: #TODO: Remove
         """"""
 
         self.__email_entry['foreground'] = 'black'
@@ -1068,40 +1135,44 @@ class AccountConfiguration(tk.Toplevel): #TODO: REFACTOR/DOCUMENT
 
     
     def __PasswordValidator(self, input:str) -> bool:
-        """"""
+        """
+        Private Method: Validates if input string is a valid password.
+
+        Returns true if the input is a valid password, false otherwise.
+        """
 
         if re.fullmatch(GUIConstants.PASSWORD_REGEX, input) is None:
             return False
         return True
 
 
-    def __on_InvalidPassword(self) -> None:
+    def __on_InvalidPassword(self) -> None: #TODO: Remove
         """"""
 
         self.__password_error['text'] = 'Invalid Password!'
         self.__password_entry['foreground'] = 'red'
 
 
-    def __on_PasswordFocus(self, event:tk.Event) -> None:
+    def __on_PasswordFocus(self, event:tk.Event) -> None: #TODO: Remove
         """"""
 
         self.__password_entry['foreground'] = 'black'
         self.__password_error['text'] = ''
 
 
-    def __ButtonStateHandler(self, event:tk.Event) -> None:
+    def __ButtonStateHandler(self, event:tk.Event) -> None: #TODO: Document
         """"""
 
-        self.valid_email_flag = self.__EmailValidator(self.__email_entry.get())
-        self.valid_password_flag = self.__PasswordValidator(self.__password_entry.get())
+        self.__valid_email_flag = self.__EmailValidator(self.__email_entry.get())
+        self.__valid_password_flag = self.__PasswordValidator(self.__password_entry.get())
 
-        if self.valid_email_flag and self.valid_password_flag:
+        if self.__valid_email_flag and self.__valid_password_flag:
             self.__save_button.config(state = 'normal')
         else:
             self.__save_button.config(state = 'disabled')
 
     
-    def __ButtonPress(self) -> None:
+    def __ButtonPress(self) -> None: #TODO: Document
         """"""
 
         self.__config.UpdateCredentials(self.__email_entry.get(), self.__password_entry.get())
@@ -1163,9 +1234,9 @@ class LanguageConfiguration(tk.Toplevel): #TODO: Document
             padx = 10,
         )
 
-        options_list = ['Selection'] + GUIConstants.VALID_LANGS
+        options_list = [str(self.__lang['Text_Labels']['Selection'])] + GUIConstants.VALID_LANGS
         self.__language_menu_variable = tk.StringVar()
-        self.__language_menu_variable.set('Selection')
+        self.__language_menu_variable.set(self.__lang['Text_Labels']['Selection'])
         language_menu = ttk.OptionMenu(
             Frame,
             self.__language_menu_variable,
@@ -1197,7 +1268,7 @@ class LanguageConfiguration(tk.Toplevel): #TODO: Document
         
         user_selection = self.__language_menu_variable.get()
         if( #!
-            user_selection != 'Selection' and 
+            user_selection != self.__lang['Text_Labels']['Selection'] and 
             user_selection != self.__current_language
         ):
             self.__refresh_button.config(state = tk.NORMAL)
