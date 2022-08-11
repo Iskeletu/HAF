@@ -1236,6 +1236,9 @@ class AccountConfiguration(tk.Toplevel):
         """
         Private Method:
         Sends user input to 'config.ini' file and closes sub screen.
+
+        Dependencies:
+            - :mod:`__ButtonStateHandler()`: For user input validation and send button state handling.
         """
 
         #Calls for one last state update in case of abnormal entry change.
