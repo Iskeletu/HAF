@@ -20,14 +20,17 @@ from HAF.FileHandler.Config import ConfigClass
 from HAF import __version__ as HAFVersion
 
 
-class GUI(tk.Tk): #TODO: Document
+class GUI(tk.Tk):
     """
+    Graphical User Interface Class.\n
+    * Uses double undescore to specify private methods/attributes instead of the convenional single underscore.
+
     Private Attributes:
-        - __driver:
-        - __config:
-        - __exit_value:
-        - __lang:
-        - __auto_open_flag:
+        - __config: A loaded ConfigClass object.
+        - __driver: A loaded Chrome webdriver object.
+        - __exit_value: An integer that is returned when GUI closes, exit codes bellow.
+        - __lang: A loaded language resource.
+        - __auto_open_flag: A boolean indicating whether or not the GUI should auto-start at program execution.
         - __StatusBar: Initialized StatusBar object.
         - __CallTab: Initialized Calltab object.
         - __TemplateTab: Initialized TemplateTab object.
@@ -37,7 +40,7 @@ class GUI(tk.Tk): #TODO: Document
         - 1: Full exit sequence.
         - 2: Restart sequence.
     """
-
+    
     def __init__(self, config:ConfigClass, driver:webdriver.Chrome) -> None:
         """
         Creates a new GUI object, use :mod:`foo.Start()` to start the main loop.
@@ -47,9 +50,9 @@ class GUI(tk.Tk): #TODO: Document
             - driver: A loaded Chrome webdriver object.
 
         Dependencies:
-            - :mod:`__CreateWidgets()` for tkinter widget creation.
+            - :mod:`__CreateWidgets()`: For tkinter widget creation.
         """
-
+        
         super().__init__()
 
         self.__driver = driver
@@ -85,14 +88,23 @@ class GUI(tk.Tk): #TODO: Document
 
 
     def __Exit(self) -> None:
-        """Private Method: Finishes main loop with exit value of 1 (Close)."""
+        """
+        Private Method:
+        Finishes main loop with exit value of 1 (Close).
+        """
 
         self.__exit_value = 1
         self.destroy()
 
 
     def __CreateWidgets(self) -> None:
-        """Private Method: Initiates widgets for the main screen."""
+        """
+        Private Method:
+        Loads widgets for the main screen.
+        
+        Dependencies:
+            - :mod:`__Exit()` for exit sequence.
+        """
 
         #Menu bar configuration:
         menu_bar = tk.Menu(self)
@@ -246,7 +258,7 @@ class StatusBar(tk.Frame): #TODO
 class CallTab(ttk.Frame): #TODO: Document / Threading
     """"""
 
-    def __init__(self, driver:webdriver.Chrome, statusbar:StatusBar, FatherTab:ttk.Notebook, selected_language:dict) -> None:
+    def __init__(self, driver:webdriver.Chrome, statusbar:StatusBar, FatherTab:ttk.Notebook, selected_language:dict) -> None: #TODO: Document
         """"""
 
         super().__init__()
@@ -656,7 +668,8 @@ class CallTab(ttk.Frame): #TODO: Document / Threading
 
     def __UserIDValidator(self, string:str) -> bool:
         """
-        Private Method: Checks if string is a valid user ID.
+        Private Method:
+        Checks if string is a valid user ID.
 
         Returns true if strig a valid user ID, false otherwise.
 
@@ -741,7 +754,8 @@ class CallTab(ttk.Frame): #TODO: Document / Threading
 
     def __PhoneNumberFormatter(self, input_string:str) -> str:
         """
-        Private Method: Formats phone number (e.g. '(12) 9 1234 - 5678' | 
+        Private Method:
+        Formats phone number (e.g. '(12) 9 1234 - 5678' | 
         '(12) 1234 - 5678' | '(12) 1234').
         
         Return:
@@ -846,7 +860,13 @@ class CallTab(ttk.Frame): #TODO: Document / Threading
 
 
     def __onClearButtonPress(self) -> None:
-        """Private Method: Resets all 'call' tab widgets to their default state."""
+        """
+        Private Method:
+        Resets all 'call' tab widgets to their default state.
+
+        Dependencies:
+            - :mod:` __SendButtonUpdate()`: For send button reset.
+        """
 
         #Resets solution type menu:
         self.__solution_type_options = [str(self.__lang['Text_Labels']['Selection'])]
@@ -885,7 +905,10 @@ class CallTab(ttk.Frame): #TODO: Document / Threading
 
 
     def __SendButtonUpdate(self) -> None:
-        """Private Method: Changes 'send' button state."""
+        """
+        Private Method:
+        Changes 'send' button state.
+        """
 
         ticket_type = self.__ticket_type_variable.get()
 
@@ -981,11 +1004,36 @@ class TemplateTab(ttk.Frame): #TODO ALL
             ).grid(column = 0, row = 0)
 
 
-class AccountConfiguration(tk.Toplevel): #TODO: REFACTOR/DOCUMENT
-    """"""
+class AccountConfiguration(tk.Toplevel):
+    """
+    Account Configuration sub screen class for GUI class.\n
+    * Uses double undescore to specify private methods/attributes instead of the convenional single underscore.
+
+    Private Attributes:
+        - __lang: A loaded language resource.
+        - __config: A loaded ConfigClass object.
+        - __valid_email_flag: A boolean indicating whether or not 
+        user input on e-mail entry is a a valid e-mail.
+        - __valid_password_flag: A boolean indicating whether or 
+        not user input on password entry is a a valid password.
+        - __email_error: Tkinter label widget for e-mail entry error messages.
+        - __email_entry: Tkinter entry widget for e-mail user input.
+        - __password_error: Tkinter label widget for password entry error messages.
+        - __password_entry: Tkinter entry widget for password user input.
+        - __save_button: Tkinter button widget for sending user input to 'config.ini' file.
+    """
 
     def __init__(self, parent:GUI, selected_language:dict, config:ConfigClass) -> None:
-        """"""
+        """
+
+        Arguements:
+            - parent: Object referente to GUI main screen for 'master' attribute definition.
+            - selected_language: A loaded language resource.
+            - config: A loaded ConfigClass object.
+
+        Dependencies:
+            - :mod:`__CreateWidgets()`: For tkinter widget creation.
+        """
 
         super().__init__()
 
@@ -1025,12 +1073,13 @@ class AccountConfiguration(tk.Toplevel): #TODO: REFACTOR/DOCUMENT
         )
         self.__email_error = tk.Label(
             self,
-            foreground='red'
+            foreground = 'red'
         )
         self.__email_error.grid(
             column = 1,
             row = 0,
             padx = [0, 10],
+            pady = [6, 0],
             sticky = tk.E
         )
         self.__email_entry = tk.Entry(
@@ -1038,7 +1087,10 @@ class AccountConfiguration(tk.Toplevel): #TODO: REFACTOR/DOCUMENT
             width = 50,
             validate = 'focusout',
             validatecommand = (self.register(self.__EmailValidator), '%P'),
-            invalidcommand = self.__on_InvalidEmail
+            invalidcommand = lambda: [
+                self.__email_error.config(text = self.__lang['Text_Labels']['Invalid_E-mail']),
+                self.__email_entry.config(foreground = 'red')
+            ]
         )
         self.__email_entry.grid(
             column = 0,
@@ -1047,13 +1099,17 @@ class AccountConfiguration(tk.Toplevel): #TODO: REFACTOR/DOCUMENT
             padx = 10,
             pady = [0, 5]
         )
-        self.__email_entry.bind('<FocusIn>', self.__on_EmailFocus)
-        self.__email_entry.bind('<FocusOut>', self.__ButtonStateHandler)
-        self.__email_entry.bind('<Key>', self.__ButtonStateHandler)
+        self.__email_entry.bind('<FocusIn>', lambda _: [
+                self.__email_entry.config(foreground = 'black'),
+                self.__email_error.config(text = '')
+            ]
+        )
+        self.__email_entry.bind('<FocusOut>', lambda _: self.__ButtonStateHandler())
+        self.__email_entry.bind('<Key>', lambda _: self.__ButtonStateHandler())
 
 
         #Password Field.
-        ttk.Label(
+        tk.Label(
             self,
             text = self.__lang['Text_Labels']['Password'] + ':'
         ).grid(
@@ -1062,22 +1118,26 @@ class AccountConfiguration(tk.Toplevel): #TODO: REFACTOR/DOCUMENT
             padx = [10, 0],
             sticky = tk.W
         )
-        
-        self.__password_error = ttk.Label(self, foreground='red')
+        self.__password_error = tk.Label(
+            self,
+            foreground = 'red'
+        )
         self.__password_error.grid(
             column = 1,
             row = 2,
             padx = [0, 10],
             sticky = tk.E
-        )
-        
-        self.__password_entry = ttk.Entry(
+        )        
+        self.__password_entry = tk.Entry(
             self,
             show = '•',
             width = 50,
             validate = 'focusout',
             validatecommand = (self.register(self.__PasswordValidator), '%P'),
-            invalidcommand = self.__on_InvalidPassword
+            invalidcommand = lambda: [
+                self.__password_error.config(text = self.__lang['Text_Labels']['Invalid_Password']),
+                self.__password_entry.config(foreground = 'red')
+            ]
         )
         self.__password_entry.grid(
             column = 0,
@@ -1086,9 +1146,13 @@ class AccountConfiguration(tk.Toplevel): #TODO: REFACTOR/DOCUMENT
             padx = 10,
             pady = [0, 10]
         )
-        self.__password_entry.bind('<FocusIn>', self.__on_PasswordFocus)
-        self.__password_entry.bind('<FocusOut>', self.__ButtonStateHandler)
-        self.__password_entry.bind('<Key>', self.__ButtonStateHandler)
+        self.__password_entry.bind('<FocusIn>', lambda _: [
+                self.__password_entry.config(foreground = 'black'),
+                self.__password_error.config(text = '')
+            ]
+        )
+        self.__password_entry.bind('<FocusOut>', lambda _: self.__ButtonStateHandler())
+        self.__password_entry.bind('<Key>', lambda _: self.__ButtonStateHandler())
 
 
         #Save button.
@@ -1116,24 +1180,12 @@ class AccountConfiguration(tk.Toplevel): #TODO: REFACTOR/DOCUMENT
         """
         
         if re.fullmatch(GUIConstants.EMAIL_REGEX, input) is None:
-            return False
-        return True
+            self.__valid_email_flag = False
+        else:
+            self.__valid_email_flag = True
+        return self.__valid_email_flag
 
 
-    def __on_InvalidEmail(self) -> None: #TODO: Remove
-        """"""
-
-        self.__email_error['text'] = 'Invalid E-mail!'
-        self.__email_entry['foreground'] = 'red'
-
-
-    def __on_EmailFocus(self, event:tk.Event) -> None: #TODO: Remove
-        """"""
-
-        self.__email_entry['foreground'] = 'black'
-        self.__email_error['text'] = ''
-
-    
     def __PasswordValidator(self, input:str) -> bool:
         """
         Private Method: Validates if input string is a valid password.
@@ -1142,29 +1194,25 @@ class AccountConfiguration(tk.Toplevel): #TODO: REFACTOR/DOCUMENT
         """
 
         if re.fullmatch(GUIConstants.PASSWORD_REGEX, input) is None:
-            return False
-        return True
+            self.__valid_password_flag = False
+        else:
+            self.__valid_password_flag = True
+        return self.__valid_password_flag
 
 
-    def __on_InvalidPassword(self) -> None: #TODO: Remove
-        """"""
+    def __ButtonStateHandler(self) -> None:
+        """
+        Private Method:
+        Enables send button if user input is valid.
 
-        self.__password_error['text'] = 'Invalid Password!'
-        self.__password_entry['foreground'] = 'red'
+        Dependencies:
+            - :mod:`__EmailValidator()`: For user input validation on e-mail entry.
+            - :mod:`__PasswordValidator()`: For user input validation on password entry.
+        """
 
-
-    def __on_PasswordFocus(self, event:tk.Event) -> None: #TODO: Remove
-        """"""
-
-        self.__password_entry['foreground'] = 'black'
-        self.__password_error['text'] = ''
-
-
-    def __ButtonStateHandler(self, event:tk.Event) -> None: #TODO: Document
-        """"""
-
-        self.__valid_email_flag = self.__EmailValidator(self.__email_entry.get())
-        self.__valid_password_flag = self.__PasswordValidator(self.__password_entry.get())
+        #Forces user input validation.
+        self.__EmailValidator(self.__email_entry.get())
+        self.__PasswordValidator(self.__password_entry.get())
 
         if self.__valid_email_flag and self.__valid_password_flag:
             self.__save_button.config(state = 'normal')
@@ -1172,8 +1220,11 @@ class AccountConfiguration(tk.Toplevel): #TODO: REFACTOR/DOCUMENT
             self.__save_button.config(state = 'disabled')
 
     
-    def __ButtonPress(self) -> None: #TODO: Document
-        """"""
+    def __ButtonPress(self) -> None:
+        """
+        Private Method:
+        Send user input to 'config.ini' file and closes sub screen.
+        """
 
         self.__config.UpdateCredentials(self.__email_entry.get(), self.__password_entry.get())
         self.destroy()
