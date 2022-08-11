@@ -103,7 +103,7 @@ class GUI(tk.Tk):
         Loads widgets for the main screen.
         
         Dependencies:
-            - :mod:`__Exit()` for exit sequence.
+            - :mod:`__Exit()`: For exit sequence.
         """
 
         #Menu bar configuration:
@@ -1025,6 +1025,7 @@ class AccountConfiguration(tk.Toplevel):
 
     def __init__(self, parent:GUI, selected_language:dict, config:ConfigClass) -> None:
         """
+        Creates a new AccountConfiguration object, use :mod:`foo.Start()` to start the sub screen main loop.
 
         Arguements:
             - parent: Object referente to GUI main screen for 'master' attribute definition.
@@ -1052,13 +1053,22 @@ class AccountConfiguration(tk.Toplevel):
 
     
     def Start(self) -> None:
-        """"""
+        """Starts the sub screen main loop."""
 
         self.mainloop()
 
 
     def __CreateWidgets(self) -> None:
-        """"""
+        """
+        Private Method:
+        Loads widgets for the account configuration sub screen.
+        
+        Dependencies:
+            - :mod:`__EmailValidator()`: For user input validation on e-mail entry.
+            - :mod:`__PasswordValidator()`: For user input validation on password entry.
+            - :mod:`__ButtonStateHandler()`: For send button state handling.
+            - :mod:`__ButtonPress`: For button press sequence.
+        """
 
         #Email Field.
         tk.Label(
@@ -1174,7 +1184,8 @@ class AccountConfiguration(tk.Toplevel):
 
     def __EmailValidator(self, input:str) -> bool:
         """
-        Private Method: Validates if input string is a valid e-mail.
+        Private Method:
+        Validates if input string is a valid e-mail.
 
         Returns true if the input is a valid e-mail, false otherwise.
         """
@@ -1188,7 +1199,8 @@ class AccountConfiguration(tk.Toplevel):
 
     def __PasswordValidator(self, input:str) -> bool:
         """
-        Private Method: Validates if input string is a valid password.
+        Private Method:
+        Validates if input string is a valid password.
 
         Returns true if the input is a valid password, false otherwise.
         """
@@ -1223,13 +1235,17 @@ class AccountConfiguration(tk.Toplevel):
     def __ButtonPress(self) -> None:
         """
         Private Method:
-        Send user input to 'config.ini' file and closes sub screen.
+        Sends user input to 'config.ini' file and closes sub screen.
         """
 
-        self.__config.UpdateCredentials(self.__email_entry.get(), self.__password_entry.get())
-        self.destroy()
-        
-        messagebox.showinfo('HAF', self.__lang['Messages']['AccountUpdate'])
+        #Calls for one last state update in case of abnormal entry change.
+        self.__ButtonStateHandler()
+
+        if self.__valid_email_flag and self.__valid_password_flag:
+            self.__config.UpdateCredentials(self.__email_entry.get(), self.__password_entry.get())
+            self.destroy()
+            
+            messagebox.showinfo('HAF', self.__lang['Messages']['AccountUpdate'])
 
 
 class LanguageConfiguration(tk.Toplevel): #TODO: Document
