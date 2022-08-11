@@ -36,7 +36,7 @@ class GuiCommand():
         Initializes an instance of GuiCommand class.
 
         Arguments:
-            - __driver: A loaded Chrome webdriver object.
+            - driver: A loaded Chrome webdriver object.
         """
         
         self.__config = ConfigClass()
@@ -50,12 +50,12 @@ class GuiCommand():
         Return:
             - True if exit command should be run.
             - False otherwise.
-
-        Dependencies:
-            - :mod:`__validation()`: For command validation.
         
         Arguments:
             - command_list: A formatted list containing the full command run by the user.
+
+        Dependencies:
+            - :mod:`__validation()`: For command validation.
         """
 
         if self.__validate(command_list): #Command is valid, executes the command.
@@ -129,7 +129,7 @@ class CallCommand():
         Initializes an instance of CallCommand class.
 
         Arguments:
-            - __driver: A loaded Chrome webdriver object.
+            - driver: A loaded Chrome webdriver object.
         """
 
         self.__driver = driver
@@ -138,12 +138,12 @@ class CallCommand():
     def execute(self, command_list:list[str]) -> None:
         """
         Executes the 'call' command.\n
-
-        Dependencies:
-            - :mod:`__validation()`: For command validation, see its documentation for return values.
         
         Arguments:
             - command_list: A formatted list conatining the full command run by the user.
+
+        Dependencies:
+            - :mod:`__validation()`: For command validation, see its documentation for return values.
         """
 
         match self.__validate(command_list):
@@ -214,13 +214,15 @@ class TicketCommand(): #TODO
         Initializes an instance of TicketCommand class.
 
         Arguments:
-            - __driver: A loaded Chrome webdriver object.
+            - driver: A loaded Chrome webdriver object.
         """
 
         self.__driver = driver
 
 
     def execute(self, command_list:list[str]) -> None: #TODO
+        """"""
+
         TODO = True
 
 
@@ -250,12 +252,12 @@ class DetailsCommand():
     def execute(self, command_list:list[str]) -> None:
         """
         Executes the 'exit' command.\n
-
-        Dependencies:
-            - :mod:`__validation()`: For command validation.
         
         Arguments:
             - command_list: A formatted list containing the full command run by the user.
+
+        Dependencies:
+            - :mod:`__validation()`: For command validation.
         """
 
         if self.__validate(command_list): #Command is valid, executes the command
@@ -319,14 +321,14 @@ class HelpCommand():
     def execute(self, command_list:list[str]) -> None:
         """
         Executes the 'help' command.\n
+        
+        Arguments:
+            - command_list: A formatted list conatining the full command run by the user.
 
         Dependencies:
             - :mod:`__validation()`: For command validation, see its documentation for return values.
             - :mod:`__Subcommands_Formatter()`: For subcommand dictionary to string conversion.
             - :mod:`__Usage_Formatter()`: For usage list to string conversion.
-        
-        Arguments:
-            - command_list: A formatted list conatining the full command run by the user.
         """
 
         match self.__validate(command_list):
@@ -501,12 +503,12 @@ class ExitCommand():
         Return:
             - True if sucessful.
             - False otherwise.
-
-        Dependencies:
-            - :mod:`__validation()`: For command validation.
         
         Arguments:
             - command_list: A formatted list containing the full command run by the user.
+
+        Dependencies:
+            - :mod:`__validation()`: For command validation.
         """
 
         if self.__validate(command_list): #Command is valid, executes the command.
