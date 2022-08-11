@@ -1,5 +1,5 @@
 """
-Constant values definition file.
+Constant values definition module.
 * None of these values should change during runtime.
 """
  
