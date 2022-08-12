@@ -10,7 +10,10 @@ from HAF.Constants import Paths
 
 
 def __ClearCall() -> None:
-    """Private Function: Sets call.json to default state."""
+    """
+    Private Function:
+    Sets call.json to default state.
+    """
 
     blank_call = {
         'Required': {
@@ -66,9 +69,7 @@ def NewCall(
     }
 
     SaveJson(new_call, Paths.CALL_JSON_PATH)
-
     TicketProcessor(driver)
-
     __ClearCall()
 
 

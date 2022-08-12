@@ -6,7 +6,7 @@ from tkinter import ttk, messagebox
 import tkinter as tk
 import subprocess
 import webbrowser
-#import threading
+import threading
 import re
 
 #External Modules:
@@ -171,7 +171,7 @@ class GUI(tk.Tk):
         tab_control.add(self.__TemplateTab, text = self.__lang['Tabs']['TemplateTab'])
 
 
-class StatusBar(tk.Frame): #TODO
+class StatusBar(tk.Frame): #TODO: All
     """"""
 
     def __init__(self, parent:GUI, selected_language:dict) -> None:
@@ -255,16 +255,61 @@ class StatusBar(tk.Frame): #TODO
             return
 
 
-class CallTab(ttk.Frame): #TODO: Document / Threading
-    """"""
+class CallTab(tk.Frame):
+    """
+    Call Tab widget class for GUI class.\n
+    * Uses double undescore to specify private methods/attributes instead of the convenional single underscore.
 
-    def __init__(self, driver:webdriver.Chrome, statusbar:StatusBar, FatherTab:ttk.Notebook, selected_language:dict) -> None: #TODO: Document
-        """"""
+    Private Attributes:
+        - __driver: A loaded Chrome webdriver object.
+        - __StatusBar: A loaded StatusBar object.
+        - __lang: A loaded language resource.
+        - __call_dictionary: 
+        - __usernamecash: A list of valid user ID's acquired during runtime for validation 
+        optimization.
+        - __valid_user_ID_flag: A booleand indicating whether user input on user ID entry is 
+        valid or not. 
+        - __valid_user_contact_flag: A booleand indicating whether user input on contact entry 
+        is valid or not.
+        - __formatted_user_contact: A string with formatted user input on contact entry.
+        - __user_ID_error: Tkinter Label widget for input error message display on user ID entry.
+        - __user_ID_entry: Tkinter Entry widget for user ID input.
+        - __user_contact_error: Tkinter Label widget for input error message display on contact 
+        entry.
+        - __user_contact_entry: Tkinter Entry widget for contact input.
+        - __user_hostname_entry: Tkinter Entry widget for hostname input.
+        - __variable_entry: Tkinter Entry widget for template variable input.
+        - __OptionsFrame: Tkinter LabelFrame widget, this definition is mainly user for content 
+        redefinition.
+        - __ticket_type_options: List of available options for ticket type menu.
+        - __ticket_type_variable: Tkinter StringVar object tracking ticket type selection.
+        - __ticket_type_menu: Tkinter OptionMenu widget for ticket type selection.
+        - __solution_type_options: List of available options for solution type menu.
+        - __solution_type_variable: Tkinter StringVar object tracking soluction type selection.
+        - __solution_type_menu: Tkinter OptionMenu widget for solution type selection.
+        - __clearbutton: Tkinter Button widget, resets and user interactable widgets in CallTab.
+        - __sendbutton: Tkinter Button widget, calls for user input conversion to 'call.json' 
+        file and processes a ticket with it.
+    """
+
+    def __init__(self, driver:webdriver.Chrome, StatusBar:StatusBar, FatherTab:ttk.Notebook, selected_language:dict) -> None:
+        """
+        Creates a new CallTab object.
+
+        Arguments:
+            - driver: A loaded Chrome webdriver object.
+            - StatusBar: A loaded StatusBar object.
+            - FatherTab: A tkinter Notebook widget for master definition.
+            - selected_language: A loaded language resource.
+
+        Dependencies:
+            - :mod:`__CreateWidgets()`: For tkinter widget creation.
+        """
 
         super().__init__()
 
         self.__driver = driver
-        self.__statusbar = statusbar
+        self.__StatusBar = StatusBar
         self.__lang = dict(selected_language)
 
         self.__call_dictionary = LoadJson(Paths.DICTIONARY_JSON_PATH)
@@ -279,8 +324,20 @@ class CallTab(ttk.Frame): #TODO: Document / Threading
         self.__CreateWidgets()
 
     
-    def __CreateWidgets(self) -> None: #TODO: Document
-        """"""
+    def __CreateWidgets(self) -> None: #TODO: User ID validation threading.
+        """
+        Private Method:
+        Loads the itnernal widgets for call tab master widget.
+        
+        Dependencies:
+            - :mod:`__UserIDValidator()`: For user input validation on user ID entry.
+            - :mod:`__UserContactValidator()`: For user input validation on contact entry.
+            - :mod:`__CallTabVisualizer()`: For CTV (Call Tab Visualizer) widget creation.
+            - :mod:`__CTVUpdate()`: For CTV update.
+            - :mod:`__onTicketTypeSelection()`: For widget update on ticket type selection.
+            - :mod:`__onClearButtonPress`: For clear button press sequence.
+            - :mod:`__onSendButtonPress`: For send button press sequence.
+        """
 
         #Header Entries.
         ##User ID Entry.
@@ -460,13 +517,13 @@ class CallTab(ttk.Frame): #TODO: Document / Threading
 
 
         #Option Frame Widget.
-        self.OptionsFrame = tk.LabelFrame(
+        self.__OptionsFrame = tk.LabelFrame(
             self,
             text = self.__lang['Text_Labels']['Options_Label'],
             font = ('Arial', 10, 'bold'),
             foreground = 'gray'
         )
-        self.OptionsFrame.grid(
+        self.__OptionsFrame.grid(
             column = 0,
             row = 19,
             columnspan = 2,
@@ -478,7 +535,7 @@ class CallTab(ttk.Frame): #TODO: Document / Threading
         
         ##Ticket Type.
         tk.Label(
-            self.OptionsFrame,
+            self.__OptionsFrame,
             text = self.__lang['Text_Labels']['Ticket_Type'] + ':'
         ).grid(
             column = 0,
@@ -490,7 +547,7 @@ class CallTab(ttk.Frame): #TODO: Document / Threading
         self.__ticket_type_variable = tk.StringVar()
         self.__ticket_type_variable.set(self.__lang['Text_Labels']['Selection'])
         self.__ticket_type_menu = ttk.OptionMenu(
-            self.OptionsFrame,
+            self.__OptionsFrame,
             self.__ticket_type_variable,
             *self.__ticket_type_options,
             direction = 'right',
@@ -505,7 +562,7 @@ class CallTab(ttk.Frame): #TODO: Document / Threading
         
         ##Solution Type.
         tk.Label(
-            self.OptionsFrame,
+            self.__OptionsFrame,
             text = self.__lang['Text_Labels']['Solution_Type'] + ':'
         ).grid(
             column = 0,
@@ -517,7 +574,7 @@ class CallTab(ttk.Frame): #TODO: Document / Threading
         self.__solution_type_variable = tk.StringVar()
         self.__solution_type_variable.set(self.__lang['Text_Labels']['Selection'])
         self.__solution_type_menu = ttk.OptionMenu(
-            self.OptionsFrame,
+            self.__OptionsFrame,
             self.__solution_type_variable,
             *self.__solution_type_options,
         ); self.__solution_type_menu.config(state = tk.DISABLED)
@@ -529,13 +586,14 @@ class CallTab(ttk.Frame): #TODO: Document / Threading
         
 
         #Clear button.
-        tk.Button(
+        self.__clearbutton = tk.Button(
             self,
             text = self.__lang['Buttons']['Clear'],
             height = 4,
             width = 15,
             command = self.__onClearButtonPress
-        ).grid(
+        )
+        self.__clearbutton.grid(
             column = 2,
             row = 19,
             rowspan = 2,
@@ -564,8 +622,11 @@ class CallTab(ttk.Frame): #TODO: Document / Threading
         )
 
 
-    def __CallTabVisualizer(self) -> None: #TODO: Document
-        """"""
+    def __CallTabVisualizer(self) -> None:
+        """
+        Private Method:
+        :mod:`__CreateWidgets()` helper method, creates CTV (Call Tab Visualizer) widgets.
+        """
 
         #Visualizer Frame Widget
         PreviewFrame = tk.LabelFrame(
@@ -696,8 +757,16 @@ class CallTab(ttk.Frame): #TODO: Document / Threading
         return self.__valid_user_ID_flag
 
 
-    def __UserContactValidator(self, string:str) -> bool: #TODO: Document
-        """"""
+    def __UserContactValidator(self, string:str) -> bool:
+        """
+        Private Method:
+        Checks if string is a valid contact number.
+
+        Returns true if strig a valid contact number, false otherwise.
+
+        Arguments:
+            - string: String to be validated.
+        """
 
         self.__valid_user_contact_flag = False
         if string.isnumeric():
@@ -707,8 +776,15 @@ class CallTab(ttk.Frame): #TODO: Document / Threading
         return self.__valid_user_contact_flag
 
 
-    def __onTicketTypeSelection(self, dictionary:dict) -> None: #TODO: Document
-        """"""
+    def __onTicketTypeSelection(self, dictionary:dict) -> None:
+        """
+        Private Method:
+        Ticket Type selection sequence, updates widgets according to template selection.
+
+        Dependencies:
+            - :mod:`self.__CTVUpdate()`: For CTV (Call Tab Visualizer) update.
+            - :mod:`__SendButtonUpdate()`: For send button state update.
+        """
 
         if dictionary['Needs_Hostname']:
             self.__user_hostname_entry.config(state = tk.NORMAL)
@@ -733,7 +809,7 @@ class CallTab(ttk.Frame): #TODO: Document / Threading
             #Recreates solution selection widget (editing it causes undefined behaviour).
             self.__solution_type_menu.destroy()
             self.__solution_type_menu = ttk.OptionMenu(
-                self.OptionsFrame,
+                self.__OptionsFrame,
                 self.__solution_type_variable,
                 *self.__solution_type_options,
                 direction = 'right',
@@ -796,8 +872,15 @@ class CallTab(ttk.Frame): #TODO: Document / Threading
         return result_string
 
     
-    def __CTVUpdate(self) -> None: #TODO: Document
-        """"""
+    def __CTVUpdate(self) -> None:
+        """
+        Private Method:
+        Updates CTV (Call Tab Visualizer) information.
+
+        Dependencies:
+            - :mod:`__PhoneNumberFormatter()`: For phone contact formatting.
+            - :mod:`__SendButtonUpdate()`: For send button state update.
+        """
 
         if self.__ticket_type_variable.get() != self.__lang['Text_Labels']['Selection']:
             dictionary = self.__call_dictionary[self.__ticket_type_variable.get()]
@@ -910,26 +993,26 @@ class CallTab(ttk.Frame): #TODO: Document / Threading
         Changes 'send' button state.
         """
 
-        ticket_type = self.__ticket_type_variable.get()
-
         if(
             self.__valid_user_ID_flag and
             self. __valid_user_contact_flag and
-            ticket_type != self.__lang['Text_Labels']['Selection']
+            self.__ticket_type_variable.get() != self.__lang['Text_Labels']['Selection']
         ): #User ID and user contact are valid and ticktet type is selected.
+            dictionary_selection = self.__call_dictionary[self.__ticket_type_variable.get()]
+
             if(
-                self.__call_dictionary[ticket_type]['Process-Type'] != 'close' or
-                self.__call_dictionary[ticket_type]['Process-Type'] == 'close' and
+                dictionary_selection['Process-Type'] != 'close' or
+                dictionary_selection['Process-Type'] == 'close' and
                 self.__solution_type_variable.get() != self.__lang['Text_Labels']['Selection']
             ): #Ticket type is 'close' and solution type is selected or ticket type is not 'close' (does not need solution type).
                 if(
-                    not self.__call_dictionary[ticket_type]['Needs_Hostname'] or
-                    self.__call_dictionary[ticket_type]['Needs_Hostname'] and
+                    not dictionary_selection['Needs_Hostname'] or
+                    dictionary_selection['Needs_Hostname'] and
                     self.__user_hostname_entry.get()
                 ): #Ticket template needs hostname and 'user hostname' entry has a valid hostname or ticket template does not need a hostname.
                     if(
-                        not self.__call_dictionary[ticket_type]['Needs_Variable'] or
-                        self.__call_dictionary[ticket_type]['Needs_Variable'] and
+                        not dictionary_selection['Needs_Variable'] or
+                        dictionary_selection['Needs_Variable'] and
                         self.__variable_entry.get()
                     ): #Ticket template needs variable and variable entry has text or ticket template does not need a variable.
                         self.__sendbutton.config(state = tk.NORMAL)
@@ -937,51 +1020,97 @@ class CallTab(ttk.Frame): #TODO: Document / Threading
         self.__sendbutton.config(state = tk.DISABLED)
 
 
-    def __onSendButtonPress(self) -> None: #TODO: Document / Therading
-        """"""
+    def __onSendButtonPress(self) -> None:
+        """
+        Private Method:
+        Send button press sequence, calls for user input conversion to 'call.json' 
+        file and processes a ticket with it in a separate thread.
+
+        Dependencies:
+            - :mod:`__UserIDValidator()`: To force another user input validation for 
+            user ID entry in case of abnormal entry edition.
+            - :mod:`__TicketCreationThr()`: For multi-threading ticket processing.
+            - :mod:`__SendButtonUpdate()`: For send button state update.
+        """
 
         if self.__UserIDValidator(self.__user_ID_entry.get()):
-            self.__statusbar.ChangeText(self.__lang['Text_Labels']['Registering'])
+            self.__StatusBar.ChangeText(self.__lang['Text_Labels']['Registering'])
             self.__sendbutton.config(state = tk.DISABLED)
 
-            call_type = self.__ticket_type_variable.get()
+            dictionary_selection = self.__call_dictionary[self.__ticket_type_variable.get()]
             
-            if self.__call_dictionary[call_type]['Needs_Hostname']:
+            if dictionary_selection['Needs_Hostname']:
                 hostname = self.__user_hostname_entry.get()
             else:
                 hostname = 'Not Required'
 
-            if self.__call_dictionary[call_type]['Process-Type'] == 'close':
+            if dictionary_selection['Process-Type'] == 'close':
                 solution = int(self.__solution_type_variable.get())
             else:
                 solution = 0
 
-            if self.__call_dictionary[call_type]['Needs_Variable']:
+            if dictionary_selection['Needs_Variable']:
                 variable = self.__variable_entry.get()
             else:
                 variable = 'Not Required'
 
-            print('\nHAF> call register')
-            NewCall(
-                self.__driver,
-                self.__user_ID_entry.get(),
-                self.__formatted_user_contact,
-                hostname,
-                call_type,
-                solution,
-                variable
-            )
-
-            messagebox.showinfo('HAF', self.__lang['Messages']['Call_Register'])
-            self.__statusbar.ChangeText()
-
-            self.__onTicketTypeSelection(self.__call_dictionary[self.__ticket_type_variable.get()])
-            self.__CTVUpdate()
+            threading.Thread( #Runs ticket creation on a separate thread to not freeze the main loop.
+                target = self.__TicketCreationThr,
+                args = (hostname, self.__ticket_type_variable.get(), solution, variable)
+            ).start()
         else:
             self.__SendButtonUpdate()
 
+    
+    def __TicketCreationThr(self, hostname:str, call_type:str, solution:int, variable:str) -> None:
+        """
+        Private Method:
+        * This method is supposed to be run on a separate thread via python threading module.
+        
+        Writes user input to 'call.json' file and processes a ticket with it.\n
+        Widget interaction in CallTab will not be possible when this is running.
 
-class TemplateTab(ttk.Frame): #TODO ALL
+        Dependencies:
+            - :mod:`__onTicketTypeSelection()`: For solution type menu reset and widget enabling.
+            - :mod:`__CTVUpdate()`: For CTV (Call Tab Visualizer) update.
+        """
+
+        #Disables widget interaction:
+        self.__user_ID_entry.config(state = tk.DISABLED)
+        self.__user_contact_entry.config(state = tk.DISABLED)
+        self.__user_hostname_entry.config(state = tk.DISABLED)
+        self.__variable_entry.config(state = tk.DISABLED)
+        self.__ticket_type_menu.config(state = tk.DISABLED)
+        self.__solution_type_menu.config(state = tk.DISABLED)
+        self.__clearbutton.config(state = tk.DISABLED)
+        self.__sendbutton.config(state = tk.DISABLED)
+
+        print('\nHAF> call register')
+
+        NewCall(
+            self.__driver,
+            str(self.__user_ID_entry.get()),
+            str(self.__formatted_user_contact),
+            str(hostname),
+            str(call_type),
+            int(solution),
+            str(variable)
+        )
+
+        messagebox.showinfo('HAF', self.__lang['Messages']['Call_Register'])
+        self.__StatusBar.ChangeText()
+
+        #Enables widgets interaction:
+        self.__user_ID_entry.config(state = tk.NORMAL)
+        self.__user_contact_entry.config(state = tk.NORMAL)
+        self.__ticket_type_menu.config(state = tk.NORMAL)
+        self.__clearbutton.config(state = tk.NORMAL)
+        self.__onTicketTypeSelection(self.__call_dictionary[self.__ticket_type_variable.get()])
+
+        self.__CTVUpdate()
+
+
+class TemplateTab(ttk.Frame): #TODO: All
     """"""
 
     def __init__(self, FatherTab:ttk.Notebook, selected_language:dict) -> None:
@@ -1027,8 +1156,8 @@ class AccountConfiguration(tk.Toplevel):
         """
         Creates a new AccountConfiguration object, use :mod:`foo.Start()` to start the sub screen main loop.
 
-        Arguements:
-            - parent: Object referente to GUI main screen for 'master' attribute definition.
+        Arguments:
+            - parent: Object referente to GUI main screen, mainly for 'master' attribute definition.
             - selected_language: A loaded language resource.
             - config: A loaded ConfigClass object.
 
@@ -1251,11 +1380,32 @@ class AccountConfiguration(tk.Toplevel):
             messagebox.showinfo('HAF', self.__lang['Messages']['AccountUpdate'])
 
 
-class LanguageConfiguration(tk.Toplevel): #TODO: Document
-    """"""
+class LanguageConfiguration(tk.Toplevel):
+    """
+    Language Configuration sub screen class for GUI class.\n
+    * Uses double undescore to specify private methods/attributes instead of the convenional single underscore.
+
+    Private Attributes:
+        - __parent: Object referente to GUI main screen.
+        - __lang: A loaded language resource.
+        - __config: A loaded ConfigClass object.
+        - __current_language: Current selected language.
+        - __language_menu_variable: Tracks user selection on language menu.
+        - __restart_button: Tkinter button widget for GUI restart sequence.
+    """
 
     def __init__(self, parent:GUI, selected_language:dict, config:ConfigClass) -> None:
-        """"""
+        """
+        Creates a new LanguageConfigurationobject, use :mod:`foo.Start()` to start the sub screen main loop.
+
+        Arguments:
+            - parent: Object referente to GUI main screen.
+            - selected_language: A loaded language resource.
+            - config: A loaded ConfigClass object.
+
+        Dependencies:
+            - :mod:`__CreateWidgets()`: For tkinter widget creation.
+        """
 
         super().__init__()
 
@@ -1272,15 +1422,23 @@ class LanguageConfiguration(tk.Toplevel): #TODO: Document
         self.__CreateWidgets()
 
 
-    def Start(self) -> None: #TODO: Document
-        """"""
+    def Start(self) -> None:
+        """Starts the sub screen main loop."""
 
         self.mainloop()
 
     
-    def __CreateWidgets(self) -> None: #TODO: Document
-        """"""
+    def __CreateWidgets(self) -> None:
+        """
+        Private Method:
+        Loads widgets for the language configuration sub screen.
+        
+        Dependencies:
+            - :mod:`__onMenuChange()`: For restart button state handling.
+            - :mod:`__RefreshButtonPress()`: For updating 'config.ini' file and restat sequence.
+        """
 
+        #Frame Widget:
         Frame = tk.LabelFrame(
             self,
             text = self.__lang['Text_Labels']['Language'],
@@ -1294,6 +1452,8 @@ class LanguageConfiguration(tk.Toplevel): #TODO: Document
             padx = 150,
             pady = [50, 0]
         )
+        
+        #Language Selection Menu:
         tk.Label(
             Frame,
             text = self.__lang['Text_Labels']['Select_Language'] + ':',
@@ -1303,7 +1463,6 @@ class LanguageConfiguration(tk.Toplevel): #TODO: Document
             column = 0,
             padx = 10,
         )
-
         options_list = [str(self.__lang['Text_Labels']['Selection'])] + GUIConstants.VALID_LANGS
         self.__language_menu_variable = tk.StringVar()
         self.__language_menu_variable.set(self.__lang['Text_Labels']['Selection'])
@@ -1319,13 +1478,14 @@ class LanguageConfiguration(tk.Toplevel): #TODO: Document
             row = 1
         )
 
-        self.__refresh_button = tk.Button(
+        #Restart Button:
+        self.__restart_button = tk.Button(
             self,
             text = self.__lang['Buttons']['Restart'],
-            command = self.__RefreshButtonPress,
+            command = self.__RestartButtonPress,
             state = tk.DISABLED
         )
-        self.__refresh_button.grid(
+        self.__restart_button.grid(
             row = 1,
             column = 0,
             padx = 150,
@@ -1333,21 +1493,27 @@ class LanguageConfiguration(tk.Toplevel): #TODO: Document
         )
 
 
-    def __onMenuChange(self) -> None: #TODO: Document
-        """"""
+    def __onMenuChange(self) -> None:
+        """
+        Private Method:
+        Changes restart button state based on user selection in language menu.
+        """
         
         user_selection = self.__language_menu_variable.get()
-        if( #!
+        if( #User selection is different from the current loaded language.
             user_selection != self.__lang['Text_Labels']['Selection'] and 
             user_selection != self.__current_language
         ):
-            self.__refresh_button.config(state = tk.NORMAL)
-        else: #!
-            self.__refresh_button.config(state = tk.DISABLED)
+            self.__restart_button.config(state = tk.NORMAL)
+        else: #User selection is already the loaded language.
+            self.__restart_button.config(state = tk.DISABLED)
 
 
-    def __RefreshButtonPress(self) -> None: #TODO: Document
-        """"""
+    def __RestartButtonPress(self) -> None:
+        """
+        Private Method:
+        Sends user language selection to config.ini file and restarts GUI.
+        """
 
         self.__config.UpdateLanguage(self.__language_menu_variable.get())
         self.destroy()
