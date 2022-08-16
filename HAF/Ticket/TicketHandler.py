@@ -15,6 +15,9 @@ from HAF.FileHandler.Logger import LogClass
 from HAF.FileHandler.JsonHandler import LoadJson
 from HAF.Constants import Menu, Paths, URL, LogConstants
 
+#Global Constants:
+MAX_RECURSION = 3
+
 
 def __TabPresser(action:ActionChains, iterations:int) -> None:
     """
@@ -118,7 +121,7 @@ def __TicketMenuNavigator(driver:webdriver.Chrome, call_data:dict, ticket_data:d
     return driver.current_url.removeprefix('https://prosegur-smartit.onbmc.com/smartit/app/#/sberequest/')
 
 
-def __OpenTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> LogClass:
+def __OpenTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict, current_try:int = 0) -> LogClass:
     """
     Private function: Opens a ticket and based on the call data and its ticket template.\n
     Returns a LogClass object with the ticket details.
@@ -131,7 +134,14 @@ def __OpenTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> L
         - driver: A loaded Chrome webdriver object.
         - call_data: Dictionary with call data.
         - ticket_data: Dictionary with ticket data.
+
+    Opitional Arguments:
+        - current_try: Shouldn't be passed manually, will be increased by one every time this function 
+        is called recursively, once it reaches 'MAX_RECURSION' value a RecursionError is raised.
     """
+
+    if current_try == MAX_RECURSION:
+        raise RecursionError('Reached max number of retries for ticket creation, try restasting HAF.')
 
     driver.refresh()
     driver.get(URL.SMART_RECORDER_URL)
@@ -145,7 +155,12 @@ def __OpenTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> L
     driver.find_element(By.XPATH, '//*[@id="main"]/div/div[3]/button[1]').click()
 
     ticket_ID = __TicketMenuNavigator(driver, call_data, ticket_data)
-    return LogClass(LogConstants.TICKET_CREATED, ticket_ID)
+
+    #Checks if tickets was succesfully generated, otherwise it tries again.
+    if ticket_ID.isnumeric():
+        return LogClass(LogConstants.TICKET_CREATED, ticket_ID)
+    else:
+        return __OpenTicket(driver, call_data, ticket_data, (current_try + 1))
 
 
 def __CloseTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> LogClass:
