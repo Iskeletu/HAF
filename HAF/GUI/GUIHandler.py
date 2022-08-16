@@ -171,7 +171,7 @@ class GUI(tk.Tk):
         tab_control.add(self.__TemplateTab, text = self.__lang['Tabs']['TemplateTab'])
 
 
-class StatusBar(tk.Frame): #TODO: All
+class StatusBar(tk.Frame): #TODO: Buffering Icon / Document
     """"""
 
     def __init__(self, parent:GUI, selected_language:dict) -> None:
@@ -205,7 +205,7 @@ class StatusBar(tk.Frame): #TODO: All
         )
 
         #Buffering icon:
-        frame_count = 8
+        """frame_count = 8
         buffering_frames = [
             tk.PhotoImage(
                 file = Paths.BUFFERING_GIF,
@@ -225,7 +225,7 @@ class StatusBar(tk.Frame): #TODO: All
             padx = 10,
             pady = 2
         )
-        #icon_canvas.create_image(, y, image = buffering_frames[0], anchor = tk.NE)
+        #icon_canvas.create_image(, y, image = buffering_frames[0], anchor = tk.NE)"""
 
 
     def ChangeText(self, string:str = 'Default Message') -> None:
@@ -264,7 +264,7 @@ class CallTab(tk.Frame):
         - __driver: A loaded Chrome webdriver object.
         - __StatusBar: A loaded StatusBar object.
         - __lang: A loaded language resource.
-        - __call_dictionary: 
+        - __call_dictionary: A loaded dictionary with 'dictionary.json' data.
         - __usernamecash: A list of valid user ID's acquired during runtime for validation 
         optimization.
         - __valid_user_ID_flag: A booleand indicating whether user input on user ID entry is 
@@ -1127,6 +1127,8 @@ class TemplateTab(ttk.Frame): #TODO: All
 
 
     def __CreateWidgets(self):
+        """"""
+        
         tk.Label(
                 self,
                 text = 'Feature in development.'
