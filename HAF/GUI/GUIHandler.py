@@ -171,11 +171,27 @@ class GUI(tk.Tk):
         tab_control.add(self.__TemplateTab, text = self.__lang['Tabs']['TemplateTab'])
 
 
-class StatusBar(tk.Frame): #TODO: Buffering Icon / Document
-    """"""
+class StatusBar(tk.Frame): #TODO: Buffering Icon
+    """
+    Status Bar widget class for GUI class.\n
+    * Uses double undescore to specify private methods/attributes instead of the convenional single underscore.
+    
+    Private Attributes:
+        - __lang: A loaded language resource.
+        - __text: Tkinter Label widget for prgram status display.
+    """
 
     def __init__(self, parent:GUI, selected_language:dict) -> None:
-        """"""
+        """
+        Creates a new StatusBar object.
+
+        Arguments:
+            - parent: Object referente to GUI main screen, mainly for 'master' attribute definition.
+            - selected_language: A loaded language resource.
+
+        Dependencies:
+            - :mod:`__CreateWidgets()`: For tkinter widget creation.
+        """
         
         super().__init__()
 
@@ -228,28 +244,28 @@ class StatusBar(tk.Frame): #TODO: Buffering Icon / Document
         #icon_canvas.create_image(, y, image = buffering_frames[0], anchor = tk.NE)"""
 
 
-    def ChangeText(self, string:str = 'Default Message') -> None:
+    def ChangeText(self, text:str = 'Default Message') -> None:
         """
         Changes status bar text.
 
         Optional Arguments:
-            - string: A new string to be displayed, dafaults to 'Idle' message.
+            - text: A new string to be displayed, dafaults to 'Idle' message.
         """
         
-        if string == 'Default Message':
-            string = self.__lang['Text_Labels']['Idle']
-        self.__text.config(text = string)
+        if text == 'Default Message':
+            text = self.__lang['Text_Labels']['Idle']
+        self.__text.config(text = text)
 
 
-    def ShowBuffering(self, flag:bool) -> None: #TODO: IMPLEMENT
+    def ShowBuffering(self, status:bool) -> None: #TODO: IMPLEMENT
         """
         Configures status bar buffering icon.
 
         Arguments:
-            - flag: A bool indicating whether the buffering icon should be turned on or off.
+            - status: A boolean indicating whether the buffering icon should be turned on or off.
         """
 
-        if flag:
+        if status:
             return
         else:
             return
@@ -267,10 +283,12 @@ class CallTab(tk.Frame):
         - __call_dictionary: A loaded dictionary with 'dictionary.json' data.
         - __usernamecash: A list of valid user ID's acquired during runtime for validation 
         optimization.
-        - __valid_user_ID_flag: A booleand indicating whether user input on user ID entry is 
+        - __valid_user_ID_flag: A boolean indicating whether user input on user ID entry is 
         valid or not. 
-        - __valid_user_contact_flag: A booleand indicating whether user input on contact entry 
+        - __valid_user_contact_flag: A boolean indicating whether user input on contact entry 
         is valid or not.
+        - __registering_ticket_flag: a boolean indication whether or not a ticket ia being 
+        registered.
         - __formatted_user_contact: A string with formatted user input on contact entry.
         - __user_ID_error: Tkinter Label widget for input error message display on user ID entry.
         - __user_ID_entry: Tkinter Entry widget for user ID input.
@@ -317,6 +335,7 @@ class CallTab(tk.Frame):
 
         self.__valid_user_ID_flag = bool(False)
         self.__valid_user_contact_flag = bool(False)
+        self.__registering_ticket_flag = bool(False)
         self.__formatted_user_contact = str('')
 
         self.master = FatherTab
@@ -994,6 +1013,7 @@ class CallTab(tk.Frame):
         """
 
         if(
+            self.__registering_ticket_flag == False and
             self.__valid_user_ID_flag and
             self. __valid_user_contact_flag and
             self.__ticket_type_variable.get() != self.__lang['Text_Labels']['Selection']
@@ -1075,6 +1095,8 @@ class CallTab(tk.Frame):
             - :mod:`__CTVUpdate()`: For CTV (Call Tab Visualizer) update.
         """
 
+        self.__registering_ticket_flag = True
+
         #Disables widget interaction:
         self.__user_ID_entry.config(state = tk.DISABLED)
         self.__user_contact_entry.config(state = tk.DISABLED)
@@ -1108,6 +1130,7 @@ class CallTab(tk.Frame):
         self.__onTicketTypeSelection(self.__call_dictionary[self.__ticket_type_variable.get()])
 
         self.__CTVUpdate()
+        self.__registering_ticket_flag = False
 
 
 class TemplateTab(ttk.Frame): #TODO: All
