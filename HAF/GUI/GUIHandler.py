@@ -531,7 +531,7 @@ class CallTab(tk.Frame):
         )
 
 
-        #Call Visualizer.
+        #Call Visualizer Widget.
         self.__CallTabVisualizer()
 
 
@@ -1133,10 +1133,10 @@ class CallTab(tk.Frame):
         self.__registering_ticket_flag = False
 
 
-class TemplateTab(ttk.Frame): #TODO: All
+class TemplateTab(tk.Frame): #TODO: All
     """"""
 
-    def __init__(self, FatherTab:ttk.Notebook, selected_language:dict) -> None:
+    def __init__(self, FatherTab:ttk.Notebook, selected_language:dict) -> None: #TODO: Document
         """"""
 
         super().__init__()
@@ -1149,13 +1149,132 @@ class TemplateTab(ttk.Frame): #TODO: All
         self.__CreateWidgets()
 
 
-    def __CreateWidgets(self):
+    def __CreateWidgets(self) -> None: #TODO: Document
         """"""
         
         tk.Label(
-                self,
-                text = 'Feature in development.'
-            ).grid(column = 0, row = 0)
+            self,
+            text = 'Template:'
+        ).grid(
+            column = 0,
+            row = 0,
+            padx = 12,
+            sticky = tk.NW
+        )
+        self.__template_selection_options:list[str] = (
+            [str(self.__lang['Text_Labels']['Selection'])] +
+            list(self.__call_dictionary.keys()) +
+            ['-- ' + str(self.__lang['Text_Labels']['New_Template']) + ' --']
+        )
+        self.__template_selection_variable = tk.StringVar()
+        self.__template_selection_variable.set(self.__lang['Text_Labels']['Selection'])
+        self.__template_selection_menu = ttk.OptionMenu(
+            self,
+            self.__template_selection_variable,
+            *self.__template_selection_options,
+            direction = 'below',
+            command = lambda _: self.__onTemplateSelection()
+        )
+        self.__template_selection_menu.grid(
+            column = 0,
+            row = 1,
+            padx = 12,
+            sticky = tk.NW
+        )
+        self.__template_selection_menu.bind('<Configure>', lambda _: self.__TemplateEditorUpdate())
+
+
+        #Separator
+        ttk.Separator(self).grid(
+            column = 0,
+            row = 2,
+            columnspan = 4,
+            sticky = 'we'
+        )
+
+
+        #Template Editor Widget.
+        self.__TemplateEditor()
+
+
+        #Buttons:
+        ##Delete Template Button.
+        self.__deletebutton = tk.Button(
+            self,
+            text = self.__lang['Buttons']['Delete'],
+            height = 4,
+            width = 15,
+            command = self.__onDeleteButtonPress,
+            state = tk.DISABLED
+        )
+        self.__deletebutton.grid(
+            column = 0,
+            row = 19,
+            rowspan = 2,
+            padx = 12,
+            pady = 10,
+            sticky = tk.NE
+        )
+
+        ##Save Button.
+        self.__savebutton = tk.Button(
+            self,
+            text = self.__lang['Buttons']['Save'],
+            height = 4,
+            width = 15,
+            command = self.__onSaveButtonPress,
+            state = tk.DISABLED
+        )
+        self.__savebutton.grid(
+            column = 3,
+            row = 19,
+            rowspan = 2,
+            padx = 12,
+            pady = 10,
+            sticky = tk.NE
+        )
+
+
+    def __TemplateEditor(self) -> None: #TODO: Implement
+        """"""
+
+        #Editor Frame Widget.
+        EditorFrame = tk.LabelFrame(
+            self,
+            text = 'Editor',
+            font = ('Arial', 10, 'bold'),
+            background = 'white',
+            foreground = 'gray'
+        )
+        EditorFrame.grid(
+            column = 0,
+            row = 3,
+            columnspan = 4,
+            rowspan = 16,
+            padx = 87,
+            pady = 10,
+            sticky = tk.NW
+        )
+
+
+        #Scroll Bar.
+        tk.Scrollbar(EditorFrame).pack(side = tk.RIGHT, fill = tk.Y)
+
+
+    def __TemplateEditorUpdate(self) -> None: #TODO: Implement
+        """"""
+
+
+    def __onTemplateSelection(self) -> None: #TODO: Implement
+        """"""
+
+
+    def __onDeleteButtonPress(self) -> None: #TODO: Implement
+        """"""
+
+
+    def __onSaveButtonPress(self) -> None: #TODO: Implement
+        """"""
 
 
 class AccountConfiguration(tk.Toplevel):
