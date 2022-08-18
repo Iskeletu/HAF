@@ -11,7 +11,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import InvalidSessionIdException
 
 #Internal Modules:
 from HAF.FileHandler.Config import ConfigClass
@@ -94,18 +94,20 @@ def LoadDriver() -> webdriver.Chrome:
     driver = webdriver.Chrome(service = Service(ChromeDriverManager().install()), options = options)
     driver.implicitly_wait(10)
 
-    #Closes default tabs and opens a blank one.
-    try: #Catches error in case the driver wasn't properly closed in the previous session.
-        driver.switch_to.new_window()
-        handle = driver.window_handles
+    #Loads Fenix ISTM portal.
+    driver.switch_to.new_window()
+    driver.get(URL.PORTAL_URL)
+
+    #Closes default tabs.
+    handle = driver.window_handles
+    if len(handle) == 3:
         driver.switch_to.window(handle[0]); driver.close()
         driver.switch_to.window(handle[1]); driver.close()
         driver.switch_to.window(handle[2])
-    except WebDriverException:
-        pass
+    else:
+        driver.switch_to.window(handle[0]); driver.close()
+        driver.switch_to.window(handle[1])
 
-    #Loads Fenix ISTM portal.
-    driver.get(URL.PORTAL_URL)
     print('- Driver Loaded.')
 
     #Checks if Microsoft log-in is begin requested.
