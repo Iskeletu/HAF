@@ -11,7 +11,6 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import InvalidSessionIdException
 
 #Internal Modules:
 from HAF.FileHandler.Config import ConfigClass
@@ -36,7 +35,10 @@ def __MicrosoftLogin(driver:webdriver.Chrome) -> None:
 
         #Checks if Microsoft is asking for profile selection.
         try:
-            driver.find_element(By.XPATH, '//*[@id="tilesHolder"]/div[1]/div/div[1]/div/div[2]/div').click()
+            try:
+                driver.find_element(By.XPATH, '//*[@id="tilesHolder"]/div[1]/div/div[1]/div/div[2]/div').click()
+            except NoSuchElementException:
+                pass
 
             if driver.current_url.endswith('/login') == False: #TODO: confirm if this is always true.
                 driver.find_element(By.XPATH, '//*[@id="i0118"]').send_keys(config.GetPassword + Keys.ENTER)

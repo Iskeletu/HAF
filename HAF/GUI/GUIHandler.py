@@ -20,6 +20,21 @@ from HAF.FileHandler.Config import ConfigClass
 from HAF import __version__ as HAFVersion
 
 
+def ChangeClipboard(clipboard_data:str) -> None:
+    """
+    Overwrites clipboard content with 'clipboard_data' string.
+
+    Arguments:
+        - clipboard_data: New string for clipboard content.
+    """
+
+    subprocess.run(
+        "clip",
+        universal_newlines = True,
+        input = str(clipboard_data)
+    )
+
+
 class GUI(tk.Tk):
     """
     Graphical User Interface Class.\n
@@ -909,7 +924,10 @@ class CallTab(tk.Frame):
                 self.__VisualizerTitleText.config(state = tk.NORMAL)
                 self.__VisualizerTitleText.delete('1.0', tk.END)
                 self.__VisualizerTitleText.insert(tk.END, str(dictionary['Title']).format(
-                    Variable = self.__variable_entry.get()
+                    User_ID = self.__user_ID_entry.get(),
+                    Contact = self.__formatted_user_contact,
+                    Hostname = self.__user_hostname_entry.get().upper(),
+                    Variable = self.__variable_entry.get().upper()
                 ))
                 self.__VisualizerTitleText.config(state = tk.DISABLED)
                 self.__VisualizerTitleText.config(foreground = 'black')
@@ -927,7 +945,7 @@ class CallTab(tk.Frame):
             self.__VisualizerBodyText.insert(tk.END, str(dictionary['Body']).format(
                 User_ID = self.__user_ID_entry.get(),
                 Contact = self.__formatted_user_contact,
-                Hostname = self.__user_hostname_entry.get(),
+                Hostname = self.__user_hostname_entry.get().upper(),
                 Variable = self.__variable_entry.get()
             ))
             self.__VisualizerBodyText.config(state = tk.DISABLED)
@@ -940,6 +958,9 @@ class CallTab(tk.Frame):
                     self.__VisualizerSolutionText.insert(
                         tk.END,
                         str(dictionary['Answer'][int(self.__solution_type_variable.get())]).format(
+                            User_ID = self.__user_ID_entry.get(),
+                            Contact = self.__formatted_user_contact,
+                            Hostname = self.__user_hostname_entry.get().upper(),
                             Variable = self.__variable_entry.get()
                         )
                     )
@@ -1179,6 +1200,7 @@ class TemplateTab(tk.Frame): #TODO: All
             column = 0,
             row = 1,
             padx = 12,
+            pady = [0, 10],
             sticky = tk.NW
         )
         self.__template_selection_menu.bind('<Configure>', lambda _: self.__TemplateEditorUpdate())
@@ -1213,7 +1235,7 @@ class TemplateTab(tk.Frame): #TODO: All
             rowspan = 2,
             padx = 12,
             pady = 10,
-            sticky = tk.NE
+            sticky = tk.NW
         )
 
         ##Save Button.
@@ -1251,9 +1273,39 @@ class TemplateTab(tk.Frame): #TODO: All
             row = 3,
             columnspan = 4,
             rowspan = 16,
-            padx = 87,
+            padx = 20,
             pady = 10,
             sticky = tk.NW
+        )
+
+
+        #Clipboard Buttons:
+        tk.Button( #Hostname clipboard button.
+            EditorFrame,
+            text = 'Hostname',
+            width = 25,
+            command = lambda: ChangeClipboard(r'{Hostname}')
+        ).pack(
+            side = tk.LEFT,
+            padx = [0, 45]
+        )
+        tk.Button( #Contact clipboard button.
+            EditorFrame,
+            text = 'Contact',
+            width = 25,
+            command = lambda: ChangeClipboard(r'{Contact}')
+        ).pack(
+            side = tk.LEFT,
+            padx = 45
+        )
+        tk.Button( #Variable clipboard button.
+            EditorFrame,
+            text = 'Variable',
+            width = 25,
+            command = lambda: ChangeClipboard(r'{Variable}')
+        ).pack(
+            side = tk.LEFT,
+            padx = [45, 0]
         )
 
 

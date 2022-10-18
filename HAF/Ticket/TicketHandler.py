@@ -57,17 +57,18 @@ def __TicketMenuNavigator(driver:webdriver.Chrome, call_data:dict, ticket_data:d
     time.sleep(Menu.TICKETMENU_LOAD_DELAY)
     action = ActionChains(driver)
 
-    #Ticket description.
-    __TabPresser(action, 1)
-    action.send_keys(str(ticket_data['Body']).format(
-        Contact = call_data['Required']['Contact'],
-        Hostname = call_data['Required']['Hostname'],
-        Variable = call_data['Optional']['Variable']
-    ))
-    action.perform()
-
     match ticket_data['Type']:
         case 'ticket':
+            #Ticket description.
+            __TabPresser(action, 1)
+            action.send_keys(str(ticket_data['Body']).format(
+                User_ID = call_data['Required']['User_ID'],
+                Contact = call_data['Required']['Contact'],
+                Hostname = str(call_data['Required']['Hostname']).upper(),
+                Variable = str(call_data['Optional']['Variable'])
+            ))
+            action.perform()
+
             #Fills "How is this affecting you?" field.
             __TabPresser(action, 1)
             action.send_keys(Keys.SPACE)
@@ -108,6 +109,16 @@ def __TicketMenuNavigator(driver:webdriver.Chrome, call_data:dict, ticket_data:d
             action.perform()
 
         case 'mfa':
+            #Ticket description.
+            __TabPresser(action, 2)
+            action.send_keys(str(ticket_data['Body']).format(
+                User_ID = call_data['Required']['User_ID'],
+                Contact = call_data['Required']['Contact'],
+                Hostname = str(call_data['Required']['Hostname']).upper(),
+                Variable = str(call_data['Optional']['Variable'])
+            ))
+            action.perform()
+
             time.sleep(Menu.TICKETMENU_SENDBUTTON_DELAY)
 
             #Sends ticket.
@@ -189,9 +200,10 @@ def __CloseTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> 
     #Edits ticket title.
     driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/title-bar/div[2]/div/div[1]/label/input').send_keys(Keys.CONTROL + 'a')
     driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/title-bar/div[2]/div/div[1]/label/input').send_keys(str(ticket_data['Title']).format(
+        User_ID = call_data['Required']['User_ID'],
         Contact = call_data['Required']['Contact'],
-        Hostname = call_data['Required']['Hostname'],
-        Variable = call_data['Optional']['Variable']
+        Hostname = str(call_data['Required']['Hostname']).upper(),
+        Variable = str(call_data['Optional']['Variable']).upper()
     ))
 
     #Changes status to "ongoing".
@@ -200,11 +212,18 @@ def __CloseTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> 
 
     #Sets standard ticket definition.
     driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[2]/div/div[2]/div[1]/div[1]/div[1]/div/div[3]/div/div/label/div/div/div/button').click()
-    driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[2]/div/div[2]/div[1]/div[1]/div[1]/div/div[3]/div/div/label/div/div/div/ul/li[4]/a').click()
+    driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[2]/div/div[2]/div[1]/div[1]/div[1]/div/div[3]/div/div/label/div/div/div/ul/li[1]/a').click()
     driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[2]/div/div[2]/div[1]/div[1]/div[1]/div/div[4]/div/div/label/div/div/div/button').click()
     driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[2]/div/div[2]/div[1]/div[1]/div[1]/div/div[4]/div/div/label/div/div/div/ul/li[1]/a').click()
     driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[2]/div/div[2]/div[1]/div[1]/div[1]/div/div[5]/div/div/label/div/div/div/button').click()
     driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[2]/div/div[2]/div[1]/div[1]/div[1]/div/div[5]/div/div/label/div/div/div/ul/li[2]/a').click()
+    
+    #Sets operational category.
+    driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[2]/div/div[2]/div[2]/div/div[2]/div/div/div/div/div[2]/button[1]').click()
+    driver.find_element(By.XPATH, '//*[@id="category-dropdown-operational"]').click()
+    driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[2]/div/div[2]/div[2]/div/div[2]/div/div/div/div[1]/ul/li[22]/div').click()
+    driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[2]/div/div[2]/div[2]/div/div[2]/div/div/div/div[2]/div').click()
+    driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[2]/div/div[2]/div[2]/div/div[2]/div/div/div/div[2]/ul/li[7]/div').click()
 
     #Changes ticket disignation to self and reopens ticket editor.
     driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[2]/div/div[3]/div[1]/div/div[1]/div/div/div[2]/div/a').click()
@@ -223,8 +242,9 @@ def __CloseTicket(driver:webdriver.Chrome, call_data:dict, ticket_data:dict) -> 
 
     #Edits ticket solution and saves changes.
     driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[3]/div[1]/div/div[2]/div/label/textarea').send_keys(str(ticket_data['Answer'][int(call_data['Optional']['Solution'])]).format(
+        User_ID = call_data['Required']['User_ID'],
         Contact = call_data['Required']['Contact'],
-        Hostname = call_data['Required']['Hostname'],
+        Hostname = str(call_data['Required']['Hostname']).upper(),
         Variable = call_data['Optional']['Variable']
     ))
     driver.find_element(By.XPATH, '//*[@id="ticket-record-summary"]/div[2]/div/button[1]').click()
@@ -336,6 +356,10 @@ def TicketProcessor(driver:webdriver.Chrome) -> None: #!INCONPLETE
     match ticket_data['Process-Type']:
         case 'open':
             log = __OpenTicket(driver, call_data, ticket_data)
+
+            if(call_data['Required']['Call_Type'] != 'mfa'):
+                driver.get(URL.TICKED_ID_PREFIX + log.GetTicketID)
+                driver.find_element(By.XPATH, '/html/body/div[2]/div/div[2]/div/div[1]/div/div/div[2]/div[2]/div[4]/div/div/div/fulfillment-map/div/div[2]/div[2]/div/div[2]').click()
 
         case 'close':
             log = __CloseTicket(driver, call_data, ticket_data)
